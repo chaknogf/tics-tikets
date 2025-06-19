@@ -4,13 +4,15 @@ import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Ticket } from '../../interface/interfaces';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-tikets',
   templateUrl: './tikets.component.html',
   // styleUrls: ['./tikets.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FormsModule]
 })
 export class TiketsComponent implements OnInit {
 

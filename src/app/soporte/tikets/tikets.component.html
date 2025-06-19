@@ -1,4 +1,39 @@
-<div class="table-responsive" *ngIf="!cargando; else cargandoTemplate" data-bs-theme="dark">
+<!-- Tabla para pantallas medianas en adelante -->
+<div class="table-responsive d-none d-md-block" *ngIf="!cargando; else cargandoTemplate" data-bs-theme="dark">
+
+<form class="row g-2 mb-3">
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar ID" [(ngModel)]="buscarId" name="buscarId">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Ticket" [(ngModel)]="buscarTicket" name="buscarTicket">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Servicio" [(ngModel)]="buscarServicio" name="buscarServicio">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Atención en" [(ngModel)]="buscarAtencionEn" name="buscarAtencionEn">
+  </div>
+  <div class="col-12 col-md-2">
+    <select class="form-select" [(ngModel)]="buscarPrioridad" name="buscarPrioridad">
+      <option value="">Prioridad</option>
+      <option value="Alta">Alta</option>
+      <option value="Media">Media</option>
+      <option value="Baja">Baja</option>
+    </select>
+  </div>
+  <div class="col-12 col-md-2">
+    <select class="form-select" [(ngModel)]="buscarEstado" name="buscarEstado">
+      <option value="">Estado</option>
+      <option value="Abierto">Abierto</option>
+      <option value="En Proceso">En Proceso</option>
+      <option value="Cerrado">Cerrado</option>
+    </select>
+  </div>
+  <button class="btn btn-primary w-100 mt-2" type="button" (click)="obtenerTikets()">
+      Buscar
+    </button>
+</form>
   <table class="table table-dark table-striped table-hover table-bordered align-middle mb-0">
     <thead>
       <tr>
@@ -48,6 +83,78 @@
       </tr>
     </tbody>
   </table>
+</div>
+
+<!-- Cards para pantallas pequeñas -->
+<div class="d-block d-md-none" *ngIf="!cargando">
+  <div class="card mb-2" *ngFor="let t of tikets" data-bs-theme="dark">
+    <form class="row g-2 mb-3">
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar ID" [(ngModel)]="buscarId" name="buscarId">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Ticket" [(ngModel)]="buscarTicket" name="buscarTicket">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Servicio" [(ngModel)]="buscarServicio" name="buscarServicio">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Atención en" [(ngModel)]="buscarAtencionEn" name="buscarAtencionEn">
+  </div>
+  <div class="col-12 col-md-2">
+    <select class="form-select" [(ngModel)]="buscarPrioridad" name="buscarPrioridad">
+      <option value="">Prioridad</option>
+      <option value="Alta">Alta</option>
+      <option value="Media">Media</option>
+      <option value="Baja">Baja</option>
+    </select>
+  </div>
+  <div class="col-12 col-md-2">
+    <select class="form-select" [(ngModel)]="buscarEstado" name="buscarEstado">
+      <option value="">Estado</option>
+      <option value="Abierto">Abierto</option>
+      <option value="En Proceso">En Proceso</option>
+      <option value="Cerrado">Cerrado</option>
+    </select>
+    <button class="btn btn-primary w-100 mt-2" type="button" (click)="obtenerTikets()">
+      Buscar
+    </button>
+  </div>
+</form>
+    <div class="card-body">
+      <h5 class="card-title mb-2">Ticket #{{ t.ticket }}</h5>
+      <p class="mb-1"><strong>ID:</strong> {{ t.id }}</p>
+      <p class="mb-1"><strong>Fecha:</strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
+      <p class="mb-1"><strong>Servicio:</strong> {{ t.servicio }}</p>
+      <p class="mb-1">
+        <strong>Prioridad:</strong>
+        <span [ngClass]="{
+          'badge bg-danger': t.prioridad === 'Alta',
+          'badge bg-warning text-dark': t.prioridad === 'Media',
+          'badge bg-success': t.prioridad === 'Baja'
+        }">
+          {{ t.prioridad || 'N/A' }}
+        </span>
+      </p>
+      <p class="mb-1"><strong>Atención en:</strong> {{ t.atencion_en }}</p>
+      <p class="mb-2">
+        <strong>Estado:</strong>
+        <span [ngClass]="{
+          'badge bg-primary': t.estado === 'Abierto',
+          'badge bg-info text-dark': t.estado === 'En Proceso',
+          'badge bg-secondary': t.estado === 'Cerrado'
+        }">
+          {{ t.estado || 'Sin estado' }}
+        </span>
+      </p>
+      <button class="btn btn-sm btn-outline-light me-1 mb-1" (click)="editar(t.id)" title="Editar">
+        <i class="bi bi-pencil"></i>
+      </button>
+      <button class="btn btn-sm btn-outline-info mb-1" title="Ver">
+        <i class="bi bi-eye"></i>
+      </button>
+    </div>
+  </div>
 </div>
 
 <ng-template #cargandoTemplate>

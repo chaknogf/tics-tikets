@@ -8,7 +8,7 @@ import { LoginComponent } from '../login/login.component';
 import { ModalService } from '../services/modal.service';
 import { Subscription } from 'rxjs';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
-import { alienIcon } from '../shared/icons';
+import { alienIcon, pirateIcon } from '../shared/icons';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -31,6 +31,7 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
   }
 
   alienIcon: SafeHtml = alienIcon;
+  pirateIcon: SafeHtml = pirateIcon
 
   constructor(
     private api: ApiService,
@@ -39,6 +40,7 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer
   ) {
     this.alienIcon = this.sanitizarSvg(alienIcon);
+    this.pirateIcon = this.sanitizarSvg(pirateIcon);
 
     this.sub = this.modalService.abrirLogin$.subscribe(() => this.open());
     this.form = this.fb.group({
@@ -97,7 +99,7 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
   async create() {
     try {
       const rawData = this.form.getRawValue(); // incluye todo, incluso objetos como metadatos
-      console.table(rawData); // útil para verificar qué se está enviando
+      // console.table(rawData); // útil para verificar qué se está enviando
       await this.api.createTicket(rawData);
       this.mensaje = 'Ticket creado correctamente';
     } catch (error) {
