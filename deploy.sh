@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo "🚀 Iniciando despliegue de la app 'Solicitudes'..."
+echo "🚀 Iniciando despliegue de la app 'Soporte'..."
 
-# Ruta al proyecto Angular (según nombre del repo)
+# Ruta al proyecto Angular
 PROYECTO_DIR="/home/matrix/Programas/tics-tikets"
-DIST_DIR="$PROYECTO_DIR/dist/solicitudes"
+DIST_DIR="$PROYECTO_DIR/dist/solicitudes/browser"
 DESTINO="/var/www/solicitudes"
 BASE_HREF="/solicitudes/"
 
@@ -22,30 +22,28 @@ if [ ! -d "$DIST_DIR" ]; then
 fi
 
 # 4. Crear destino si no existe
-echo "📁 Creando destino en $DESTINO si no existe..."
 sudo mkdir -p "$DESTINO"
 
 # 5. Limpiar destino anterior
 echo "🧹 Limpiando archivos antiguos en $DESTINO"
 sudo rm -rf "$DESTINO"/*
 
-# 6. Copiar archivos al destino
-echo "📂 Copiando archivos compilados a $DESTINO"
+# 6. Copiar archivos
+echo "📂 Copiando archivos a $DESTINO"
 sudo cp -r "$DIST_DIR"/* "$DESTINO"/
 
-# 7. Asignar permisos (nginx como propietario)
-echo "🔐 Ajustando permisos para nginx"
+# 7. Asignar permisos (ajusta si usas otro usuario)
+echo "🔐 Ajustando permisos..."
 sudo chown -R nginx:nginx "$DESTINO"
 sudo chmod -R 755 "$DESTINO"
 
-# 8. Verificar configuración de Nginx
+# 8. Verificar y recargar nginx
 echo "🔁 Verificando configuración de Nginx..."
 sudo nginx -t || { echo "❌ Error en la configuración de Nginx"; exit 1; }
 
-# 9. Recargar Nginx
 echo "🔄 Recargando Nginx..."
 sudo systemctl reload nginx
 
-# 10. Final
+# 9. Mensaje final
 echo "✅ Despliegue completado correctamente. Visite:"
 echo "🌐 https://hgtecpan.duckdns.org/solicitudes/"
