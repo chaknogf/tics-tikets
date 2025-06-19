@@ -87,8 +87,7 @@
 
 <!-- Cards para pantallas pequeñas -->
 <div class="d-block d-md-none" *ngIf="!cargando">
-  <div class="card mb-2" *ngFor="let t of tikets" data-bs-theme="dark">
-    <form class="row g-2 mb-3">
+   <form class="row g-2 mb-3" data-bs-theme="dark">
   <div class="col-12 col-md-2">
     <input type="text" class="form-control" placeholder="Buscar ID" [(ngModel)]="buscarId" name="buscarId">
   </div>
@@ -116,12 +115,16 @@
       <option value="En Proceso">En Proceso</option>
       <option value="Cerrado">Cerrado</option>
     </select>
-    <button class="btn btn-primary w-100 mt-2" type="button" (click)="obtenerTikets()">
+  </div>
+   <button class="btn btn-primary w-100 mt-2" type="button" (click)="obtenerTikets()">
       Buscar
     </button>
-  </div>
+
 </form>
+  <div class="card mb-2" *ngFor="let t of tikets" data-bs-theme="dark">
+
     <div class="card-body">
+
       <h5 class="card-title mb-2">Ticket #{{ t.ticket }}</h5>
       <p class="mb-1"><strong>ID:</strong> {{ t.id }}</p>
       <p class="mb-1"><strong>Fecha:</strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
