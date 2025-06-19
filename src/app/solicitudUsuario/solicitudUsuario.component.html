@@ -9,7 +9,7 @@
 <div class="container">
   <h2 class="mb-4">Formulario de Solicitud</h2>
 
-  <form [formGroup]="form" (ngSubmit)="guardar()" class="bg-dark">
+  <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="guardar()" class="bg-dark">
     <div class="mb-3">
       <label for="ticket" class="form-label">Ticket:</label>
       <input id="ticket" type="text" class="form-control bg-dark text-white" formControlName="ticket" readonly />

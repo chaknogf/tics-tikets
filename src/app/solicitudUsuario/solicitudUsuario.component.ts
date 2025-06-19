@@ -9,6 +9,8 @@ import { ModalService } from '../services/modal.service';
 import { Subscription } from 'rxjs';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { alienIcon } from '../shared/icons';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-solicitudUsuario',
@@ -114,13 +116,19 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     }
   }
 
-  guardar() {
+  async guardar() {
     const ticket = this.form.getRawValue();
+
     if (ticket.id) {
-      this.update(ticket);
+      await this.update(ticket);
     } else {
-      this.create();
+      await this.create();
     }
+
+    await this.generarPDF();
+    setTimeout(() => {
+      window.location.reload(); // o this.form.reset();
+    }, 1000);
   }
 
   open() {
@@ -139,5 +147,31 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
+  async generarPDF() {
+    const elemento = document.getElementById('formulario-ticket');
+    if (!elemento) return;
+
+    const canvas = await html2canvas(elemento, {
+      backgroundColor: null,
+      scale: 2 // mejor calidad
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'px',
+      format: 'a4'
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    const nombre = this.form.get('ticket')?.value || 'ticket';
+    pdf.save(`${nombre}.pdf`);
+  }
 
 }
