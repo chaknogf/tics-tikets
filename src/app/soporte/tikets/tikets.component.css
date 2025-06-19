@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  padding: 1rem;
+  background: linear-gradient(145deg, #0d0d0d, #1a1a1a);
+  min-height: 100vh;
+  color: #f0f0f0;
+  font-family: 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  backdrop-filter: blur(6px);
+}
+
+/* Tabla contenedor */
+.tabla-tickets {
+  overflow-x: auto;
+  border-radius: 1rem;
+  background: rgba(30, 30, 30, 0.6);
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.15);
+  padding: 1rem;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Tabla */
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tabla th {
+  color: #0fffc1;
+  text-shadow: 0 0 5px #0fffc1;
+  font-weight: 600;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.tabla tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Prioridades */
+.prioridad-alta {
+  color: #ff4c4c;
+  font-weight: bold;
+  text-shadow: 0 0 5px #ff4c4c;
+}
+
+.prioridad-media {
+  color: #ffc107;
+  font-weight: bold;
+  text-shadow: 0 0 5px #ffc107;
+}
+
+.prioridad-baja {
+  color: #00e676;
+  font-weight: bold;
+  text-shadow: 0 0 5px #00e676;
+}
+
+/* Estados */
+.estado-abierto {
+  color: #0fffc1;
+  text-shadow: 0 0 5px #0fffc1;
+}
+
+.estado-en-proceso {
+  color: #ffc107;
+  text-shadow: 0 0 5px #ffc107;
+}
+
+.estado-cerrado {
+  color: #ff4c4c;
+  text-shadow: 0 0 5px #ff4c4c;
+}
+
+/* Botón de acción */
+button {
+  background: transparent;
+  border: 1px solid #0fffc1;
+  border-radius: 8px;
+  padding: 4px 8px;
+  color: #0fffc1;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: rgba(15, 255, 193, 0.1);
+  box-shadow: 0 0 10px #0fffc1;
+}
+
+/* Cargando */
+p {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 2rem;
+  color: #f0f0f0;
+  text-shadow: 0 0 5px #0fffc1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tabla th, .tabla td {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  button {
+    font-size: 0.9rem;
+    padding: 3px 6px;
+  }
+}

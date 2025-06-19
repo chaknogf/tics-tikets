@@ -1,0 +1,155 @@
+<nav class="navbar navbar-expand-lg bg-primary mb-4" data-bs-theme="dark">
+  <div class="container-fluid">
+    <button class="btn btn-outline-dark ms-auto" (click)="open()">
+      <span [innerHTML]="alienIcon"></span>
+    </button>
+  </div>
+</nav>
+
+<div class="container">
+  <h2 class="mb-4">Formulario de Solicitud</h2>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="bg-dark">
+    <div class="mb-3">
+      <label for="ticket" class="form-label">Ticket:</label>
+      <input id="ticket" type="text" class="form-control bg-dark text-white" formControlName="ticket" readonly />
+    </div>
+
+    <div class="mb-3">
+      <label for="fecha_solicitud" class="form-label">Fecha de Solicitud:</label>
+      <input id="fecha_solicitud" type="date" class="form-control bg-dark text-white" formControlName="fecha_solicitud" />
+      <div *ngIf="form.get('fecha_solicitud')?.invalid && form.get('fecha_solicitud')?.touched">
+        <small class="text-danger">Campo requerido.</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="nombre_solicitante" class="form-label">Nombre del Solicitante:</label>
+      <input id="nombre_solicitante" type="text" class="form-control bg-dark text-white" formControlName="nombre_solicitante" />
+      <div *ngIf="form.get('nombre_solicitante')?.invalid && form.get('nombre_solicitante')?.touched">
+        <small class="text-danger">Campo requerido.</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="servicio" class="form-label">Servicio:</label>
+      <input id="servicio" type="text" class="form-control bg-dark text-white" formControlName="servicio" />
+      <div *ngIf="form.get('servicio')?.invalid && form.get('servicio')?.touched">
+        <small class="text-danger">Campo requerido.</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="detalle" class="form-label">Detalle:</label>
+      <textarea id="detalle" class="form-control bg-dark text-white" formControlName="detalle"></textarea>
+      <div *ngIf="form.get('detalle')?.invalid && form.get('detalle')?.touched">
+        <small class="text-danger">Campo requerido.</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label d-block mb-2">Prioridad:</label>
+      <div class="btn-group w-100 flex-wrap" role="group" aria-label="Prioridad">
+        <button type="button"
+          class="btn mb-2 flex-fill"
+          [ngClass]="{
+            'btn-success': form.get('prioridad')?.value === 'Baja',
+            'btn-outline-success': form.get('prioridad')?.value !== 'Baja'
+          }"
+          (click)="form.get('prioridad')?.setValue('Baja')">
+          Baja
+        </button>
+        <button type="button"
+          class="btn mb-2 flex-fill"
+          [ngClass]="{
+            'btn-warning': form.get('prioridad')?.value === 'Media',
+            'btn-outline-warning': form.get('prioridad')?.value !== 'Media'
+          }"
+          (click)="form.get('prioridad')?.setValue('Media')">
+          Media
+        </button>
+        <button type="button"
+          class="btn mb-2 flex-fill"
+          [ngClass]="{
+            'btn-danger': form.get('prioridad')?.value === 'Alta',
+            'btn-outline-danger': form.get('prioridad')?.value !== 'Alta'
+          }"
+          (click)="form.get('prioridad')?.setValue('Alta')">
+          Alta
+        </button>
+      </div>
+      <div *ngIf="form.get('prioridad')?.invalid && form.get('prioridad')?.touched">
+        <small class="text-danger">Campo requerido.</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label d-block mb-2">Atención en:</label>
+      <div class="btn-group w-100 flex-wrap" role="group" aria-label="Atención en">
+      <button type="button"
+          class="btn mb-2 flex-fill"
+          [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Menores', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Menores'}"
+          (click)="form.get('atencion_en')?.setValue('Menores')">
+        Trabajos Menores
+      </button>
+      <button type="button"
+          class="btn mb-2 flex-fill"
+          [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Computo', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Computo'}"
+          (click)="form.get('atencion_en')?.setValue('Computo')">
+        Equipo de Computo
+      </button>
+      <button type="button"
+          class="btn mb-2 flex-fill"
+          [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Red', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Red'}"
+          (click)="form.get('atencion_en')?.setValue('Red')">
+        Redes y Telecomunicaciones
+      </button>
+      <button type="button"
+          class="btn mb-2 flex-fill"
+          [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Software', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Software'}"
+          (click)="form.get('atencion_en')?.setValue('Software')">
+        Software
+      </button>
+      <button type="button"
+          class="btn mb-2 flex-fill"
+          [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Diseño', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Diseño'}"
+          (click)="form.get('atencion_en')?.setValue('Diseño')">
+        Diseños Audiovsisuales
+      </button>
+      </div>
+      <div *ngIf="form.get('atencion_en')?.invalid && form.get('atencion_en')?.touched">
+      <small class="text-danger">Campo requerido.</small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="numero_bien" class="form-label">Número de Bien:</label>
+      <input id="numero_bien" type="text" class="form-control bg-dark text-white text-uppercase" formControlName="numero_bien" />
+    </div>
+
+    <div class="mb-3">
+      <label for="descripcion_equipo" class="form-label">Descripción del Equipo:</label>
+      <input id="descripcion_equipo" type="text" class="form-control bg-dark text-white" formControlName="descripcion_equipo" />
+    </div>
+
+    <div *ngIf="mensaje" class="alert alert-info">
+      {{ mensaje }}
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Guardar</button>
+  </form>
+</div>
+
+<div class="modal fade show d-block " tabindex="-1" *ngIf="visibleFn()" style="background: rgba(0,0,0,0.5);" data-bs-theme="dark">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <button type="button" class="btn-close ms-auto mt-2 me-2" aria-label="Close" (click)="close()"></button>
+      <div class="modal-body">
+        <app-login class="login-modal-wrapper"></app-login>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="close()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

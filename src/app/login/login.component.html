@@ -1,0 +1,19 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100" data-bs-theme="dark">
+  <div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <h3 class="card-title text-center mb-3">Login</h3>
+      <p class="text-center text-muted mb-4">Ingresa tus credenciales</p>
+      <div class="mb-3">
+        <input type="text" class="form-control" formControlName="username" placeholder="Usuario" autocomplete="off" />
+      </div>
+      <div class="mb-3">
+        <input type="password" class="form-control" formControlName="password" placeholder="Contraseña" />
+      </div>
+      <button class="btn btn-primary w-100" type="submit">Iniciar Sesión</button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="loading === true" class="alert alert-info text-center mt-3">
+  Cargando acceso...
+</div>
