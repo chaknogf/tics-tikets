@@ -418,7 +418,10 @@ figure {
 img,
 svg {
   vertical-align: middle;
+
 }
+
+
 
 table {
   caption-side: bottom;
@@ -448,6 +451,7 @@ th {
   border-style: solid;
   border-width: 0;
 }
+
 
 label {
   display: inline-block;
@@ -497,6 +501,9 @@ button,
 [type=reset],
 [type=submit] {
   -webkit-appearance: button;
+  appearance: button;
+  appearance: button;
+
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
@@ -554,6 +561,7 @@ legend + * {
 
 [type=search] {
   -webkit-appearance: textfield;
+  appearance: textfield;
   outline-offset: -2px;
 }
 
@@ -576,11 +584,14 @@ legend + * {
 ::-webkit-file-upload-button {
   font: inherit;
   -webkit-appearance: button;
+  appearance: button;
 }
 
 ::file-selector-button {
   font: inherit;
   -webkit-appearance: button;
+  appearance: button;
+   appearance: button;
 }
 
 output {
@@ -12289,3 +12300,19 @@ thead th {
 .modal-content {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
+
+td {
+  padding: 0.5rem important!;
+}
+
+svg{
+  margin: 0.2rem important!;
+  padding: 0.2rem important!;
+}
+span {
+  margin: 0.2rem;
+  padding: 0.2rem;
+
+}
+
+

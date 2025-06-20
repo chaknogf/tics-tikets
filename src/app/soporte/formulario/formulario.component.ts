@@ -19,6 +19,7 @@ import { alienIcon } from '../../shared/icons';
 export class FormularioComponent implements OnInit {
 
   form: FormGroup;
+  user: string = '';
   mensaje = '';
   visible = signal(false);
   enEdicion = false;
@@ -64,6 +65,7 @@ export class FormularioComponent implements OnInit {
 
   private inicializarFormulario(): FormGroup {
     return this.fb.group({
+      id: [null],
       ticket: [''],
       fecha_solicitud: ['', Validators.required],
       nombre_solicitante: ['', Validators.required],
@@ -74,8 +76,8 @@ export class FormularioComponent implements OnInit {
       numero_bien: [''],
       descripcion_equipo: [''],
       insumos_utilizados: [''],
-      fecha_atencion: [null],
-      hora_atencion: [null],
+      fecha_atencion: [''],  // Si es string o ISODate
+      hora_atencion: [''],   // Asegúrate que sea string si espera eso
       nota: [''],
       estado: [''],
       usuario: [''],
@@ -124,10 +126,17 @@ export class FormularioComponent implements OnInit {
     const limpio: any = {};
     for (const key in payload) {
       const valor = payload[key];
-      if (valor === '' || valor == null) continue;
-      limpio[key] = (typeof valor === 'object' && !Array.isArray(valor))
-        ? this.limpiarPayload(valor)
-        : valor;
+
+      if (valor === undefined) continue;
+
+      if (valor === null) {
+        // Si el valor es null, lo convertimos a string vacío para campos de texto
+        limpio[key] = '';
+      } else if (typeof valor === 'object' && !Array.isArray(valor)) {
+        limpio[key] = this.limpiarPayload(valor);
+      } else {
+        limpio[key] = valor;
+      }
     }
     return limpio;
   }
@@ -135,6 +144,31 @@ export class FormularioComponent implements OnInit {
   async guardar(): Promise<void> {
     const timestamp = new Date().toISOString();
     const metadata: Metadata = { usuario: this.usuarioActual, registro: timestamp };
+
+    // Asignar metadatos nuevos
+    const metadatosControl = this.form.get('metadatos') as FormGroup;
+    const nuevaClave = `r${Object.keys(metadatosControl.controls).length}`;
+    metadatosControl.addControl(
+      nuevaClave,
+      this.fb.group({
+        usuario: metadata.usuario,
+        registro: metadata.registro
+      })
+    );
+
+    // Establecer fecha y hora actuales si están vacíos
+    const now = new Date();
+    const fechaISO = now.toISOString().slice(0, 10); // yyyy-MM-dd
+    const hora = now.toTimeString().slice(0, 5);     // HH:mm
+
+    if (!this.form.get('fecha_atencion')?.value) {
+      this.form.get('fecha_atencion')?.setValue(fechaISO);
+    }
+
+    if (!this.form.get('hora_atencion')?.value) {
+      this.form.get('hora_atencion')?.setValue(hora);
+    }
+
     const raw = this.form.getRawValue();
 
     if (this.enEdicion && raw.id) {
@@ -142,6 +176,8 @@ export class FormularioComponent implements OnInit {
     } else {
       await this.create();
     }
+
+    this.router.navigate(['/dash']);
   }
 
   private async create(): Promise<void> {

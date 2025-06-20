@@ -1,10 +1,11 @@
+import { editorIcon, detalleIcon } from './../../shared/icons';
 import { Component, OnInit, NgModule } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Ticket } from '../../interface/interfaces';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 
 
 @Component({
@@ -24,11 +25,22 @@ export class TiketsComponent implements OnInit {
   public buscarPrioridad: string = '';
   public buscarId: string = '';
   cargando: boolean = false;
+
+  private sanitizarSvg(svg: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
+
+  editorIcon: SafeHtml = editorIcon;
+  detalleIcon: SafeHtml = detalleIcon;
   constructor(
     private api: ApiService,
     private router: Router,
     private sanitizer: DomSanitizer
-  ) { }
+  ) {
+    this.editorIcon = this.sanitizarSvg(editorIcon);
+    this.detalleIcon = this.sanitizarSvg(detalleIcon);
+
+  }
 
   ngOnInit() {
     this.obtenerTikets();

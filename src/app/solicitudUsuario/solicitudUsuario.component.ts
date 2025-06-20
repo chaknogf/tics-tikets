@@ -57,7 +57,7 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
       fecha_atencion: [null],
       hora_atencion: [null],
       nota: [''],
-      estado: [''],
+      estado: ['Abierto'],
       usuario: [''],
       metadatos: this.fb.group({
         r0: this.fb.group({
@@ -150,12 +150,29 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
   }
 
   async generarPDF() {
-    const elemento = document.getElementById('formulario-ticket');
-    if (!elemento) return;
+    const original = document.getElementById('formulario-ticket');
+    if (!original) return;
 
-    const canvas = await html2canvas(elemento, {
-      backgroundColor: null,
-      scale: 2 // mejor calidad
+    // Clonar el formulario
+    const copia = original.cloneNode(true) as HTMLElement;
+
+    // Aplicar estilos "claros" a la copia
+    copia.style.backgroundColor = 'white';
+    copia.style.color = 'black';
+    copia.classList.remove('bg-dark', 'text-light'); // por si hay clases Bootstrap
+    copia.setAttribute('data-bs-theme', 'light');
+
+    // Puedes eliminar elementos no deseados del PDF
+    copia.querySelectorAll('.no-pdf')?.forEach(el => el.remove());
+
+    // Insertar copia oculta en el DOM
+    copia.style.position = 'fixed';
+    copia.style.left = '-9999px';
+    document.body.appendChild(copia);
+
+    const canvas = await html2canvas(copia, {
+      backgroundColor: '#ffffff',
+      scale: 2
     });
 
     const imgData = canvas.toDataURL('image/png');
@@ -167,13 +184,27 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     });
 
     const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const imgHeight = (canvas.height * pageWidth) / canvas.width;
 
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeight);
+
     const nombre = this.form.get('ticket')?.value || 'ticket';
-    pdf.save(`${nombre}.pdf`);
-  }
 
+    try {
+      const blob = pdf.output('blob');
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${nombre}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('❌ Error al generar el PDF:', error);
+    }
+
+    // Eliminar la copia del DOM
+    document.body.removeChild(copia);
+  }
 }

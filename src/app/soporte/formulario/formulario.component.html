@@ -113,13 +113,30 @@
   <!-- Estado -->
   <div class="mb-3">
     <label for="estado" class="form-label">Estado:</label>
-    <input id="estado" type="text" class="form-control" formControlName="estado" />
+    <div class="btn-group d-flex flex-wrap flex-md-nowrap gap-2" role="group" aria-label="Estado">
+      <button type="button" class="btn btn-outline-info text-light flex-fill"
+        [class.active]="form.get('estado')?.value === 'Abierto'"
+        (click)="form.get('estado')?.setValue('Abierto')">
+        Abierto
+      </button>
+      <button type="button" class="btn btn-outline-success flex-fill"
+        [class.active]="form.get('estado')?.value === 'En Proceso'"
+        (click)="form.get('estado')?.setValue('En Proceso')">
+        En Proceso
+      </button>
+      <button type="button" class="btn btn-outline-danger flex-fill"
+        [class.active]="form.get('estado')?.value === 'Cerrado'"
+        (click)="form.get('estado')?.setValue('Cerrado')">
+        Cerrado
+      </button>
+    </div>
+    <input type="hidden" formControlName="estado" />
   </div>
 
   <!-- Usuario -->
   <div class="mb-3">
     <label for="usuario" class="form-label">Usuario:</label>
-    <input id="usuario" type="text" class="form-control" formControlName="usuario" />
+    <input id="usuario" type="text" class="form-control" formControlName="usuario" [value]="usuarioActual" />
   </div>
 
   <!-- Metadatos (r0) -->

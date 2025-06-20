@@ -34,55 +34,63 @@
       Buscar
     </button>
 </form>
-  <table class="table table-dark table-striped table-hover table-bordered align-middle mb-0">
-    <thead>
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Ticket</th>
-        <th scope="col">Fecha</th>
-        <th scope="col">Servicio</th>
-        <th scope="col">Prioridad</th>
-        <th scope="col">Atención en</th>
-        <th scope="col">Estado</th>
-        <th scope="col">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let t of tikets">
-        <td>{{ t.id }}</td>
-        <td>{{ t.ticket }}</td>
-        <td>{{ t.fecha_solicitud | date: 'shortDate' }}</td>
-        <td>{{ t.servicio }}</td>
-        <td>
-          <span [ngClass]="{
-            'badge bg-danger': t.prioridad === 'Alta',
-            'badge bg-warning text-dark': t.prioridad === 'Media',
-            'badge bg-success': t.prioridad === 'Baja'
-          }">
-            {{ t.prioridad || 'N/A' }}
-          </span>
-        </td>
-        <td>{{ t.atencion_en }}</td>
-        <td>
-          <span [ngClass]="{
-            'badge bg-primary': t.estado === 'Abierto',
-            'badge bg-info text-dark': t.estado === 'En Proceso',
-            'badge bg-secondary': t.estado === 'Cerrado'
-          }">
-            {{ t.estado || 'Sin estado' }}
-          </span>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-outline-light me-1 mb-1" (click)="editar(t.id)" title="Editar">
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-info mb-1" title="Ver">
-            <i class="bi bi-eye"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<table class="table table-sm table-dark table-striped table-hover table-bordered align-middle mb-0">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Ticket</th>
+      <th>Fecha</th>
+      <th>Servicio</th>
+      <th>Prioridad</th>
+      <th>Atención en</th>
+      <th>Estado</th>
+      <th class="text-center">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let t of tikets"
+        [ngClass]="{
+          'bg-danger': t.prioridad === 'Alta',
+          'bg-info': t.prioridad === 'Media',
+          'bg-primary': t.prioridad === 'Baja'
+        }">
+      <td>{{ t.id }}</td>
+      <td>{{ t.ticket }}</td>
+      <td>{{ t.fecha_solicitud | date: 'shortDate' }}</td>
+      <td>{{ t.servicio }}</td>
+      <td>
+        <p class="mb-0">
+          {{ t.prioridad || 'N/A' }}
+        </p>
+      </td>
+      <td>{{ t.atencion_en }}</td>
+      <td [ngClass]="{
+            'table-danger text-light': t.estado === 'Abierto',
+            'table-info text-dark': t.estado === 'En Proceso',
+            'table-dark': t.estado === 'Cerrado'
+          }" style="font-size: 0.95em;">
+        <span>
+          {{ t.estado || 'Sin estado' }}
+        </span>
+      </td>
+      <td class="text-center" style="width: 80px;">
+        <div class="d-flex justify-content-center align-items-center gap-1">
+          <span
+            class="svg-icon m-0 p-0"
+            [innerHTML]="editorIcon"
+            (click)="editar(t.id)"
+            title="Editar"
+          ></span>
+          <span
+            class="svg-icon m-0 p-0"
+            [innerHTML]="detalleIcon"
+            title="Detalles"
+          ></span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 </div>
 
 <!-- Cards para pantallas pequeñas -->
@@ -132,9 +140,9 @@
       <p class="mb-1">
         <strong>Prioridad:</strong>
         <span [ngClass]="{
-          'badge bg-danger': t.prioridad === 'Alta',
-          'badge bg-warning text-dark': t.prioridad === 'Media',
-          'badge bg-success': t.prioridad === 'Baja'
+          'badge bg-danger rounded': t.prioridad === 'Alta',
+          'badge bg-warning text-dark rounded': t.prioridad === 'Media',
+          'badge bg-success rounded': t.prioridad === 'Baja'
         }">
           {{ t.prioridad || 'N/A' }}
         </span>
@@ -150,12 +158,8 @@
           {{ t.estado || 'Sin estado' }}
         </span>
       </p>
-      <button class="btn btn-sm btn-outline-light me-1 mb-1" (click)="editar(t.id)" title="Editar">
-        <i class="bi bi-pencil"></i>
-      </button>
-      <button class="btn btn-sm btn-outline-info mb-1" title="Ver">
-        <i class="bi bi-eye"></i>
-      </button>
+      <span [innerHTML]="editorIcon" (click)="editar(t.id)"></span>
+      <span [innerHTML]="detalleIcon"></span>
     </div>
   </div>
 </div>

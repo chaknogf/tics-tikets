@@ -88,31 +88,31 @@
       <label class="form-label d-block mb-2">Atención en:</label>
       <div class="btn-group w-100 flex-wrap" role="group" aria-label="Atención en">
       <button type="button"
-          class="btn mb-2 flex-fill"
+          class="btn mb-2 flex-fill text-white"
           [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Menores', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Menores'}"
           (click)="form.get('atencion_en')?.setValue('Menores')">
         Trabajos Menores
       </button>
       <button type="button"
-          class="btn mb-2 flex-fill"
+          class="btn mb-2 flex-fill text-white"
           [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Computo', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Computo'}"
           (click)="form.get('atencion_en')?.setValue('Computo')">
         Equipo de Computo
       </button>
       <button type="button"
-          class="btn mb-2 flex-fill"
+          class="btn mb-2 flex-fill text-white"
           [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Red', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Red'}"
           (click)="form.get('atencion_en')?.setValue('Red')">
         Redes y Telecomunicaciones
       </button>
       <button type="button"
-          class="btn mb-2 flex-fill"
+          class="btn mb-2 flex-fill text-white"
           [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Software', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Software'}"
           (click)="form.get('atencion_en')?.setValue('Software')">
         Software
       </button>
       <button type="button"
-          class="btn mb-2 flex-fill"
+          class="btn mb-2 flex-fill text-white"
           [ngClass]="{'btn-primary': form.get('atencion_en')?.value === 'Diseño', 'btn-outline-primary': form.get('atencion_en')?.value !== 'Diseño'}"
           (click)="form.get('atencion_en')?.setValue('Diseño')">
         Diseños Audiovsisuales
