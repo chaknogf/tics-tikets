@@ -12624,7 +12624,7 @@ body {
 }
 
 body {
-  background-image: url('app/assets/fondo-montaña.png');
+  background-image: url('assets/fondo-montaña.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
