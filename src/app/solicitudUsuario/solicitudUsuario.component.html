@@ -1,16 +1,16 @@
-<nav class="navbar navbar-expand-lg bg-primary mb-4" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-info mb-4" >
   <div class="container-fluid">
-    <button class="btn  ms-auto" (click)="open()">
-      <span [innerHTML]="pirateIcon"></span>
+    <button class="btn  ms-auto text-shadow" (click)="open()">
+      <span class="svg-shadow" [innerHTML]="pirateIcon"></span>
       Specter
     </button>
   </div>
 </nav>
 
-<div class="container">
+<div class="container_ p-3">
   <h2 class="mb-4">Formulario de Solicitud</h2>
 
-  <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="guardar()" class="bg-dark">
+  <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="guardar()" class="bg-info p-2 bg-opacity-10 rounded ">
     <div class="mb-3">
       <label for="ticket" class="form-label">Ticket:</label>
       <input id="ticket" type="text" class="form-control bg-dark text-white" formControlName="ticket" readonly />
@@ -137,7 +137,7 @@
       {{ mensaje }}
     </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Guardar</button>
+    <button type="submit" class="btn btn-primary w-75" [disabled]="form.invalid">Guardar</button>
   </form>
 </div>
 

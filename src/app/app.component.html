@@ -1,11 +1,11 @@
-<div class="bg-dark min-vh-100 text-light">
+<div class="bg-opacity-90 bg-dark min-vh-100 text-light">
   <app-navbar
     [usuario]="username"
     [rol]="role"
     (cerrarSesion)="desconectarUsuario()"
     *ngIf="estaAutenticado"
     [class.hidden]="modalActivo"
-    class="navbar navbar-expand-lg navbar-dark bg-dark"
+    class="navbar navbar-expand-lg navbar-dark "
   ></app-navbar>
 
   <div class="container-fluid px-3 py-3 py-md-4"></div>
