@@ -9,7 +9,19 @@
 
 <div class="container_ p-3">
   <h2 class="mb-4">Formulario de Solicitud</h2>
-
+  <div class="mb-4 bg-light p-2 bg-opacity-100 rounded">
+    <form class="d-flex" (ngSubmit)="obtenerTicket()">
+      <input
+        type="text"
+        class="form-control me-2"
+        placeholder="Buscar ticket"
+        [(ngModel)]="buscarTicket"
+        name="buscarTicket"
+        autocomplete="off"
+      />
+      <button type="submit" class="btn btn-outline-info">Buscar</button>
+    </form>
+  </div>
   <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="guardar()" class="bg-info p-2 bg-opacity-10 rounded ">
     <div class="mb-3">
       <label for="ticket" class="form-label">Ticket:</label>
@@ -141,16 +153,17 @@
   </form>
 </div>
 
-<div class="modal fade show d-block " tabindex="-1" *ngIf="visibleFn()" style="background: rgba(0,0,0,0.5);" data-bs-theme="dark">
+<div class="modal fade show d-block " tabindex="-1" *ngIf="visibleFn()" style="background: rgba(0, 0, 0, 0.823);" >
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content bg-dark bg-opacity-25 text-white">
       <button type="button" class="btn-close ms-auto mt-2 me-2" aria-label="Close" (click)="close()"></button>
-      <div class="modal-body">
-        <app-login class="login-modal-wrapper"></app-login>
-      </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="close()">Cerrar</button>
       </div>
+      <div class="modal-body">
+        <app-login class="login-modal-wrapper"></app-login>
+      </div>
+
     </div>
   </div>
 </div>

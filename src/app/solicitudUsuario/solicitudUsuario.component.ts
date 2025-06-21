@@ -11,6 +11,7 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-brows
 import { alienIcon, pirateIcon } from '../shared/icons';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-solicitudUsuario',
@@ -25,6 +26,7 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
   mensaje = '';
   visible = signal(false);
   private sub: Subscription;
+  buscarTicket: string = '';
 
   private sanitizarSvg(svg: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
@@ -37,7 +39,8 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     private api: ApiService,
     private readonly fb: FormBuilder,
     private modalService: ModalService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router
   ) {
     this.alienIcon = this.sanitizarSvg(alienIcon);
     this.pirateIcon = this.sanitizarSvg(pirateIcon);
@@ -207,4 +210,35 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     // Eliminar la copia del DOM
     document.body.removeChild(copia);
   }
+
+  async obtenerTicket(): Promise<void> {
+    const ticketQuery = this.buscarTicket?.trim();
+
+    if (!ticketQuery) {
+      console.warn('⚠️ Debes ingresar un número de ticket.');
+      return;
+    }
+
+    const filtros = {
+      ticket: ticketQuery,
+      skip: 0,
+      limit: 1
+    };
+
+    try {
+      const response = await this.api.getTickets(filtros);
+      console.log(response);
+      if (Array.isArray(response) && response.length > 0) {
+        const idTicket = response[0].id;
+        console.log('Ticket encontrado:', response[0]);
+        this.router.navigate(['/detail', idTicket]);
+      } else {
+        console.warn('⚠️ No se encontró el ticket especificado.');
+      }
+
+    } catch (error) {
+      console.error('❌ Error al obtener el ticket:', error);
+    }
+  }
+
 }

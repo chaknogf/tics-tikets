@@ -1,5 +1,5 @@
 <!-- Tabla para pantallas medianas en adelante -->
-<div class="table-responsive d-none d-md-block m-1 p-1" *ngIf="!cargando; else cargandoTemplate" data-bs-theme="dark">
+<div class="table-responsive d-none d-md-block m-1 p-1" *ngIf="!cargando; else cargandoTemplate" >
 
 <form class="row g-2 mb-3">
   <div class="col-12 col-md-2">
@@ -89,8 +89,10 @@
           <span
             class="svg-icon m-0 p-0"
             [innerHTML]="detalleIcon"
+            (click)="detalle(t.id)"
             title="Detalles"
-          ></span>
+          >
+        </span>
         </div>
       </td>
     </tr>
@@ -99,8 +101,8 @@
 </div>
 
 <!-- Cards para pantallas pequeñas -->
-<div class="d-block d-md-none" *ngIf="!cargando">
-   <form class="row g-2 mb-3" data-bs-theme="dark">
+<div class="d-block d-md-none m-2" *ngIf="!cargando">
+   <form class="row g-1 mb-2" data-bs-theme="">
   <div class="col-12 col-md-2">
     <input type="text" class="form-control" placeholder="Buscar ID" [(ngModel)]="buscarId" name="buscarId">
   </div>
@@ -110,64 +112,128 @@
   <div class="col-12 col-md-2">
     <input type="text" class="form-control" placeholder="Buscar Servicio" [(ngModel)]="buscarServicio" name="buscarServicio">
   </div>
-  <div class="col-12 col-md-2">
-    <input type="text" class="form-control" placeholder="Atención en" [(ngModel)]="buscarAtencionEn" name="buscarAtencionEn">
+  <div class="col-12 d-flex flex-wrap gap-1">
+    <button type="button" class="btn btn-outline-secondary btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarAtencionEn === ''}" (click)="buscarAtencionEn = ''">
+      Atención en
+    </button>
+    <button type="button" class="btn btn-outline-primary btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarAtencionEn === 'Menores'}" (click)="buscarAtencionEn = 'Menores'">
+      Menores
+    </button>
+    <button type="button" class="btn btn-outline-info btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarAtencionEn === 'Computo'}" (click)="buscarAtencionEn = 'Computo'">
+      Computo
+    </button>
+    <button type="button" class="btn btn-outline-warning btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarAtencionEn === 'Red'}" (click)="buscarAtencionEn = 'Red'">
+      Red
+    </button>
+    <button type="button" class="btn btn-outline-success btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarAtencionEn === 'Software'}" (click)="buscarAtencionEn = 'Software'">
+      Software
+    </button>
+    <button type="button" class="btn btn-outline-light btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarAtencionEn === 'Diseño'}" (click)="buscarAtencionEn = 'Diseño'">
+      Diseño
+    </button>
   </div>
-  <div class="col-12 col-md-2">
-    <select class="form-select" [(ngModel)]="buscarPrioridad" name="buscarPrioridad">
-      <option value="">Prioridad</option>
-      <option value="Alta">Alta</option>
-      <option value="Media">Media</option>
-      <option value="Baja">Baja</option>
-    </select>
+  <div class="col-12 flex-wrap d-flex gap-1">
+    <button type="button" class="btn btn-outline-secondary btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarPrioridad === ''}" (click)="buscarPrioridad = ''">
+      Prioridad
+    </button>
+    <button type="button" class="btn btn-outline-danger btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarPrioridad === 'Alta'}" (click)="buscarPrioridad = 'Alta'">
+      Alta
+    </button>
+    <button type="button" class="btn btn-outline-info btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarPrioridad === 'Media'}" (click)="buscarPrioridad = 'Media'">
+      Media
+    </button>
+    <button type="button" class="btn btn-outline-success btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarPrioridad === 'Baja'}" (click)="buscarPrioridad = 'Baja'">
+      Baja
+    </button>
   </div>
-  <div class="col-12 col-md-2">
-    <select class="form-select" [(ngModel)]="buscarEstado" name="buscarEstado">
-      <option value="">Estado</option>
-      <option value="Abierto">Abierto</option>
-      <option value="En Proceso">En Proceso</option>
-      <option value="Cerrado">Cerrado</option>
-    </select>
+  <div class="col-12 flex-wrap d-flex gap-1">
+    <button type="button" class="btn btn-outline-secondary btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarEstado === ''}" (click)="buscarEstado = ''">
+      Estado
+    </button>
+    <button type="button" class="btn btn-outline-primary btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarEstado === 'Abierto'}" (click)="buscarEstado = 'Abierto'">
+      Abierto
+    </button>
+    <button type="button" class="btn btn-outline-info btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarEstado === 'En Proceso'}" (click)="buscarEstado = 'En Proceso'">
+      En Proceso
+    </button>
+    <button type="button" class="btn btn-outline-success btn-sm flex-fill rounded-2"
+      [ngClass]="{'active': buscarEstado === 'Cerrado'}" (click)="buscarEstado = 'Cerrado'">
+      Cerrado
+    </button>
   </div>
    <button class="btn btn-primary w-100 mt-2" type="button" (click)="obtenerTikets()">
       Buscar
     </button>
 
-</form>
-  <div class="card mb-2" *ngFor="let t of tikets" data-bs-theme="dark">
+   </form>
+  <div class="card mb-1 p-1 rounded-3 border border-primary" *ngFor="let t of tikets" >
 
-    <div class="card-body">
+    <div class="card-body rounded-3"
+      [ngClass]="{
+        'bg-danger text-light': t.estado === 'Abierto',
+        'bg-info text-dark': t.estado === 'En Proceso',
+        'bg-dark bg-opacity-75 text-success': t.estado === 'Cerrado'
+      }">
+      <div class="row">
+        <div class="col-6 mb-2">
+          <h5 class="card-title mb-2">Ticket #{{ t.ticket }}</h5>
+          <p class="mb-1"><strong>ID:</strong> {{ t.id }}</p>
+          <p class="mb-1"><strong>Fecha:</strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
+          <p class="mb-1"><strong>Servicio:</strong> {{ t.servicio }}</p>
+        </div>
+        <div class="col-6 mb-2">
+          <p class="mb-1">
+            <strong>Prioridad:</strong>
+            <span [ngClass]="{
+                      'card bg-warning text-dark rounded h4': (t.prioridad === 'Alta' && t.estado === 'Abierto'),
+                      'bg-warning text-dark h4 rounded': (t.prioridad === 'Media' && t.estado === 'Abierto' || t.prioridad === 'Media' && t.estado === 'En Proceso'),
+                      'bg-success rounded': (t.prioridad === 'Baja' && t.estado === 'Abierto')
+                    }">
+                      {{ t.prioridad || 'N/A' }}
+                    </span>
+          </p>
+          <p class="mb-1"><strong>Atención en:</strong> {{ t.atencion_en }}</p>
+          <p class="mb-2">
+            <strong>Estado:</strong>
+            <span [ngClass]="{
+              'badge bg-primary': t.estado === 'Abierto',
+              'badge bg-info text-dark': t.estado === 'En Proceso',
+              'badge bg-secondary': t.estado === 'Cerrado'
+            }">
+              {{ t.estado || 'Sin estado' }}
+            </span>
+          </p>
+          <p class="mb-1"><strong>Fecha de Atención:</strong> {{ t.fecha_atencion | date: 'shortDate' }}</p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end align-items-center">
+        <button class="btn btn-outline-light btn-sm me-2 d-flex align-items-center justify-content-center rounded-2" title="Editar Ticket" (click)="editar(t.id)">
+          <span [innerHTML]="editorIcon"></span>
+          Editar
+        </button>
+        <button class="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center rounded-2" title="Ver Detalles del Ticket" (click)="detalle(t.id)">
+          <span [innerHTML]="detalleIcon"></span>
+          Detalle
+        </button>
+      </div>
 
-      <h5 class="card-title mb-2">Ticket #{{ t.ticket }}</h5>
-      <p class="mb-1"><strong>ID:</strong> {{ t.id }}</p>
-      <p class="mb-1"><strong>Fecha:</strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
-      <p class="mb-1"><strong>Servicio:</strong> {{ t.servicio }}</p>
-      <p class="mb-1">
-        <strong>Prioridad:</strong>
-        <span [ngClass]="{
-          'badge bg-danger rounded': t.prioridad === 'Alta',
-          'badge bg-warning text-dark rounded': t.prioridad === 'Media',
-          'badge bg-success rounded': t.prioridad === 'Baja'
-        }">
-          {{ t.prioridad || 'N/A' }}
-        </span>
-      </p>
-      <p class="mb-1"><strong>Atención en:</strong> {{ t.atencion_en }}</p>
-      <p class="mb-2">
-        <strong>Estado:</strong>
-        <span [ngClass]="{
-          'badge bg-primary': t.estado === 'Abierto',
-          'badge bg-info text-dark': t.estado === 'En Proceso',
-          'badge bg-secondary': t.estado === 'Cerrado'
-        }">
-          {{ t.estado || 'Sin estado' }}
-        </span>
-      </p>
-      <span [innerHTML]="editorIcon" (click)="editar(t.id)"></span>
-      <span [innerHTML]="detalleIcon"></span>
+    </div>
     </div>
   </div>
-</div>
+
 
 <ng-template #cargandoTemplate>
   <div class="alert alert-dark d-flex align-items-center" role="alert">

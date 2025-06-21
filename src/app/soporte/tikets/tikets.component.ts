@@ -74,5 +74,10 @@ export class TiketsComponent implements OnInit {
     this.router.navigate(['/ticket', id]);
   }
 
+  detalle(id: number) {
+    //console.log('🔍 Detalle del ticket con ID:', id);
+    this.router.navigate(['/detail', id]);
+  }
+
 
 }
