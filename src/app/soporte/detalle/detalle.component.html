@@ -34,23 +34,35 @@
     <h5 class="border-start border-4 ps-2 text-primary">Insumos Utilizados</h5>
     <p class="bg-light bg-opacity-50 p-3 border rounded-3">{{ ticket.insumos_utilizados || 'N/A' }}</p>
   </div>
+  <div class="mb-4">
+    <h5 class="border-start border-4 ps-2 text-primary">Nota de trabajo:</h5>
+    <p class="bg-light bg-opacity-50 p-3 border rounded-3">{{ ticket.nota }}</p>
+  </div>
+
+
+
+
+
 
   <div class="mb-4">
     <h5 class="border-start border-4 ps-2 text-primary">Atención Realizada</h5>
     <div class="row">
       <div class="col-md-6"><strong>Fecha:</strong> {{ ticket.fecha_atencion | date:'fullDate' }}</div>
-      <div class="col-md-6"><strong>Hora:</strong> {{ ticket.hora_atencion | date:'shortTime' }}</div>
-      <div class="col-12 mt-2">
-        <strong>Nota:</strong>
-        <p class="bg-light bg-opacity-50 p-2 border rounded-3">{{ ticket.nota }}</p>
-      </div>
+      <div class="col-md-6">
+  <strong>Hora:</strong> {{ getHoraComoFecha() | date:'shortTime' }}
+</div>
+
     </div>
   </div>
 
-  <div class="mt-5">
+   <div class="mt-5">
     <p><strong>Técnico Responsable:</strong> {{ ticket.usuario }}</p>
     <p class="mt-4">Firma: <span class="border-bottom d-inline-block" style="width: 250px;"></span></p>
   </div>
+
+
+
+
 
   <div class="text-center no-print mt-4">
     <button class="btn btn-primary" (click)="imprimir()">

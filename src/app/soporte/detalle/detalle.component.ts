@@ -52,6 +52,7 @@ export class DetalleComponent implements OnInit {
       if (!isNaN(id)) {
         this.api.getTicket(id).then((data: Ticket) => {
           this.ticket = data;
+          // console.log('✅ Ticket obtenido:', this.ticket);
         }).catch(error => {
           console.error('❌ Error al obtener ticket:', error);
         });
@@ -59,6 +60,12 @@ export class DetalleComponent implements OnInit {
         console.error('❌ ID inválido:', idParam);
       }
     }
+  }
+
+  getHoraComoFecha(): Date | null {
+    if (!this.ticket?.hora_atencion) return null;
+    const hoy = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    return new Date(`${hoy}T${this.ticket.hora_atencion}`);
   }
 
   imprimir(): void {
