@@ -1,19 +1,21 @@
 <!-- Tabla para pantallas medianas en adelante -->
 <div class="table-responsive d-none d-md-block m-1 p-1" *ngIf="!cargando; else cargandoTemplate">
 
-<form class="row g-2 mb-3">
+<form class="row g-2 mb-3" (ngSubmit)="obtenerEquipos()">
   <div class="col-12 col-md-2">
     <input type="text" class="form-control" placeholder="Buscar Equipo" [(ngModel)]="buscarEquipo" name="buscarEquipo">
   </div>
   <div class="col-12 col-md-2">
-    <input type="text" class="form-control" placeholder="Buscar Ip" [(ngModel)]="buscarIp" name="buscarIp">
+    <input type="text" class="form-control" placeholder="Buscar IP" [(ngModel)]="buscarIp" name="buscarIp">
   </div>
   <div class="col-12 col-md-2">
-    <input type="text" class="form-control" placeholder="Buscar Descripcion" [(ngModel)]="buscarDescripcion" name="buscarDescripcion">
+    <input type="text" class="form-control" placeholder="Buscar Descripción" [(ngModel)]="buscarDescripcion" name="buscarDescripcion">
   </div>
-  <button class="btn btn-primary w-100 mt-2" type="button" (click)="obtenerEquipos()">
+  <div class="col-12 col-md-2">
+    <button class="btn btn-primary w-100 mt-2" type="submit" name="submit">
       Buscar
     </button>
+  </div>
 </form>
 <table class="table table-sm table-dark table-striped table-hover align-middle mb-0 rounded-3">
   <thead>

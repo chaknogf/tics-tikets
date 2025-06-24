@@ -23,6 +23,13 @@ export class FormEquipoComponent implements OnInit {
   visible = signal(false);
   enEdicion = false;
   usuarioActual = '';
+  fechaActual = (() => {
+    const now = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const fecha = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+    const hora = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    return `${fecha} ${hora}`;
+  })();
 
   constructor(
     private api: ApiService,
@@ -39,6 +46,7 @@ export class FormEquipoComponent implements OnInit {
   ngOnInit(): void {
     this.usuarioActual = localStorage.getItem('username') || '';
     const idParam = this.route.snapshot.paramMap.get('id');
+
     if (idParam) {
       const id = Number(idParam);
       if (!isNaN(id)) {
@@ -49,11 +57,7 @@ export class FormEquipoComponent implements OnInit {
         this.mensaje = '❌ ID inválido';
       }
     } else {
-      // Solo si es nuevo
-      this.form.patchValue({
 
-        fecha: new Date().toISOString().slice(0, 10)
-      });
     }
   }
 
@@ -84,15 +88,15 @@ export class FormEquipoComponent implements OnInit {
         resolucion_escaneo_ppp: [''],
         resolucion_impresion_ppp: [''],
         tecnologia: [''],
-        velocidad_ppm: [null],
-        camara_frontal_mp: [null],
-        camara_trasera_mp: [null],
-        memoria_interna_gb: [null],
-        memoria_ram_gb: [null],
-        capacidad_carga_va: [null],
-        numero_tomas: [null],
-        potencia_watt: [null],
-        tiempo_respaldo_min: [null],
+        velocidad_ppm: [0],
+        camara_frontal_mp: [0],
+        camara_trasera_mp: [0],
+        memoria_interna_gb: [0],
+        memoria_ram_gb: [0],
+        capacidad_carga_va: [0],
+        numero_tomas: [0],
+        potencia_watt: [0],
+        tiempo_respaldo_min: [0],
         voltaje_entrada: [''],
         voltaje_salida: [''],
         conectividad: ['']
@@ -112,15 +116,16 @@ export class FormEquipoComponent implements OnInit {
           tipo: ['']
         })
       }),
-      estado: [''],
+      estado: ['A'],
       actualizacion: this.fb.group({
-        fecha: [''],
-        usuario: [''],
+        fecha: [this.fechaActual],
+        usuario: ['Ronald Chacon'],
         nota: ['']
       })
 
 
     });
+
 
 
 
@@ -133,26 +138,24 @@ export class FormEquipoComponent implements OnInit {
       // console.table(data);
       // Reconstruir metadatos
 
-
       this.form.patchValue(data);
 
     } catch (error) {
       console.error('❌ Error al obtener equipo:', error);
     }
   }
-
   private limpiarPayload(payload: any): any {
     const limpio: any = {};
     for (const key in payload) {
       const valor = payload[key];
 
-      if (valor === undefined || valor === '' || valor === null) continue;
+      if (valor === undefined) continue;
 
-      if (typeof valor === 'object' && !Array.isArray(valor)) {
-        const sub = this.limpiarPayload(valor);
-        if (Object.keys(sub).length > 0) {
-          limpio[key] = sub;
-        }
+      if (valor === null) {
+        // Si el valor es null, lo convertimos a string vacío para campos de texto
+        limpio[key] = '';
+      } else if (typeof valor === 'object' && !Array.isArray(valor)) {
+        limpio[key] = this.limpiarPayload(valor);
       } else {
         limpio[key] = valor;
       }
@@ -160,24 +163,8 @@ export class FormEquipoComponent implements OnInit {
     return limpio;
   }
 
+
   async guardar(): Promise<void> {
-
-    const now = new Date();
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    const fecha = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
-    const hora = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    this.form.patchValue({
-      actualizacion: {
-        fecha: `${fecha} ${hora}`,
-        usuario: this.usuarioActual
-      }
-    });
-
-    if (this.form.invalid) {
-      this.mensaje = '⚠️ Formulario incompleto o con errores.';
-      return;
-    }
-
 
     const raw = this.form.getRawValue();
 
@@ -206,6 +193,7 @@ export class FormEquipoComponent implements OnInit {
     try {
       const limpio = this.limpiarPayload(this.form.getRawValue());
       await this.api.updateEquipo(equipo.id, limpio);
+      console.log('👤 Equipo actualizado', limpio);
       this.mensaje = '✅ Equipo actualizado correctamente';
     } catch (error) {
       this.mensaje = '❌ Error al actualizar el equipo';

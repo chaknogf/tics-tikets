@@ -16,7 +16,7 @@
     </div>
 
     <!-- Grupo: Datos Técnicos -->
-    <fieldset class="border p-3 mb-4 rounded">
+    <fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card">
       <legend class="w-auto px-2">Datos Técnicos</legend>
 
       <div formGroupName="datos_tecnicos" class="row g-3">
@@ -48,33 +48,39 @@
       </div>
  </fieldset>
  <!-- computadora -->
-<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
+<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
   <div formGroupName="datos_tecnicos" >
     <div class="row g-3">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <label class="form-label">
           Procesador 💻
         </label>
         <input type="text" class="form-control" formControlName="procesador">
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <label class="form-label">Memoria RAM 🧠</label>
-        <input type="text" class="form-control" formControlName="memoria_ram">
+        <input type="text" class="form-control" formControlName="ram">
+
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-4">
         <label class="form-label">Disco Duro 🗄️</label>
         <input type="text" class="form-control" formControlName="disco_duro">
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <label class="form-label">Monitor 🖥️</label>
-        <input type="text" class="form-control" formControlName="monitor">
+        <input type="text" class="form-control" formControlName="monitor_serie">
+      </div>
+
+       <div class="col-md-4">
+        <label class="form-label">CPU</label>
+        <input type="text" class="form-control" formControlName="cpu_serie">
       </div>
     </div>
   </div>
 </fieldset>
 
-<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'impresora'">
+<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'impresora'">
   <div formGroupName="datos_tecnicos" >
     <div class="row g-3">
       <div class="col-md-4">
@@ -127,7 +133,7 @@
   </div>
 </fieldset>
 
-<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'tablet'">
+<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'tablet'">
   <div formGroupName="datos_tecnicos" >
     <div class="row g-3">
       <div class="col-md-4">
@@ -153,7 +159,7 @@
   </div>
 </fieldset>
 
-<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'ups'">
+<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'ups'">
   <div formGroupName="datos_tecnicos" >
     <div class="row g-3">
       <div class="col-md-4">
@@ -191,7 +197,7 @@
 
 
     <!-- Grupo: Redes -->
-    <fieldset class="border p-3 mb-4 rounded" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value !== 'ups' ">
+    <fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value !== 'ups' ">
       <legend class="w-auto px-2">Redes</legend>
       <div formGroupName="redes" class="row g-3">
         <div class="col-md-6">
@@ -214,7 +220,7 @@
     </fieldset>
 
     <!-- Grupo: Software Instalado -->
-    <fieldset class="border p-3 mb-4 rounded" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
+    <fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
       <legend class="w-auto px-2">Software Instalado</legend>
       <div formGroupName="software_instalado">
         <div formGroupName="r0" class="row g-3">
@@ -243,30 +249,28 @@
       <label class="form-label">Estado</label>
       <div class="btn-group d-flex gap-2" role="group">
         <button type="button" class="btn btn-outline-info"
-          [class.active]="form.get('estado')?.value === 'Activo'"
-          (click)="form.get('estado')?.setValue('Activo')">Activo</button>
+          [class.active]="form.get('estado')?.value === 'A'"
+          (click)="form.get('estado')?.setValue('A')">Activo</button>
         <button type="button" class="btn btn-outline-danger"
-          [class.active]="form.get('estado')?.value === 'Inactivo'"
-          (click)="form.get('estado')?.setValue('Inactivo')">Inactivo</button>
+          [class.active]="form.get('estado')?.value === 'I'"
+          (click)="form.get('estado')?.setValue('I')">Inactivo</button>
       </div>
       <input type="hidden" formControlName="estado" />
     </div>
 
     <!-- Actualización -->
-    <fieldset class="grupo actualizacion border p-3 mb-4 rounded">
+    <fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card">
       <legend class="w-auto px-2">Actualización</legend>
-      <div formGroupName="actualizacion" class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label">Fecha</label>
-          <input type="text" class="form-control" formControlName="fecha" readonly>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Usuario</label>
-          <input type="text" class="form-control" formControlName="usuario" readonly>
-        </div>
-        <div class="col-md-12">
-          <label class="form-label">Nota</label>
-          <textarea type="text" class="form-control" formControlName="nota" row="5"></textarea>
+      <div formGroupName="actualizacion">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-6">
+            <input type="text" class="form-control bg-light mb-2" formControlName="fecha">
+            <input type="text" class="form-control bg-light" formControlName="usuario">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Nota</label>
+            <textarea class="form-control" formControlName="nota" rows="5"></textarea>
+          </div>
         </div>
       </div>
     </fieldset>
