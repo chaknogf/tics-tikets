@@ -84,17 +84,10 @@ export interface DatosTecnicos {
   memoria_ram_gb?: number;
 
   // 🔌 Especificaciones de UPS
-  alarma?: string;
   capacidad_carga_va?: number;
-  supresion_picos_joules?: number;
-  frecuencia_entrada_hz?: string;
-  frecuencia_salida_hz?: string;
   numero_tomas?: number;
   potencia_watt?: number;
-  proteccion_linea_datos?: string;
-  proteccion_coaxial?: string;
   tiempo_respaldo_min?: number;
-  topologia?: string;
   voltaje_entrada?: string;
   voltaje_salida?: string;
 
@@ -109,10 +102,25 @@ export interface SoftwareInstalado {
   tipo?: string;
 }
 
+export interface Redes {
+  ip_wifi: string;
+  ip_ethernet: string;
+  mac_wifi: string;
+  mac_ethernet: string;
+}
+
+export interface Actualizacion {
+  fecha: string;
+  usuario: string;
+  nota?: string;
+}
 export interface Equipo {
   id: number;
   no_bien: string;
+  especificaciones: string;
   datos_tecnicos?: DatosTecnicos;
+  redes?: Redes;
   software_instalado?: { [key: string]: SoftwareInstalado };
   estado: string;
+  actualizacion?: Actualizacion;
 }

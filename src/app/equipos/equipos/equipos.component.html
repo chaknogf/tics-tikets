@@ -1,0 +1,133 @@
+<!-- Tabla para pantallas medianas en adelante -->
+<div class="table-responsive d-none d-md-block m-1 p-1" *ngIf="!cargando; else cargandoTemplate">
+
+<form class="row g-2 mb-3">
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Equipo" [(ngModel)]="buscarEquipo" name="buscarEquipo">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Ip" [(ngModel)]="buscarIp" name="buscarIp">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Descripcion" [(ngModel)]="buscarDescripcion" name="buscarDescripcion">
+  </div>
+  <button class="btn btn-primary w-100 mt-2" type="button" (click)="obtenerEquipos()">
+      Buscar
+    </button>
+</form>
+<table class="table table-sm table-dark table-striped table-hover align-middle mb-0 rounded-3">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>No Bien</th>
+      <th>Tipo de Equipo</th>
+      <th>Marca</th>
+      <th>Modelo</th>
+      <th>Serie</th>
+      <th>Estado</th>
+      <th>Ip</th>
+      <th class="text-center">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let t of equipos"
+        >
+      <td>{{ t.id }}</td>
+      <td>{{ t.no_bien }}</td>
+      <td>{{ t.datos_tecnicos?.tipo_equipo}}</td>
+      <td>{{ t.datos_tecnicos?.marca }}</td>
+      <td>{{ t.datos_tecnicos?.modelo }}</td>
+      <td>{{ t.datos_tecnicos?.series }}</td>
+      <td>
+        {{ t.estado }}
+      </td>
+      <td>
+        Ethernet: {{ t.redes?.ip_ethernet }} <br>
+        Wifi: {{ t.redes?.ip_wifi }}
+      </td>
+      <td class="text-center" style="width: 80px;">
+        <div class="d-flex justify-content-center align-items-center gap-1">
+          <span
+            class="svg-icon m-0 p-0"
+            [innerHTML]="editorIcon"
+            (click)="editar(t.id)"
+            title="Editar"
+          ></span>
+          <span
+            class="svg-icon m-0 p-0"
+            [innerHTML]="detalleIcon"
+            (click)="detalle(t.id)"
+            title="Detalles"
+          >
+        </span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- Cards para pantallas pequeñas -->
+<div class="d-block d-md-none m-2" *ngIf="!cargando">
+   <form class="row g-1 mb-2" data-bs-theme="">
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Equipo" [(ngModel)]="buscarEquipo" name="buscarEquipo">
+  </div>
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Ip" [(ngModel)]="buscarIp" name="buscarIp">
+  </div>
+  <div class="col-12 col-md-2">
+     <input type="text" class="form-control" placeholder="Buscar Descripcion" [(ngModel)]="buscarDescripcion" name="buscarDescripcion">
+  </div>
+
+   <button class="btn btn-primary w-100 mt-2" type="button" (click)="obtenerEquipos()">
+      Buscar
+    </button>
+
+   </form>
+  <div class="card mb-1 p-1 rounded-3 border border-primary" *ngFor="let t of equipos" >
+
+    <div class="card-body rounded-3">
+      <div class="row">
+        <div class="col-6 mb-2">
+          <h5 class="card-title mb-2">Número de Bien: {{ t.no_bien }}</h5>
+          <p class="mb-1"><strong>ID:</strong> {{ t.id }}</p>
+
+        </div>
+        <div class="col-6 mb-2">
+          <p class="mb-1">
+            <strong>Tipo de Equipo:</strong>
+            {{ t.datos_tecnicos?.tipo_equipo}}
+            <strong>Marca:</strong>
+            {{ t.datos_tecnicos?.marca }}
+            <strong>Modelo:</strong>
+            {{ t.datos_tecnicos?.modelo }}
+            <strong>Serie:</strong>
+            {{ t.datos_tecnicos?.series }}
+          </p>
+          <p class="mb-1"><strong>Ip:</strong> Ethernet: {{ t.redes?.ip_ethernet }} <br>
+        Wifi: {{ t.redes?.ip_wifi }}</p>
+
+      <div class="d-flex justify-content-end align-items-center">
+        <button class="btn btn-outline-light btn-sm me-2 d-flex align-items-center justify-content-center rounded-2" title="Editar Ticket" (click)="editar(t.id)">
+          <span [innerHTML]="editorIcon"></span>
+          Editar
+        </button>
+        <button class="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center rounded-2" title="Ver Detalles del Ticket" (click)="detalle(t.id)">
+          <span [innerHTML]="detalleIcon"></span>
+          Detalle
+        </button>
+      </div>
+
+    </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<ng-template #cargandoTemplate>
+  <div class="alert alert-dark d-flex align-items-center" role="alert">
+    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+    Cargando equipos...
+  </div>
+</ng-template>

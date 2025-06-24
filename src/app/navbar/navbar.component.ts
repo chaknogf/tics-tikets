@@ -46,5 +46,12 @@ export class NavbarComponent {
     return this.usuario !== null;
   }
 
+  equipos() {
+    this.router.navigate(['/equipos']);
+  }
+
+  tickets() {
+    this.router.navigate(['/dash']);
+  }
 
 }

@@ -198,6 +198,8 @@ export class ApiService {
     }
   }
 
+
+
   async getTicket(id: number): Promise<any> {
     try {
       const response = await this.api.get<Ticket[]>(`/tickets/?id=${id}&skip=0&limit=1`);
@@ -303,10 +305,11 @@ export class ApiService {
 
   async getEquipos(filtros: any): Promise<any> {
     try {
-      const response = await this.api.get<Equipo[]>('/equipo/', {
-        params: filtros
+      const filtrosLimpiados = this.limpiarParametros(filtros);
+      const response = await this.api.get<Equipo[]>('/equipos/', {
+        params: filtrosLimpiados
       });
-      console.log('👤 Equipos obtenidos correctamente', response);
+      // console.log('👤 Equipos obtenidos correctamente', response);
       return response.data;
 
     } catch (error) {
@@ -315,6 +318,31 @@ export class ApiService {
     }
   }
 
+  async equipo(id: number): Promise<any> {
+    try {
+      const response = await this.api.get<Equipo[]>(`/equipos/?id=${id}&skip=0&limit=1`);
+
+      // console.log('📝 Equipo obtenido correctamente');
+      // Si la respuesta es un array, devolver el primer elemento
+      return Array.isArray(response.data) ? response.data[0] : response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener equipo:', error);
+      throw error;
+    }
+  }
+
+  async getEquipo(nobien: string): Promise<any> {
+    try {
+
+      const response = await this.api.get<Equipo[]>('/equipoBien/' + nobien);
+      // console.log('👤 Equipos obtenidos correctamente', response);
+      return response.data;
+
+    } catch (error) {
+      console.error('❌ Error al obtener equipos:', error);
+      throw error;
+    }
+  }
 
   async createEquipo(equipo: any): Promise<any> {
     try {
@@ -336,7 +364,14 @@ export class ApiService {
 
   async updateEquipo(equipoId: number, equipo: any): Promise<any> {
     try {
-      const response = await this.api.put(`/equipo/actualizar/${equipoId}`, equipo);
+      const response = await this.api.put(`/equipo/actualizar/${equipoId}`, equipo,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+
+      );
       console.log('👤 Equipo actualizado correctamente');
       return response.data;
     } catch (error) {

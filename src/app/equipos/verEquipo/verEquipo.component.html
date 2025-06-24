@@ -1,0 +1,118 @@
+<div class="container py-4 bg-white text-dark rounded shadow-sm">
+  <button class="no-print btn btn-secondary mb-3" (click)="cerrar()">Cerrar</button>
+
+  <div class="text-center mb-4 border-bottom pb-3">
+    <h2 class="fw-bold">Ficha Técnica del Equipo</h2>
+    <p class="mb-1"><strong>No. Bien:</strong> {{ equipo.no_bien }}</p>
+    <p class="mb-0"><strong>Estado:</strong> {{ equipo.estado || 'N/A' }}</p>
+  </div>
+
+  <!-- Especificaciones generales -->
+  <div class="mb-4">
+    <h5 class="border-start border-4 ps-2 text-primary">Especificaciones Generales De Tarjeta de Inevnatrio</h5>
+    <p class="bg-light bg-opacity-50 p-3 border rounded-3">{{ equipo.especificaciones }}</p>
+  </div>
+
+  <!-- Datos técnicos -->
+  <div class="mb-4">
+    <h5 class="border-start border-4 ps-2 text-primary">Datos Técnicos</h5>
+    <div class="row">
+      <div class="col-md-4"><strong>Tipo de Equipo:</strong> {{ equipo.datos_tecnicos?.tipo_equipo }}</div>
+      <div class="col-md-4"><strong>Marca:</strong> {{ equipo.datos_tecnicos?.marca }}</div>
+      <div class="col-md-4"><strong>Modelo:</strong> {{ equipo.datos_tecnicos?.modelo }}</div>
+      <div class="col-md-4"><strong>Serie:</strong> {{ equipo.datos_tecnicos?.series }}</div>
+
+      <div *ngIf="equipo.datos_tecnicos?.tipo_equipo === 'computadora'">
+      <div class="col-md-4"><strong>Procesador:</strong> {{ equipo.datos_tecnicos?.procesador }}</div>
+      <div class="col-md-4"><strong>RAM:</strong> {{ equipo.datos_tecnicos?.ram }}</div>
+      <div class="col-md-4"><strong>Disco Duro:</strong> {{ equipo.datos_tecnicos?.disco_duro }}</div>
+      <div class="col-md-4"><strong>CPU Serie:</strong> {{ equipo.datos_tecnicos?.cpu_serie }}</div>
+      <div class="col-md-4"><strong>Monitor:</strong> {{ equipo.datos_tecnicos?.monitor_serie }}</div>
+      <div class="col-md-4"><strong>Conectividad:</strong> {{ equipo.datos_tecnicos?.conectividad }}</div>
+      </div>
+
+      <div *ngIf="equipo.datos_tecnicos?.tipo_equipo === 'impresora'" >
+        <div class="col-md-4"><strong>Capacidad Bandeja:</strong> {{ equipo.datos_tecnicos?.capacidad_bandeja}}></div>
+        <div class="col-md-4"><strong>Ciclo Mensual:</strong> {{ equipo.datos_tecnicos?.ciclo_mensual }}</div>
+        <div class="col-md-4"><strong>Funciones:</strong> {{ equipo.datos_tecnicos?.funciones }}</div>
+        <div class="col-md-4"><strong>Doble Cara:</strong> {{ equipo.datos_tecnicos?.doble_cara ? 'Sí' : 'No' }}</div>
+        <div class="col-md-4"><strong>Resolución Impresión:</strong> {{ equipo.datos_tecnicos?.resolucion_impresion_ppp }}</div>
+        <div class="col-md-4"><strong>Resolución Escáner:</strong> {{ equipo.datos_tecnicos?.resolucion_escaneo_ppp }}</div>
+        <div class="col-md-4"><strong>Resolución Impresión:</strong> {{ equipo.datos_tecnicos?.resolucion_impresion_ppp }}</div>
+        <div class="col-md-4"><strong>Tecnología:</strong> {{ equipo.datos_tecnicos?.tecnologia }}</div>
+        <div class="col-md-4"><strong>Velocidad (ppm):</strong> {{ equipo.datos_tecnicos?.velocidad_ppm }}</div>
+        <div class="col-md-4"><strong>Conectividad:</strong> {{ equipo.datos_tecnicos?.conectividad }}</div>
+      </div>
+
+      <div *ngIf="equipo.datos_tecnicos?.tipo_equipo === 'tablet'">
+        <div class="col-md-4"><strong>Cámara Frontal (MP):</strong> {{ equipo.datos_tecnicos?.camara_frontal_mp }}</div>
+        <div class="col-md-4"><strong>Cámara Trasera (MP):</strong> {{ equipo.datos_tecnicos?.camara_trasera_mp }}</div>
+        <div class="col-md-4"><strong>Memoria Interna (GB):</strong> {{ equipo.datos_tecnicos?.memoria_interna_gb }}</div>
+        <div class="col-md-4"><strong>Memoria RAM (GB):</strong> {{ equipo.datos_tecnicos?.memoria_ram_gb }}</div>
+        <div class="col-md-4"><strong>Conectividad:</strong> {{ equipo.datos_tecnicos?.conectividad }}</div>
+      </div>
+
+      <div *ngIf="equipo.datos_tecnicos?.tipo_equipo === 'ups'">
+        <div class="col-md-4"><strong>Capacidad Carga (VA):</strong> {{ equipo.datos_tecnicos?.capacidad_carga_va }}</div>
+        <div class="col-md-4"><strong>Número de Tomas:</strong> {{ equipo.datos_tecnicos?.numero_tomas }}</div>
+        <div class="col-md-4"><strong>Potencia (W):</strong> {{ equipo.datos_tecnicos?.potencia_watt }}</div>
+        <div class="col-md-4"><strong>Tiempo Respaldo (min):</strong> {{ equipo.datos_tecnicos?.tiempo_respaldo_min }}</div>
+        <div class="col-md-4"><strong>Voltaje Entrada:</strong> {{ equipo.datos_tecnicos?.voltaje_entrada }}</div>
+      <div class="col-md-4"><strong>Voltaje Salida:</strong> {{ equipo.datos_tecnicos?.voltaje_salida }}</div>
+
+      </div>
+
+
+
+
+    </div>
+  </div>
+
+  <!-- Redes -->
+  <div class="mb-4" *ngIf="equipo.datos_tecnicos?.tipo_equipo !== 'ups'">
+    <h5 class="border-start border-4 ps-2 text-primary">Configuración de Red</h5>
+    <div class="row">
+      <div class="col-md-6"><strong>IP WiFi:</strong> {{ equipo.redes?.ip_wifi }}</div>
+      <div class="col-md-6"><strong>IP Ethernet:</strong> {{ equipo.redes?.ip_ethernet }}</div>
+      <div class="col-md-6"><strong>MAC WiFi:</strong> {{ equipo.redes?.mac_wifi }}</div>
+      <div class="col-md-6"><strong>MAC Ethernet:</strong> {{ equipo.redes?.mac_ethernet }}</div>
+    </div>
+  </div>
+
+  <!-- Software Instalado -->
+  <div class="mb-4" *ngIf="equipo.datos_tecnicos?.tipo_equipo === 'computadora'">
+    <h5 class="border-start border-4 ps-2 text-primary">Software Instalado</h5>
+    <div *ngIf="equipo.software_instalado && (equipo.software_instalado | keyvalue).length > 0; else noSoft">
+      <div *ngFor="let s of equipo.software_instalado | keyvalue" class="border rounded p-2 mb-2">
+        <div><strong>Software:</strong> {{ s.value.software }}</div>
+        <div><strong>Versión:</strong> {{ s.value.version }}</div>
+        <div><strong>Licencia:</strong> {{ s.value.licencia }}</div>
+        <div><strong>Tipo:</strong> {{ s.value.tipo }}</div>
+      </div>
+    </div>
+    <ng-template #noSoft>
+      <p class="text-muted">No hay software registrado.</p>
+    </ng-template>
+  </div>
+
+  <!-- Registro de actualización -->
+  <div class="mb-4">
+    <h5 class="border-start border-4 ps-2 text-primary">Última Verificación</h5>
+    <p><strong>Nota:</strong> {{ equipo.actualizacion?.nota || 'N/A' }}</p>
+    <p><strong>Fecha:</strong> {{ equipo.actualizacion?.fecha || 'N/A' }}</p>
+    <p><strong>Usuario:</strong> {{ equipo.actualizacion?.usuario || 'N/A' }}</p>
+  </div>
+
+  <!-- Firma -->
+  <div class="mt-5">
+    <p><strong>Responsable del Registro:</strong> {{ equipo.actualizacion?.usuario }}</p>
+    <p class="mt-4">Firma: <span class="border-bottom d-inline-block" style="width: 250px;"></span></p>
+  </div>
+
+  <!-- Botón imprimir -->
+  <div class="text-center no-print mt-4">
+    <button class="btn btn-primary" (click)="imprimir()">
+      <i class="bi bi-printer me-1"></i> Imprimir
+    </button>
+  </div>
+</div>

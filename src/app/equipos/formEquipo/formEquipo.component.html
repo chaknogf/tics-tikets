@@ -1,0 +1,282 @@
+<div>
+  <button class="btn btn-secondary mb-3" (click)="close()">Cerrar</button>
+  <h2 class="mb-4">Formulario de Equipo</h2>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="needs-validation p-4 rounded" novalidate>
+
+    <!-- Campos simples -->
+    <div class="mb-3">
+      <label class="form-label">No. Bien</label>
+      <input type="text" class="form-control" formControlName="no_bien">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Especificaciones</label>
+      <textarea class="form-control form-control-sm form-control-plaintext rounded" formControlName="especificaciones" rows="8"></textarea>
+    </div>
+
+    <!-- Grupo: Datos Técnicos -->
+    <fieldset class="border p-3 mb-4 rounded">
+      <legend class="w-auto px-2">Datos Técnicos</legend>
+
+      <div formGroupName="datos_tecnicos" class="row g-3">
+        <label for="datos_tecnicos" class="form-label">Tipo de Equipo</label>
+        <div class="btn-group mb-3" role="group" aria-label="Tipo de Equipo">
+          <button type="button" class="btn btn-outline-primary"
+            [class.active]="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'"
+            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('computadora')">Computadora</button>
+          <button type="button" class="btn btn-outline-primary"
+            [class.active]="form.get('datos_tecnicos.tipo_equipo')?.value === 'impresora'"
+            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('impresora')">Impresora</button>
+          <button type="button" class="btn btn-outline-primary"
+            [class.active]="form.get('datos_tecnicos.tipo_equipo')?.value === 'tablet'"
+            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('tablet')">Tablet</button>
+          <button type="button" class="btn btn-outline-primary"
+            [class.active]="form.get('datos_tecnicos.tipo_equipo')?.value === 'ups'"
+            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('ups')">UPS</button>
+        </div>
+        <input type="hidden" formControlName="tipo_equipo" />
+      </div>
+<!-- datos generales -->
+      <div formGroupName="datos_tecnicos" class="row g-3">
+        <div class="col-md-4" *ngFor="let campo of [
+          'numero_equipo', 'marca', 'modelo', 'series',
+        ]">
+          <label [for]="campo" class="form-label text-capitalize">{{ campo.replace('_', ' ') }}:</label>
+          <input [id]="campo" type="text" class="form-control" [formControlName]="campo">
+        </div>
+      </div>
+ </fieldset>
+ <!-- computadora -->
+<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
+  <div formGroupName="datos_tecnicos" >
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">
+          Procesador 💻
+        </label>
+        <input type="text" class="form-control" formControlName="procesador">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Memoria RAM 🧠</label>
+        <input type="text" class="form-control" formControlName="memoria_ram">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Disco Duro 🗄️</label>
+        <input type="text" class="form-control" formControlName="disco_duro">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Monitor 🖥️</label>
+        <input type="text" class="form-control" formControlName="monitor">
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'impresora'">
+  <div formGroupName="datos_tecnicos" >
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">
+          Capacidad de bandeja🖨
+        </label>
+        <input type="text" class="form-control" formControlName="capacidad_bandeja">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Ciclo Mensual</label>
+        <input type="text" class="form-control" formControlName="ciclo_mensual">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Funciones</label>
+        <input type="text" class="form-control" formControlName="funciones">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">doble Cara</label>
+        <div class="btn-group w-100" role="group" aria-label="Doble Cara">
+          <button type="button" class="btn btn-outline-success"
+            [class.active]="form.get('datos_tecnicos.doble_cara')?.value === true"
+            (click)="form.get('datos_tecnicos.doble_cara')?.setValue(true)">Sí</button>
+          <button type="button" class="btn btn-outline-danger"
+            [class.active]="form.get('datos_tecnicos.doble_cara')?.value === false"
+            (click)="form.get('datos_tecnicos.doble_cara')?.setValue(false)">No</button>
+        </div>
+        <input type="hidden" formControlName="doble_cara" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Resolicion de Escaneo</label>
+        <input type="text" class="form-control" formControlName="resolucion_escaneo_ppp">ppp
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Resolucion de Impresion</label>
+        <input type="text" class="form-control" formControlName="resolucion_impresion_ppp">ppp
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Tecnología</label>
+        <input type="text" class="form-control" formControlName="tecnologia">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Velocidad</label>
+        <input type="text" class="form-control" formControlName="velocidad_ppm">ppm
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'tablet'">
+  <div formGroupName="datos_tecnicos" >
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">
+          Camara Frontal
+        </label>
+        <input type="text" class="form-control" formControlName="camara_frontal_mp">mpx
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Camara Trasera</label>
+        <input type="text" class="form-control" formControlName="camara_trasera_mp">mpx
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Memoria Interna</label>
+        <input type="text" class="form-control" formControlName="memoria_interna_gb">gb
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Memoria Ram</label>
+        <input type="text" class="form-control" formControlName="memoria_ram_gb">gb
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'ups'">
+  <div formGroupName="datos_tecnicos" >
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">
+          Capacidad de carga
+        </label>
+        <input type="text" class="form-control" formControlName="capacidad_carga_va">va
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Numero de Tomas</label>
+        <input type="text" class="form-control" formControlName="numero_tomas">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Potencia de Bateria</label>
+        <input type="text" class="form-control" formControlName="potencia_watt">watts
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Tiempo de Respaldo</label>
+        <input type="text" class="form-control" formControlName="tiempo_respaldo_min">min
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Voltaje Entrada</label>
+        <input type="text" class="form-control" formControlName="voltaje_entrada">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Voltaje Salida</label>
+        <input type="text" class="form-control" formControlName="voltaje_salida">
+      </div>
+    </div>
+  </div>
+</fieldset>
+
+
+    <!-- Grupo: Redes -->
+    <fieldset class="border p-3 mb-4 rounded" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value !== 'ups' ">
+      <legend class="w-auto px-2">Redes</legend>
+      <div formGroupName="redes" class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">IP WiFi</label>
+          <input type="text" class="form-control" formControlName="ip_wifi">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">IP Ethernet</label>
+          <input type="text" class="form-control" formControlName="ip_ethernet">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">MAC WiFi</label>
+          <input type="text" class="form-control" formControlName="mac_wifi">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">MAC Ethernet</label>
+          <input type="text" class="form-control" formControlName="mac_ethernet">
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Grupo: Software Instalado -->
+    <fieldset class="border p-3 mb-4 rounded" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
+      <legend class="w-auto px-2">Software Instalado</legend>
+      <div formGroupName="software_instalado">
+        <div formGroupName="r0" class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">Software</label>
+            <input type="text" class="form-control" formControlName="software">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Versión</label>
+            <input type="text" class="form-control" formControlName="version">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Licencia</label>
+            <input type="text" class="form-control" formControlName="licencia">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Tipo</label>
+            <input type="text" class="form-control" formControlName="tipo">
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Estado -->
+    <div class="mb-3">
+      <label class="form-label">Estado</label>
+      <div class="btn-group d-flex gap-2" role="group">
+        <button type="button" class="btn btn-outline-info"
+          [class.active]="form.get('estado')?.value === 'Activo'"
+          (click)="form.get('estado')?.setValue('Activo')">Activo</button>
+        <button type="button" class="btn btn-outline-danger"
+          [class.active]="form.get('estado')?.value === 'Inactivo'"
+          (click)="form.get('estado')?.setValue('Inactivo')">Inactivo</button>
+      </div>
+      <input type="hidden" formControlName="estado" />
+    </div>
+
+    <!-- Actualización -->
+    <fieldset class="grupo actualizacion border p-3 mb-4 rounded">
+      <legend class="w-auto px-2">Actualización</legend>
+      <div formGroupName="actualizacion" class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Fecha</label>
+          <input type="text" class="form-control" formControlName="fecha" readonly>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Usuario</label>
+          <input type="text" class="form-control" formControlName="usuario" readonly>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">Nota</label>
+          <textarea type="text" class="form-control" formControlName="nota" row="5"></textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Mensaje -->
+    <div *ngIf="mensaje" class="alert alert-info">
+      {{ mensaje }}
+    </div>
+
+    <!-- Botón Guardar -->
+    <button type="submit" class="btn btn-primary w-100" [disabled]="form.invalid">Guardar</button>
+  </form>
+</div>

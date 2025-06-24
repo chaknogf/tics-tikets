@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light  rounded w-100" >
   <div class="container-fluid">
     <a class="navbar-brand" href="#" (click)="menu()">Soporte App</a>
+    <button class="btn btn-outline-dark ms-3 rounded-3"  (click)="equipos()">Equipos</button>
+    <button class="btn btn-outline-dark ms-3 rounded-3" (click)="tickets()">Tickets</button>
     <div class="collapse navbar-collapse" *ngIf="estaAutenticado">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
