@@ -73,4 +73,8 @@ export class EquiposComponent implements OnInit {
     //console.log('🔍 Detalle del ticket con ID:', id);
     this.router.navigate(['/ver-equipo', id]);
   }
+
+  nuevo() {
+    this.router.navigate(['/equipo']);
+  }
 }

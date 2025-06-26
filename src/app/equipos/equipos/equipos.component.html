@@ -11,10 +11,11 @@
   <div class="col-12 col-md-2">
     <input type="text" class="form-control" placeholder="Buscar Descripción" [(ngModel)]="buscarDescripcion" name="buscarDescripcion">
   </div>
-  <div class="col-12 col-md-2">
-    <button class="btn btn-primary w-100 mt-2" type="submit" name="submit">
+  <div class="col-12 col-md-2 d-flex gap-2 align-items-center">
+    <button class="btn btn-primary w-20 mt-2" type="submit" name="submit">
       Buscar
     </button>
+    <button class="btn btn-primary w-20 mt-2" type="button" (click)="nuevo()">Nuevo</button>
   </div>
 </form>
 <table class="table table-sm table-dark table-striped table-hover align-middle mb-0 rounded-3">
