@@ -1,7 +1,9 @@
 <div class="container py-4 bg-white text-dark rounded shadow-sm">
   <button class="no-print btn btn-secondary" (click)="cerrar()">cerrar</button>
   <div class="text-center mb-4 border-bottom pb-3">
-    <h2 class="fw-bold">Reporte de Atención Técnica</h2>
+    <h2 class="fw-bold mb-0 pb-0">Reporte de Atención Técnica</h2>
+      <p class="p-0 m-0">Informática</p>
+    <p class="p-0 m-0">Hospital General Tipo I de Tecpán Guatemala</p>
     <p class="mb-1"><strong>Ticket No.:</strong> {{ ticket.ticket }}</p>
     <p class="mb-0"><strong>Fecha de Solicitud:</strong> {{ ticket.fecha_solicitud | date:'fullDate' }}</p>
   </div>

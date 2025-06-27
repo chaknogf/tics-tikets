@@ -1,0 +1,77 @@
+<div class="container my-3" *ngIf="!cargando; else cargandoTemplate" data-bs-theme="light">
+  <form class="row g-2 mb-3 noprint" (ngSubmit)="obtenerEquipos()" >
+    <div class="col-12 col-md-2">
+      <input type="text" class="form-control" placeholder="Buscar Equipo" [(ngModel)]="buscarEquipo" name="buscarEquipo">
+    </div>
+    <div class="col-12 col-md-2">
+      <input type="text" class="form-control" placeholder="Buscar IP" [(ngModel)]="buscarIp" name="buscarIp">
+    </div>
+    <div class="col-12 col-md-2">
+      <input type="text" class="form-control" placeholder="Buscar Descripción" [(ngModel)]="buscarDescripcion" name="buscarDescripcion">
+    </div>
+    <div class="col-12 col-md-2 d-flex gap-2 align-items-center">
+      <button class="btn btn-primary w-20 mt-2" type="submit" name="submit">
+        Buscar
+      </button>
+      <button class="btn btn-primary" (click)="imprimir()">
+      <i class="bi bi-printer me-1"></i> Imprimir
+    </button>
+
+
+    </div>
+  </form>
+
+    <div class="text-center mb-4 border-bottom pb-3">
+    <h2 class="fw-bold mb-0 pb-0">Reporte Técnico de Equipos</h2>
+    <p class="p-0 m-0">Informática</p>
+    <p class="p-0 m-0">Hospital General Tipo I de Tecpán Guatemala</p>
+    <p>Tecpán Guatemala, {{ hoy | date:'fullDate' }}</p>
+  </div>
+
+  <div class="row" >
+    <div class="col-12 col-md-4 col-lg-4 mb-3" *ngFor="let t of equipos">
+      <div class="card h-100 border-primary shadow-sm">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12 mb-2">
+              <h5 class="card-title mb-1">No. Bien: {{ t.no_bien }}</h5>
+              <!-- <p class="mb-1"><strong>ID:</strong> {{ t.id }}</p> -->
+            </div>
+            <div class="col-6">
+              <p class="mb-0 fs-6"><strong>Tipo:</strong> {{ t.datos_tecnicos?.tipo_equipo }}</p>
+              <p class="mb-0 fs-7"><strong>Marca:</strong> {{ t.datos_tecnicos?.marca }}</p>
+              <p class="mb-0 fs-7"><strong>Modelo:</strong> {{ t.datos_tecnicos?.modelo }}</p>
+            </div>
+            <div class="col-6" *ngIf="t.datos_tecnicos?.tipo_equipo === 'computadora'">
+              <p class="mb-0 fs-7"><strong>Procesador:</strong> {{ t.datos_tecnicos?.procesador }}</p>
+              <p class="mb-0 fs-7"><strong>Ram:</strong> {{ t.datos_tecnicos?.ram }}</p>
+              <p class="mb-0 fs-7"><strong>Almacenamiento:</strong> {{ t.datos_tecnicos?.disco_duro }}</p>
+            </div>
+            <div class="col-6">
+              <p class="mb-0 fs-7"><strong>Estado:</strong> {{ t.estado }}</p>
+              <p class="mb-0 fs-7"><strong>IP:</strong> {{ t.redes?.ip_ethernet }}  {{ t.redes?.ip_wifi }}</p>
+            </div>
+            <div class="col-12">
+              <p class="mb-1 fs-8"><strong>Especificaciones de Tarjeta:</strong>{{ t.especificaciones }}</p>
+            </div>
+            <div class="col-6">
+              <p class="mb-1 fs-7"><strong>Revision:</strong> {{ t.actualizacion?.nota }}</p>
+            </div>
+            <div class="col-6">
+              <p class="mb-1 fs-7"><strong>Tecnico:</strong> {{ t.actualizacion?.usuario }}</p>
+              <p class="mb-1 fs-7"><strong>Fecha:</strong> {{ t.actualizacion?.fecha }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #cargandoTemplate>
+  <div class="alert alert-dark d-flex align-items-center" role="alert">
+    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+    Cargando equipos...
+  </div>
+</ng-template>

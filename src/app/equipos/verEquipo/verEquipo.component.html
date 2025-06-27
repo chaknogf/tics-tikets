@@ -1,8 +1,10 @@
 <div class="container py-4 bg-white text-dark rounded shadow-sm">
-  <button class="no-print btn btn-secondary mb-3" (click)="cerrar()">Cerrar</button>
+  <button class="no-print btn btn-secondary mb-3 noprint" (click)="cerrar()">Cerrar</button>
 
   <div class="text-center mb-4 border-bottom pb-3">
-    <h2 class="fw-bold">Ficha Técnica del Equipo</h2>
+    <h2 class="fw-bold mb-0 pb-0">Ficha Técnica del Equipo</h2>
+    <p class="p-0 m-0">Informática</p>
+    <p class="p-0 m-0">Hospital General Tipo I de Tecpán Guatemala</p>
     <p class="mb-1"><strong>No. Bien:</strong> {{ equipo.no_bien }}</p>
     <p class="mb-0"><strong>Estado:</strong> {{ equipo.estado || 'N/A' }}</p>
   </div>
@@ -110,7 +112,7 @@
   </div>
 
   <!-- Botón imprimir -->
-  <div class="text-center no-print mt-4">
+  <div class="text-center no-print mt-4 noprint">
     <button class="btn btn-primary" (click)="imprimir()">
       <i class="bi bi-printer me-1"></i> Imprimir
     </button>

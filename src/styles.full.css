@@ -8413,6 +8413,14 @@ textarea.form-control-lg {
   font-size: 1rem !important;
 }
 
+.fs-7 {
+  font-size: 0.75rem !important;
+}
+
+.fs-8 {
+  font-size: 0.675rem !important;
+}
+
 .fst-italic {
   font-style: italic !important;
 }
@@ -12082,4 +12090,10 @@ textarea.form-control-lg {
 .table-info,
 .table-light {
   --bs-table-color: #333;
+}
+
+@media print {
+  .noprint {
+    display: none;
+  }
 }

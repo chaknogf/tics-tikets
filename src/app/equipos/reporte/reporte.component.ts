@@ -7,22 +7,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 
-
 @Component({
-  selector: 'app-equipos',
-  templateUrl: './equipos.component.html',
+  selector: 'app-reporte',
+  templateUrl: './reporte.component.html',
+  styleUrls: ['./reporte.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule]
-  // styleUrls: ['./equipos.component.css']
 })
-export class EquiposComponent implements OnInit {
-
+export class ReporteComponent implements OnInit {
   public equipos: Equipo[] = [];
   public buscarEquipo: string = '';
   public buscarIp: string = '';
   public buscarDescripcion: string = '';
   cargando: boolean = false;
-
+  public hoy = new Date();
 
   private sanitizarSvg(svg: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
@@ -48,9 +46,9 @@ export class EquiposComponent implements OnInit {
       no_bien: this.buscarEquipo,
       // ip: this.buscaIp,
       // descripcion: this.buscarDescripcion,
-
+      estado: 'A',
       skip: 0,
-      limit: 10
+      limit: 200
     };
     this.cargando = true;
     try {
@@ -64,21 +62,11 @@ export class EquiposComponent implements OnInit {
     }
   }
 
-  editar(id: number) {
-    //console.log('📝 Editando ticket con ID:', id);
-    this.router.navigate(['/equipo', id]);
+  imprimir(): void {
+    // Imprime la pantalla tal como se ve actualmente
+    window.print();
   }
 
-  detalle(id: number) {
-    //console.log('🔍 Detalle del ticket con ID:', id);
-    this.router.navigate(['/ver-equipo', id]);
-  }
 
-  nuevo() {
-    this.router.navigate(['/equipo']);
-  }
-
-  reporte() {
-    this.router.navigate(['/reporteEquipos']);
-  }
 }
+
