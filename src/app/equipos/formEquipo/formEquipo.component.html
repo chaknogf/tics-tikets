@@ -21,19 +21,26 @@
 
       <div formGroupName="datos_tecnicos" class="row g-3">
         <label for="datos_tecnicos" class="form-label">Tipo de Equipo</label>
-        <div class="btn-group mb-3" role="group" aria-label="Tipo de Equipo">
-          <button type="button" class="btn btn-outline-primary"
+        <div class="btn-group mb-3 w-100 flex-wrap d-flex d-md-inline-flex" role="group" aria-label="Tipo de Equipo">
+          <button type="button" class="btn btn-outline-primary flex-fill"
             [class.active]="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'"
-            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('computadora')">Computadora</button>
-          <button type="button" class="btn btn-outline-primary"
+            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('computadora')">
+            <span [innerHTML]="computerIcon" ></span>
+          </button>
+          <button type="button" class="btn btn-outline-primary flex-fill"
             [class.active]="form.get('datos_tecnicos.tipo_equipo')?.value === 'impresora'"
-            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('impresora')">Impresora</button>
-          <button type="button" class="btn btn-outline-primary"
+            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('impresora')">
+            <span [innerHTML]="printerIcon" ></span>
+          </button>
+          <button type="button" class="btn btn-outline-primary flex-fill"
             [class.active]="form.get('datos_tecnicos.tipo_equipo')?.value === 'tablet'"
-            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('tablet')">Tablet</button>
-          <button type="button" class="btn btn-outline-primary"
+            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('tablet')">
+            <span [innerHTML]="mobileIcon" ></span></button>
+          <button type="button" class="btn btn-outline-primary flex-fill"
             [class.active]="form.get('datos_tecnicos.tipo_equipo')?.value === 'ups'"
-            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('ups')">UPS</button>
+            (click)="form.get('datos_tecnicos.tipo_equipo')?.setValue('ups')">
+            <span [innerHTML]="upsIcon" ></span>
+          </button>
         </div>
         <input type="hidden" formControlName="tipo_equipo" />
       </div>

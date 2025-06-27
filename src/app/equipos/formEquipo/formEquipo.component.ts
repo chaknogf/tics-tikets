@@ -1,3 +1,4 @@
+import { computerIcon, printerIcon, mobileIcon, upsIcon } from './../../shared/icons';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -31,6 +32,15 @@ export class FormEquipoComponent implements OnInit {
     return `${fecha} ${hora}`;
   })();
 
+  private sanitizarSvg(svg: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
+
+  computerIcon: SafeHtml = computerIcon
+  printerIcon: SafeHtml = printerIcon
+  mobileIcon: SafeHtml = mobileIcon
+  upsIcon: SafeHtml = upsIcon
+
   constructor(
     private api: ApiService,
     private fb: FormBuilder,
@@ -39,6 +49,10 @@ export class FormEquipoComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
   ) {
+    this.computerIcon = this.sanitizarSvg(computerIcon);
+    this.printerIcon = this.sanitizarSvg(printerIcon);
+    this.mobileIcon = this.sanitizarSvg(mobileIcon);
+    this.upsIcon = this.sanitizarSvg(upsIcon);
 
     this.form = this.inicializarFormulario();
   }
@@ -61,9 +75,8 @@ export class FormEquipoComponent implements OnInit {
     }
   }
 
-  private sanitizarSvg(svg: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
+
+
 
   private inicializarFormulario(): FormGroup {
     return this.fb.group({
