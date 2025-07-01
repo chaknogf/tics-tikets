@@ -346,7 +346,7 @@ export class ApiService {
 
   async createEquipo(equipo: any): Promise<any> {
     try {
-      const response = await this.api.post('/equipo/crear', equipo,
+      const response = await this.api.post('/equipo/crear/', equipo,
         {
           headers: {
             'Content-Type': 'application/json'
