@@ -115,7 +115,18 @@ export interface Actualizacion {
   nota?: string;
 }
 export interface Equipo {
-  id?: number;
+  id: number;
+  no_bien: string;
+  especificaciones: string;
+  datos_tecnicos?: DatosTecnicos;
+  redes?: Redes;
+  software_instalado?: { [key: string]: SoftwareInstalado };
+  estado: string;
+  actualizacion?: Actualizacion;
+}
+
+export interface EquipoCrear {
+
   no_bien: string;
   especificaciones: string;
   datos_tecnicos?: DatosTecnicos;
