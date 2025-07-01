@@ -115,7 +115,7 @@ export interface Actualizacion {
   nota?: string;
 }
 export interface Equipo {
-  id: number;
+  id?: number;
   no_bien: string;
   especificaciones: string;
   datos_tecnicos?: DatosTecnicos;
