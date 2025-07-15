@@ -1,77 +1,80 @@
-<div class="container my-3" *ngIf="!cargando; else cargandoTemplate" data-bs-theme="light">
-  <form class="row g-2 mb-3 noprint" (ngSubmit)="obtenerEquipos()" >
-    <div class="col-12 col-md-2">
-      <input type="text" class="form-control" placeholder="Buscar Equipo" [(ngModel)]="buscarEquipo" name="buscarEquipo">
-    </div>
-    <div class="col-12 col-md-2">
-      <input type="text" class="form-control" placeholder="Buscar IP" [(ngModel)]="buscarIp" name="buscarIp">
-    </div>
-    <div class="col-12 col-md-2">
-      <input type="text" class="form-control" placeholder="Buscar Descripción" [(ngModel)]="buscarDescripcion" name="buscarDescripcion">
-    </div>
-    <div class="col-12 col-md-2 d-flex gap-2 align-items-center">
-      <button class="btn btn-primary w-20 mt-2" type="submit" name="submit">
-        Buscar
-      </button>
-      <button class="btn btn-primary" (click)="imprimir()">
-      <i class="bi bi-printer me-1"></i> Imprimir
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+<form class="row g-2 mb-3" (ngSubmit)="obtenerEquipos()">
+  <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Equipo" [(ngModel)]="buscarEquipo" name="buscarEquipo">
+  </div>
+  <div class="col-12 col-md-2">
+    <select class="form-control" [(ngModel)]="buscarTipo" name="buscarTipo" id="buscarTipo">
+      <option value="computadora">Computadora</option>
+      <option value="impresora">Impresora</option>
+      <option value="ups">UPS</option>
+      <option value="tablet">Tablet</option>
+    </select>
+  </div>
+  <!-- <div class="col-12 col-md-2">
+    <input type="text" class="form-control" placeholder="Buscar Descripción" [(ngModel)]="buscarDescripcion" name="buscarDescripcion">
+  </div> -->
+  <div class="col-12 col-md-2 d-flex gap-2 align-items-center">
+    <button class="btn btn-primary w-20 mt-2" type="submit" name="submit" >
+      Buscar
     </button>
 
-
-    </div>
-  </form>
-
-    <div class="text-center mb-4 border-bottom pb-3">
-    <h2 class="fw-bold mb-0 pb-0">Reporte Técnico de Equipos</h2>
-    <p class="p-0 m-0">Informática</p>
-    <p class="p-0 m-0">Hospital General Tipo I de Tecpán Guatemala</p>
-    <p>Tecpán Guatemala, {{ hoy | date:'fullDate' }}</p>
   </div>
+</form>
 
-  <div class="row" >
-    <div class="col-12 col-md-4 col-lg-4 mb-3" *ngFor="let t of equipos">
-      <div class="card h-100 border-primary shadow-sm">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-12 mb-2">
-              <h5 class="card-title mb-1">No. Bien: {{ t.no_bien }}</h5>
-              <!-- <p class="mb-1"><strong>ID:</strong> {{ t.id }}</p> -->
-            </div>
-            <div class="col-6">
-              <p class="mb-0 fs-6"><strong>Tipo:</strong> {{ t.datos_tecnicos?.tipo_equipo }}</p>
-              <p class="mb-0 fs-7"><strong>Marca:</strong> {{ t.datos_tecnicos?.marca }}</p>
-              <p class="mb-0 fs-7"><strong>Modelo:</strong> {{ t.datos_tecnicos?.modelo }}</p>
-            </div>
-            <div class="col-6" *ngIf="t.datos_tecnicos?.tipo_equipo === 'computadora'">
-              <p class="mb-0 fs-7"><strong>Procesador:</strong> {{ t.datos_tecnicos?.procesador }}</p>
-              <p class="mb-0 fs-7"><strong>Ram:</strong> {{ t.datos_tecnicos?.ram }}</p>
-              <p class="mb-0 fs-7"><strong>Almacenamiento:</strong> {{ t.datos_tecnicos?.disco_duro }}</p>
-            </div>
-            <div class="col-6">
-              <p class="mb-0 fs-7"><strong>Estado:</strong> {{ t.estado }}</p>
-              <p class="mb-0 fs-7"><strong>IP:</strong> {{ t.redes?.ip_ethernet }}  {{ t.redes?.ip_wifi }}</p>
-            </div>
-            <div class="col-12">
-              <p class="mb-1 fs-8"><strong>Especificaciones de Tarjeta:</strong>{{ t.especificaciones }}</p>
-            </div>
-            <div class="col-6">
-              <p class="mb-1 fs-7"><strong>Revision:</strong> {{ t.actualizacion?.nota }}</p>
-            </div>
-            <div class="col-6">
-              <p class="mb-1 fs-7"><strong>Tecnico:</strong> {{ t.actualizacion?.usuario }}</p>
-              <p class="mb-1 fs-7"><strong>Fecha:</strong> {{ t.actualizacion?.fecha }}</p>
-            </div>
+  <div class="col" *ngFor="let t of equipos">
+    <div class="card table-card border border-secondary shadow-sm">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-between border-bottom mb-2 pb-1">
+          <strong>No. Bien:</strong>
+          <span>{{ t.no_bien }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between small">
+          <strong>Tipo:</strong> <span>{{ t.datos_tecnicos?.tipo_equipo || '-' }}</span>
+        </div>
+        <div class="d-flex justify-content-between small">
+          <strong>Marca:</strong> <span>{{ t.datos_tecnicos?.marca || '-' }}</span>
+        </div>
+        <div class="d-flex justify-content-between small">
+          <strong>Modelo:</strong> <span>{{ t.datos_tecnicos?.modelo || '-' }}</span>
+        </div>
+        <div *ngIf="t.datos_tecnicos?.tipo_equipo === 'computadora'" class="mt-2 border-top pt-2">
+          <div class="d-flex justify-content-between small">
+            <strong>Procesador:</strong> <span>{{ t.datos_tecnicos?.procesador }}</span>
+          </div>
+          <div class="d-flex justify-content-between small">
+            <strong>RAM:</strong> <span>{{ t.datos_tecnicos?.ram }}</span>
+          </div>
+          <div class="d-flex justify-content-between small">
+            <strong>Disco:</strong> <span>{{ t.datos_tecnicos?.disco_duro }}</span>
           </div>
         </div>
 
+        <div class="d-flex justify-content-between small mt-2 border-top pt-2">
+          <strong>Estado:</strong>
+          <span>{{ t.estado }}</span>
+        </div>
+        <div class="d-flex justify-content-between small">
+          <strong>IP:</strong>
+          <span>{{ t.redes?.ip_ethernet || t.redes?.ip_wifi || '-' }}</span>
+        </div>
+
+        <div class="mt-2">
+          <small class="text-dark d-block"><strong>Especificaciones:</strong> {{ t.especificaciones }}</small>
+        </div>
+
+        <div class="d-flex justify-content-between small">
+          <strong>Nota:</strong> <span>{{ t.actualizacion?.nota }}</span>
+        </div>
+
+        <div class="d-flex justify-content-between small mt-2 border-top pt-2">
+          <strong>Técnico:</strong> <span>{{ t.actualizacion?.usuario }}</span>
+        </div>
+        <div class="d-flex justify-content-between small">
+          <strong>Fecha:</strong> <span>{{ t.actualizacion?.fecha }}</span>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
-<ng-template #cargandoTemplate>
-  <div class="alert alert-dark d-flex align-items-center" role="alert">
-    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-    Cargando equipos...
-  </div>
-</ng-template>

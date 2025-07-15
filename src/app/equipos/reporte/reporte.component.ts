@@ -19,6 +19,7 @@ export class ReporteComponent implements OnInit {
   public buscarEquipo: string = '';
   public buscarIp: string = '';
   public buscarDescripcion: string = '';
+  public buscarTipo: string = '';
   cargando: boolean = false;
   public hoy = new Date();
 
@@ -44,6 +45,7 @@ export class ReporteComponent implements OnInit {
   async obtenerEquipos() {
     const filtros = {
       no_bien: this.buscarEquipo,
+      tipo: 'computadora',
       // ip: this.buscaIp,
       // descripcion: this.buscarDescripcion,
       estado: 'A',
