@@ -1,161 +1,174 @@
-<div >
-  <button class="btn btn-secondary mb-3" (click)="close()">Cerrar</button>
-<h2 class="mb-4">Formulario de Solicitud</h2>
+<div class="container-fluid p-3">
 
-<form [formGroup]="form" (ngSubmit)="guardar()" class="needs-validation  p-4 rounded" novalidate>
-
-  <!-- Ticket -->
-  <div class="mb-3">
-    <label for="ticket" class="form-label">Ticket:</label>
-    <input id="ticket" type="text" class="form-control" formControlName="ticket" readonly />
+  <!-- Botón Cerrar -->
+  <div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-secondary" (click)="close()">Cerrar</button>
   </div>
 
-  <!-- Fecha de solicitud -->
-  <div class="mb-3">
-    <label for="fecha_solicitud" class="form-label">Fecha de Solicitud:</label>
-    <input id="fecha_solicitud" type="date" class="form-control" formControlName="fecha_solicitud" />
-    <div *ngIf="form.get('fecha_solicitud')?.invalid && form.get('fecha_solicitud')?.touched">
-      <small class="text-danger">Campo requerido.</small>
+  <!-- Título -->
+  <h2 class="text-center text-light mb-4">Formulario de Solicitud</h2>
+
+  <!-- Formulario -->
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="ticket-form card p-4 mb-4 rounded shadow-sm bg-dark text-light">
+
+    <div class="row g-3">
+
+      <!-- Ticket -->
+      <div class="col-12 col-md-6">
+        <label for="ticket" class="form-label">Ticket:</label>
+        <input id="ticket" type="text" class="form-control" formControlName="ticket" readonly />
+      </div>
+
+      <!-- Fecha de solicitud -->
+      <div class="col-12 col-md-6">
+        <label for="fecha_solicitud" class="form-label">Fecha de Solicitud:</label>
+        <input id="fecha_solicitud" type="date" class="form-control" formControlName="fecha_solicitud" />
+        <div *ngIf="form.get('fecha_solicitud')?.invalid && form.get('fecha_solicitud')?.touched">
+          <small class="text-danger">Campo requerido.</small>
+        </div>
+      </div>
+
+      <!-- Nombre del solicitante -->
+      <div class="col-12 col-md-6">
+        <label for="nombre_solicitante" class="form-label">Nombre del Solicitante:</label>
+        <input id="nombre_solicitante" type="text" class="form-control" formControlName="nombre_solicitante" />
+        <div *ngIf="form.get('nombre_solicitante')?.invalid && form.get('nombre_solicitante')?.touched">
+          <small class="text-danger">Campo requerido.</small>
+        </div>
+      </div>
+
+      <!-- Servicio -->
+      <div class="col-12 col-md-6">
+        <label for="servicio" class="form-label">Servicio:</label>
+        <input id="servicio" type="text" class="form-control" formControlName="servicio" />
+        <div *ngIf="form.get('servicio')?.invalid && form.get('servicio')?.touched">
+          <small class="text-danger">Campo requerido.</small>
+        </div>
+      </div>
+
+      <!-- Detalle -->
+      <div class="col-12">
+        <label for="detalle" class="form-label">Detalle:</label>
+        <textarea id="detalle" class="form-control" formControlName="detalle"></textarea>
+        <div *ngIf="form.get('detalle')?.invalid && form.get('detalle')?.touched">
+          <small class="text-danger">Campo requerido.</small>
+        </div>
+      </div>
+
+      <!-- Prioridad -->
+      <div class="col-12 col-md-6">
+        <label class="form-label mb-2 d-block">Prioridad:</label>
+        <div class="btn-group w-100 flex-wrap" role="group">
+          <button type="button" class="btn mb-2 flex-fill"
+                  [ngClass]="{'btn-success': form.get('prioridad')?.value==='Baja','btn-outline-success': form.get('prioridad')?.value!=='Baja'}"
+                  (click)="form.get('prioridad')?.setValue('Baja')">Baja</button>
+          <button type="button" class="btn mb-2 flex-fill"
+                  [ngClass]="{'btn-warning': form.get('prioridad')?.value==='Media','btn-outline-warning': form.get('prioridad')?.value!=='Media'}"
+                  (click)="form.get('prioridad')?.setValue('Media')">Media</button>
+          <button type="button" class="btn mb-2 flex-fill"
+                  [ngClass]="{'btn-danger': form.get('prioridad')?.value==='Alta','btn-outline-danger': form.get('prioridad')?.value!=='Alta'}"
+                  (click)="form.get('prioridad')?.setValue('Alta')">Alta</button>
+        </div>
+      </div>
+
+      <!-- Atención en -->
+      <div class="col-12 col-md-6">
+        <label class="form-label mb-2 d-block">Atención en:</label>
+        <div class="btn-group w-100 flex-wrap" role="group">
+          <button type="button" class="btn mb-2 flex-fill"
+                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Menores','btn-outline-primary': form.get('atencion_en')?.value!=='Menores'}"
+                  (click)="form.get('atencion_en')?.setValue('Menores')">Trabajos Menores</button>
+          <button type="button" class="btn mb-2 flex-fill"
+                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Computo','btn-outline-primary': form.get('atencion_en')?.value!=='Computo'}"
+                  (click)="form.get('atencion_en')?.setValue('Computo')">Equipo de Computo</button>
+          <button type="button" class="btn mb-2 flex-fill"
+                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Red','btn-outline-primary': form.get('atencion_en')?.value!=='Red'}"
+                  (click)="form.get('atencion_en')?.setValue('Red')">Redes y Telecomunicaciones</button>
+          <button type="button" class="btn mb-2 flex-fill"
+                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Software','btn-outline-primary': form.get('atencion_en')?.value!=='Software'}"
+                  (click)="form.get('atencion_en')?.setValue('Software')">Software</button>
+          <button type="button" class="btn mb-2 flex-fill"
+                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Diseño','btn-outline-primary': form.get('atencion_en')?.value!=='Diseño'}"
+                  (click)="form.get('atencion_en')?.setValue('Diseño')">Diseños Audiovisuales</button>
+        </div>
+      </div>
+
+      <!-- Número de Bien y Descripción -->
+      <div class="col-12 col-md-6">
+        <label for="numero_bien" class="form-label">Número de Bien:</label>
+        <input id="numero_bien" type="text" class="form-control" formControlName="numero_bien" />
+      </div>
+      <div class="col-12 col-md-6">
+        <label for="descripcion_equipo" class="form-label">Descripción del Equipo:</label>
+        <input id="descripcion_equipo" type="text" class="form-control" formControlName="descripcion_equipo" />
+      </div>
+
+      <!-- Insumos -->
+      <div class="col-12">
+        <label for="insumos_utilizados" class="form-label">Insumos Utilizados:</label>
+        <textarea id="insumos_utilizados" class="form-control" formControlName="insumos_utilizados"></textarea>
+      </div>
+
+      <!-- Fecha y Hora de Atención -->
+      <div class="col-12 col-md-6">
+        <label for="fecha_atencion" class="form-label">Fecha de Atención:</label>
+        <input id="fecha_atencion" type="date" class="form-control" formControlName="fecha_atencion" />
+      </div>
+      <div class="col-12 col-md-6">
+        <label for="hora_atencion" class="form-label">Hora de Atención:</label>
+        <input id="hora_atencion" type="time" class="form-control" formControlName="hora_atencion" />
+      </div>
+
+      <!-- Nota -->
+      <div class="col-12">
+        <label for="nota" class="form-label">Nota:</label>
+        <textarea id="nota" class="form-control" formControlName="nota"></textarea>
+      </div>
+
+      <!-- Estado -->
+      <div class="col-12">
+        <label class="form-label mb-2 d-block">Estado:</label>
+        <div class="btn-group d-flex flex-wrap gap-2" role="group">
+          <button type="button" class="btn flex-fill"
+                  [ngClass]="{'btn-outline-info text-light': form.get('estado')?.value!=='Abierto', 'btn-info': form.get('estado')?.value==='Abierto'}"
+                  (click)="form.get('estado')?.setValue('Abierto')">Abierto</button>
+          <button type="button" class="btn flex-fill"
+                  [ngClass]="{'btn-outline-success': form.get('estado')?.value!=='En Proceso', 'btn-success': form.get('estado')?.value==='En Proceso'}"
+                  (click)="form.get('estado')?.setValue('En Proceso')">En Proceso</button>
+          <button type="button" class="btn flex-fill"
+                  [ngClass]="{'btn-outline-danger': form.get('estado')?.value!=='Cerrado', 'btn-danger': form.get('estado')?.value==='Cerrado'}"
+                  (click)="form.get('estado')?.setValue('Cerrado')">Cerrado</button>
+        </div>
+      </div>
+
+      <!-- Usuario -->
+      <div class="col-12 col-md-6">
+        <label for="usuario" class="form-label">Usuario:</label>
+        <input id="usuario" type="text" class="form-control" formControlName="usuario" [value]="usuarioActual" />
+      </div>
+
+      <!-- Metadatos -->
+      <div class="col-12">
+        <fieldset class="grupo metadatos mb-4 border rounded p-3">
+          <legend class="w-auto px-2">Historial de registros</legend>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item py-1 px-2" *ngFor="let meta of sortedMetadatos; let i = index">
+              {{ meta.usuario }} — {{ meta.registro | date:'short' }}
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+
+      <!-- Mensaje -->
+      <div class="col-12" *ngIf="mensaje">
+        <div class="alert alert-info">{{ mensaje }}</div>
+      </div>
+
+      <!-- Botón Guardar -->
+      <div class="col-12 d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary w-75" [disabled]="form.invalid">Guardar</button>
+      </div>
+
     </div>
-  </div>
-
-  <!-- Nombre del solicitante -->
-  <div class="mb-3">
-    <label for="nombre_solicitante" class="form-label">Nombre del Solicitante:</label>
-    <input id="nombre_solicitante" type="text" class="form-control" formControlName="nombre_solicitante" />
-    <div *ngIf="form.get('nombre_solicitante')?.invalid && form.get('nombre_solicitante')?.touched">
-      <small class="text-danger">Campo requerido.</small>
-    </div>
-  </div>
-
-  <!-- Servicio -->
-  <div class="mb-3">
-    <label for="servicio" class="form-label">Servicio:</label>
-    <input id="servicio" type="text" class="form-control" formControlName="servicio" />
-    <div *ngIf="form.get('servicio')?.invalid && form.get('servicio')?.touched">
-      <small class="text-danger">Campo requerido.</small>
-    </div>
-  </div>
-
-  <!-- Detalle -->
-  <div class="mb-3">
-    <label for="detalle" class="form-label">Detalle:</label>
-    <textarea id="detalle" class="form-control" formControlName="detalle"></textarea>
-    <div *ngIf="form.get('detalle')?.invalid && form.get('detalle')?.touched">
-      <small class="text-danger">Campo requerido.</small>
-    </div>
-  </div>
-
-  <!-- Prioridad -->
-  <div class="mb-3">
-    <label for="prioridad" class="form-label">Prioridad:</label>
-    <select id="prioridad" class="form-select" formControlName="prioridad">
-      <option value="">Seleccione</option>
-      <option value="Baja">Baja</option>
-      <option value="Media">Media</option>
-      <option value="Alta">Alta</option>
-    </select>
-    <div *ngIf="form.get('prioridad')?.invalid && form.get('prioridad')?.touched">
-      <small class="text-danger">Campo requerido.</small>
-    </div>
-  </div>
-
-  <!-- Atencion en -->
-  <div class="mb-3">
-    <label for="atencion_en" class="form-label">Atención en:</label>
-    <select id="atencion_en" class="form-select" formControlName="atencion_en">
-      <option value="">Seleccione</option>
-      <option value="Menores">Trabajos Menores</option>
-      <option value="Computo">Equipo de Computo</option>
-      <option value="Red">Redes y Telecomunicaciones</option>
-      <option value="Software">Software</option>
-      <option value="Diseño">Diseños Audiovsisuales</option>
-    </select>
-    <div *ngIf="form.get('atencion_en')?.invalid && form.get('atencion_en')?.touched">
-      <small class="text-danger">Campo requerido.</small>
-    </div>
-  </div>
-
-  <!-- Otros campos simples -->
-  <div class="mb-3">
-    <label for="numero_bien" class="form-label">Número de Bien:</label>
-    <input id="numero_bien" type="text" class="form-control" formControlName="numero_bien" />
-  </div>
-
-  <div class="mb-3">
-    <label for="descripcion_equipo" class="form-label">Descripción del Equipo:</label>
-    <input id="descripcion_equipo" type="text" class="form-control" formControlName="descripcion_equipo" />
-  </div>
-
-  <div class="mb-3">
-    <label for="insumos_utilizados" class="form-label">Insumos Utilizados:</label>
-    <textarea id="insumos_utilizados" class="form-control" formControlName="insumos_utilizados"></textarea>
-  </div>
-
-  <!-- Fecha de Atención -->
-  <div class="mb-3">
-    <label for="fecha_atencion" class="form-label">Fecha de Atención:</label>
-    <input id="fecha_atencion" type="date" class="form-control" formControlName="fecha_atencion" />
-  </div>
-
-  <!-- Hora de Atención -->
-  <div class="mb-3">
-    <label for="hora_atencion" class="form-label">Hora de Atención:</label>
-    <input id="hora_atencion" type="time" class="form-control" formControlName="hora_atencion" />
-  </div>
-
-  <!-- Nota -->
-  <div class="mb-3">
-    <label for="nota" class="form-label">Nota:</label>
-    <textarea id="nota" class="form-control" formControlName="nota"></textarea>
-  </div>
-
-  <!-- Estado -->
-  <div class="mb-3">
-    <label for="estado" class="form-label">Estado:</label>
-    <div class="btn-group d-flex flex-wrap flex-md-nowrap gap-2" role="group" aria-label="Estado">
-      <button type="button" class="btn btn-outline-info text-light flex-fill"
-        [class.active]="form.get('estado')?.value === 'Abierto'"
-        (click)="form.get('estado')?.setValue('Abierto')">
-        Abierto
-      </button>
-      <button type="button" class="btn btn-outline-success flex-fill"
-        [class.active]="form.get('estado')?.value === 'En Proceso'"
-        (click)="form.get('estado')?.setValue('En Proceso')">
-        En Proceso
-      </button>
-      <button type="button" class="btn btn-outline-danger flex-fill"
-        [class.active]="form.get('estado')?.value === 'Cerrado'"
-        (click)="form.get('estado')?.setValue('Cerrado')">
-        Cerrado
-      </button>
-    </div>
-    <input type="hidden" formControlName="estado" />
-  </div>
-
-  <!-- Usuario -->
-  <div class="mb-3">
-    <label for="usuario" class="form-label">Usuario:</label>
-    <input id="usuario" type="text" class="form-control" formControlName="usuario" [value]="usuarioActual" />
-  </div>
-
-  <!-- Metadatos (r0) -->
-  <fieldset class="grupo metadatos mb-4 border rounded p-3">
-    <legend class="w-auto px-2">Historial de registros</legend>
-    <ul class="list-group">
-      <li class="list-group-item py-1 px-2" *ngFor="let meta of sortedMetadatos; let i = index">
-        {{ meta.usuario }} — {{ meta.registro | date:'short' }}
-      </li>
-    </ul>
-  </fieldset>
-
-  <!-- Mensaje -->
-  <div *ngIf="mensaje" class="alert alert-info">
-    {{ mensaje }}
-  </div>
-
-  <!-- Botón guardar -->
-  <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Guardar</button>
-</form>
-
+  </form>
 </div>

@@ -1,11 +1,39 @@
-.table-card {
-  font-size: 0.85rem;
+.list-report {
+  border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #fff;
-  transition: all 0.3s ease;
-  color: black;
+  overflow: hidden;
 }
 
-.table-card:hover {
-  box-shadow: 0 0 0.25rem rgba(0, 123, 255, 0.3);
+.list-header {
+  font-weight: 600;
+}
+
+.list-item {
+  transition: background 0.2s;
+}
+
+.list-item:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  border-left: 4px solid #0d6efd;
+}
+
+.list-item div {
+  padding: 0.25rem 0.5rem;
+}
+
+/* Responsive: en móvil cada fila se convierte en bloque */
+@media (max-width: 767px) {
+  .list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .list-item div {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 0.3rem;
+  }
+  .list-header {
+    display: none;
+  }
 }

@@ -7,7 +7,7 @@ import { ModalService } from '../../services/modal.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Metadata, Ticket } from '../../interface/interfaces';
-import { alienIcon } from '../../shared/icons';
+import { alienIcon } from '../../shared/icons/icons';
 
 @Component({
   selector: 'app-formulario',

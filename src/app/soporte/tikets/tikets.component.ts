@@ -1,7 +1,7 @@
-import { editorIcon, detalleIcon } from './../../shared/icons';
+import { editorIcon, detalleIcon } from '../../shared/icons/icons';
 import { Component, OnInit, NgModule } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Ticket } from '../../interface/interfaces';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-brows
 @Component({
   selector: 'app-tikets',
   templateUrl: './tikets.component.html',
-  // styleUrls: ['./tikets.component.css'],
+  styleUrls: ['./tikets.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule]
 })
@@ -25,6 +25,7 @@ export class TiketsComponent implements OnInit {
   public buscarPrioridad: string = '';
   public buscarId: string = '';
   cargando: boolean = false;
+  origen: string = '';
 
   private sanitizarSvg(svg: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
@@ -35,15 +36,23 @@ export class TiketsComponent implements OnInit {
   constructor(
     private api: ApiService,
     private router: Router,
+    private route: ActivatedRoute,
     private sanitizer: DomSanitizer
   ) {
     this.editorIcon = this.sanitizarSvg(editorIcon);
     this.detalleIcon = this.sanitizarSvg(detalleIcon);
 
   }
-
   ngOnInit() {
-    this.obtenerTikets();
+    this.route.queryParamMap.subscribe(params => {
+      this.origen = params.get('origen') || '';
+
+      this.obtenerTikets();
+    });
+
+
+
+
   }
 
   async obtenerTikets() {

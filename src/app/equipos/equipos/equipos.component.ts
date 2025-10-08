@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { editorIcon, detalleIcon } from './../../shared/icons';
+import { editorIcon, detalleIcon } from '../../shared/icons/icons';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { Equipo } from '../../interface/interfaces';
@@ -12,8 +12,8 @@ import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-brows
   selector: 'app-equipos',
   templateUrl: './equipos.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule]
-  // styleUrls: ['./equipos.component.css']
+  imports: [CommonModule, FormsModule],
+  styleUrls: ['./equipos.component.css']
 })
 export class EquiposComponent implements OnInit {
 

@@ -34,7 +34,7 @@
       Buscar
     </button>
 </form>
-<table class="table table-sm table-dark table-striped table-hover align-middle mb-0 rounded-3">
+<table class="table table-sm table-primary table-striped table-hover align-middle mb-0 rounded-3">
   <thead>
     <tr>
       <th>ID</th>
@@ -66,15 +66,17 @@
         </p>
       </td>
       <td>{{ t.atencion_en }}</td>
-      <td [ngClass]="{
-            'table-danger text-light': t.estado === 'Abierto',
-            'table-info text-dark': t.estado === 'En Proceso',
-            'table-dark': t.estado === 'Cerrado'
-          }" style="font-size: 0.95em;">
-        <span>
-          {{ t.estado || 'Sin estado' }}
-        </span>
-      </td>
+      <td style="font-size: 0.95em;">
+  <span
+    class="estado-badge"
+    [ngClass]="{
+      'abierto': t.estado === 'Abierto',
+      'en-proceso': t.estado === 'En Proceso',
+      'cerrado': t.estado === 'Cerrado'
+    }">
+    {{ t.estado || 'Sin estado' }}
+  </span>
+</td>
       <td>
         {{ t.fecha_atencion | date: 'shortDate' }}
       </td>

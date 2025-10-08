@@ -8,7 +8,7 @@ import { LoginComponent } from '../login/login.component';
 import { ModalService } from '../services/modal.service';
 import { Subscription } from 'rxjs';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
-import { alienIcon, pirateIcon } from '../shared/icons';
+import { alienIcon, pirateIcon } from '../shared/icons/icons';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Router } from '@angular/router';

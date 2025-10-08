@@ -1,8 +1,16 @@
-<nav class="navbar navbar-expand-lg  bg-primary noprint rounded w-100" data-bs-theme="dark" >
+<nav class="navbar navbar-expand-lg sticky-top  bg-primary noprint rounded w-100" data-bs-theme="" >
   <div class="container-fluid">
     <a class="navbar-brand" href="#" (click)="menu()">Soporte App</a>
-    <button class="btn btn-outline-dark ms-3 rounded-3"  (click)="equipos()">Equipos</button>
-    <button class="btn btn-outline-dark ms-3 rounded-3" (click)="tickets()">Tickets</button>
+    <button class="btn btn-outline-dark ms-3 rounded-3"  (click)="equipos()">
+      <span [innerHTML]="icons['equipos']"></span>
+      Equipos</button>
+    <button class="btn btn-outline-dark ms-3 rounded-3" (click)="tickets()">
+      <span [innerHTML]="icons['tickets']"></span>
+      Tickets</button>
+    <button class="btn btn-outline-dark ms-3 rounded-3" >
+      <span [innerHTML]="icons['ticket']"></span>
+      Ticket
+    </button>
     <div class="collapse navbar-collapse" *ngIf="estaAutenticado">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">

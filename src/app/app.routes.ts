@@ -16,6 +16,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dash', component: TiketsComponent, canActivate: [AuthGuard] },
   { path: 'ticket', component: FormularioComponent, canActivate: [AuthGuard] }, // Formulario para crear un nuevo ticket
+  { path: 'tiket/:origen', component: FormularioComponent, canActivate: [AuthGuard] },
   { path: 'ticket/:id', component: FormularioComponent, canActivate: [AuthGuard] }, // Formulario para editar un ticket existente
   { path: 'detail/:id', component: DetalleComponent }, // Detalle del ticket
   { path: 'equipo/:id', component: FormEquipoComponent, canActivate: [AuthGuard] },

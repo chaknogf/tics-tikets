@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { editorIcon, detalleIcon } from './../../shared/icons';
+import { editorIcon, detalleIcon } from '../../shared/icons/icons';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { Equipo } from '../../interface/interfaces';
@@ -45,7 +45,7 @@ export class ReporteComponent implements OnInit {
   async obtenerEquipos() {
     const filtros = {
       no_bien: this.buscarEquipo,
-      tipo: 'computadora',
+      tipo: this.buscarTipo,
       // ip: this.buscaIp,
       // descripcion: this.buscarDescripcion,
       estado: 'A',

@@ -1,13 +1,16 @@
+import { IconService } from './../services/icon.service';
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalService } from '../services/modal.service';
 import { ApiService } from '../services/api.service';
+import { ticketIcon } from '../shared/icons/icons';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  // styleUrls: ['./navbar.component.css'],
+  styleUrls: ['./navbar.component.css'],
   standalone: true,
   imports: [CommonModule]
 })
@@ -17,12 +20,25 @@ export class NavbarComponent {
   @Output() cerrarSesion = new EventEmitter<void>();
 
 
+  options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
+
+  // iconos
+  icons: { [key: string]: any } = {};
+
 
   constructor(
     private router: Router,
     private modalService: ModalService,
-    private api: ApiService
+    private api: ApiService,
+    private sanitizer: DomSanitizer,
+    private iconService: IconService
   ) {
+    this.icons = {
+      ticket: this.iconService.getIcon("ticketIcon"),
+      tickets: this.iconService.getIcon("ticketsIcon"),
+      equipos: this.iconService.getIcon("equiposIcon"),
+
+    };
 
 
   }
@@ -52,6 +68,10 @@ export class NavbarComponent {
 
   tickets() {
     this.router.navigate(['/dash']);
+  }
+
+  ticket() {
+    this.router.navigate(['/tiket', 'dash']);
   }
 
 }

@@ -1,85 +1,92 @@
+/* === Aurora Navbar === */
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 60dvw;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 10;
-  border-radius: 8px;
-  text-wrap: wrap;
+  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, rgba(40, 52, 71, 0.85), rgba(23, 32, 42, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease;
+  font-family: 'Poppins', sans-serif;
 }
 
-.navbar .logo {
-  display: flex;
-  align-items: center;
+/* Marca del navbar */
+.navbar-brand {
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px rgba(173, 216, 230, 0.6);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-.navbar .logo img {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-}
-
-.navbar .logo span {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #333;
-}
-
-.navbar .nav-links ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
-.navbar .nav-links li {
-  margin-left: 30px;
-}
-
-.navbar .nav-links a {
-  text-decoration: none;
-  color: #666;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.navbar .nav-links a:hover {
-  color: #6985ff;
-}
-
-button {
-  padding: 4px 8px;
-  border-radius: 5px;
+.navbar-brand:hover {
+  color: #aee2ff !important;
+  text-shadow: 0 0 10px rgba(135, 206, 250, 0.9);
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.role {
-  font-size: small;
-  padding: 0.4rem;
+/* Botones principales */
+.navbar .btn {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
 }
 
-.user-info {
-  font-weight: bold;
-  text-transform: uppercase;
+.navbar .btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #aee2ff;
+  color: #aee2ff;
+  box-shadow: 0 0 10px rgba(135, 206, 250, 0.5);
 }
 
-@media screen and (max-width: 768px) {
+/* Texto de usuario y rol */
+.navbar-text {
+  color: #f1f1f1;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.badge.bg-dark {
+  background: linear-gradient(135deg, #222, #333);
+  color: #fff;
+  box-shadow: 0 0 4px rgba(135, 206, 250, 0.4);
+}
+
+/* Botón salir */
+.btn-light.text-dark {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-light.text-dark:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: #aee2ff !important;
+  box-shadow: 0 0 10px rgba(135, 206, 250, 0.5);
+}
+
+/* Transición para el colapso */
+.collapse {
+  transition: max-height 0.4s ease-in-out;
+}
+
+/* Adaptabilidad móvil */
+@media (max-width: 768px) {
   .navbar {
-    width: 80dvw;
-
+    border-radius: 0;
+    background: rgba(30, 40, 55, 0.9);
   }
 
-}
+  .navbar .btn {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
 
-.user-info {
-  color: black;
+  .navbar-text {
+    display: block;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
 }

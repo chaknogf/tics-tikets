@@ -1,0 +1,157 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(145deg, #0f1a2b, #11233e);
+  color: #e0f7fa;
+}
+
+/* === Formulario de filtros === */
+form.row.g-2, form.row.g-1 {
+  background: rgba(30,40,60,0.5);
+  backdrop-filter: blur(14px) saturate(150%);
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+form.row.g-2:hover, form.row.g-1:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(0,0,0,0.6);
+}
+
+/* === Inputs y selects flotantes === */
+.form-control, .form-select {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  color: #e0f7fa;
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
+}
+
+.form-control::placeholder {
+  color: rgba(224,247,250,0.6);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #00e5ff;
+  box-shadow: 0 0 12px rgba(0,229,255,0.6);
+  outline: none;
+  background: rgba(255,255,255,0.1);
+  color: #e0f7fa;
+}
+
+/* === Botones flotantes de filtro === */
+.btn {
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00e5ff, #00bcd4);
+  border: none;
+  color: #0a1f2a;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #00bcd4, #008c9e);
+  box-shadow: 0 0 12px rgba(0,229,255,0.8);
+}
+
+/* === Tabla Dark Aurora === */
+.table {
+  background: rgba(20,30,50,0.5);
+  backdrop-filter: blur(14px);
+  border-radius: 14px;
+  overflow: hidden;
+  color: #e0f7fa;
+}
+
+.table thead {
+  background: rgba(0,150,200,0.3);
+  color: #e0f7fa;
+}
+
+.table tbody tr {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+}
+
+/* === Prioridad y Estado resaltados === */
+.text-danger { color: #ff6b6b !important; }
+.text-info { color: #00e5ff !important; }
+.text-white { color: #e0f7fa !important; }
+
+.table-danger { background-color: rgba(255,80,80,0.2) !important; color: #fff; }
+.table-info { background-color: rgba(0,229,255,0.2) !important; color: #0a1f2a; }
+.table-dark { background-color: rgba(50,50,50,0.5) !important; color: #b2ebf2; }
+
+/* === Cards para móviles === */
+.card {
+  background: rgba(30,40,60,0.5);
+  backdrop-filter: blur(14px);
+  border-radius: 14px;
+  margin-bottom: 1rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.6);
+}
+
+.card-body {
+  border-radius: 12px;
+  padding: 1rem;
+  color: #e0f7fa;
+}
+
+/* Estados dentro de cards */
+.card-body.bg-danger { background: rgba(255,80,80,0.3); color: #fff; }
+.card-body.bg-info { background: rgba(0,229,255,0.3); color: #0a1f2a; }
+.card-body.bg-dark { background: rgba(50,50,50,0.5); color: #b2ebf2; }
+
+/* Botones en cards */
+.card .btn-outline-light {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #e0f7fa;
+}
+
+.card .btn-outline-light:hover {
+  background: rgba(0,229,255,0.2);
+  color: #0a1f2a;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}
+
+/* === Responsividad === */
+@media (max-width: 768px) {
+  .table-responsive { display: none !important; }
+  .d-md-none { display: block !important; }
+  form.row.g-1 { padding: 0.8rem; }
+  .btn { width: 100%; margin-top: 0.5rem; }
+}
+@media (min-width: 768px) {
+  .d-none.d-md-block { display: block !important; }
+  .d-md-none { display: none !important; }
+}

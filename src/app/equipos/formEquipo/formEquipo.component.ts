@@ -1,4 +1,4 @@
-import { computerIcon, printerIcon, mobileIcon, upsIcon } from './../../shared/icons';
+import { computerIcon, printerIcon, mobileIcon, upsIcon } from '../../shared/icons/icons';
 import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';

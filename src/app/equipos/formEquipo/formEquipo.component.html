@@ -16,7 +16,7 @@
     </div>
 
     <!-- Grupo: Datos Técnicos -->
-    <fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card">
+    <fieldset class="border p-3 mb-4 rounded bg-primary bg-opacity-100 border-light card">
       <legend class="w-auto px-2">Datos Técnicos</legend>
 
       <div formGroupName="datos_tecnicos" class="row g-3">
@@ -55,7 +55,7 @@
       </div>
  </fieldset>
  <!-- computadora -->
-<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
+<fieldset class="border p-3 mb-4 rounded bg-primary bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
   <div formGroupName="datos_tecnicos" >
     <div class="row g-3">
       <div class="col-md-4">
@@ -87,7 +87,7 @@
   </div>
 </fieldset>
 
-<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'impresora'">
+<fieldset class="border p-3 mb-4 rounded bg-primary bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'impresora'">
   <div formGroupName="datos_tecnicos" >
     <div class="row g-3">
       <div class="col-md-4">
@@ -140,7 +140,7 @@
   </div>
 </fieldset>
 
-<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'tablet'">
+<fieldset class="border p-3 mb-4 rounded bg-primary bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'tablet'">
   <div formGroupName="datos_tecnicos" >
     <div class="row g-3">
       <div class="col-md-4">
@@ -166,7 +166,7 @@
   </div>
 </fieldset>
 
-<fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'ups'">
+<fieldset class="border p-3 mb-4 rounded bg-primary bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'ups'">
   <div formGroupName="datos_tecnicos" >
     <div class="row g-3">
       <div class="col-md-4">
@@ -204,7 +204,7 @@
 
 
     <!-- Grupo: Redes -->
-    <fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value !== 'ups' ">
+    <fieldset class="border p-3 mb-4 rounded bg-primary bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value !== 'ups' ">
       <legend class="w-auto px-2">Redes</legend>
       <div formGroupName="redes" class="row g-3">
         <div class="col-md-6">
@@ -227,7 +227,7 @@
     </fieldset>
 
     <!-- Grupo: Software Instalado -->
-    <fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
+    <fieldset class="border p-3 mb-4 rounded bg-primary bg-opacity-100 border-light card" *ngIf="form.get('datos_tecnicos.tipo_equipo')?.value === 'computadora'">
       <legend class="w-auto px-2">Software Instalado</legend>
       <div formGroupName="software_instalado">
         <div formGroupName="r0" class="row g-3">
@@ -266,7 +266,7 @@
     </div>
 
     <!-- Actualización -->
-    <fieldset class="border p-3 mb-4 rounded bg-dark bg-opacity-100 border-light card">
+    <fieldset class="border p-3 mb-4 rounded bg-primary bg-opacity-100 border-light card">
       <legend class="w-auto px-2">Actualización</legend>
       <div formGroupName="actualizacion">
         <div class="row g-3 align-items-center">
