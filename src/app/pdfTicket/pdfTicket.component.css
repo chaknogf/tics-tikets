@@ -101,3 +101,72 @@
   margin: 0 auto 10px auto;
   object-fit: contain;
 }
+
+.comprobante-container {
+  display: flex;
+  justify-content: center;
+  background: #f9f9f9;
+  padding: 30px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.comprobante {
+  width: 800px;
+  background: white;
+  color: #222;
+  border: 1px solid #ddd;
+}
+
+.logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.titulo-seccion {
+  border-left: 4px solid #007bff;
+  padding-left: 8px;
+  margin-top: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.datos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 20px;
+  margin-top: 8px;
+}
+
+.detalle {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  white-space: pre-line;
+}
+
+.firma {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.linea-firma {
+  border-bottom: 1px solid #000;
+  width: 250px;
+  height: 1px;
+}
+
+@media print {
+  .comprobante-container {
+    background: white;
+    padding: 0;
+  }
+  .comprobante {
+    border: none;
+    box-shadow: none;
+  }
+}

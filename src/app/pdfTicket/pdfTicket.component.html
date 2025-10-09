@@ -1,14 +1,17 @@
-<div class="comprobante-container">
-  <!-- <button class="no-print btn btn-secondary mb-3" (click)="cerrar()">Cerrar</button> -->
-
-  <div class="comprobante">
+<div *ngIf="!cargando" id="pdf-ticket" class="comprobante-container">
+  <div class="comprobante shadow-sm rounded bg-white text-dark p-4">
     <header class="text-center border-bottom pb-3 mb-4">
       <img src="assets/logo-Tecpan.avif" alt="Logo Hospital" class="logo mb-2" />
       <h2 class="fw-bold mb-0">Reporte de Atención Técnica</h2>
       <p class="m-0">Departamento de Informática</p>
       <p class="m-0">Hospital General Tipo I de Tecpán Guatemala</p>
-      <p class="mt-2"><strong>Ticket No.:</strong> {{ ticket.ticket }}</p>
-      <p><strong>Fecha de Solicitud:</strong> {{ ticket.fecha_solicitud | date:'fullDate' }}</p>
+      <p class="mt-2">
+        <strong>Ticket No.:</strong> {{ ticket.ticket }}
+      </p>
+      <p>
+        <strong>Fecha de Solicitud:</strong>
+        {{ ticket.fecha_solicitud | date: 'fullDate' }}
+      </p>
     </header>
 
     <section>
@@ -35,6 +38,39 @@
       <p class="detalle">{{ ticket.detalle }}</p>
     </section>
 
-  </div>
+    <section *ngIf="ticket.insumos_utilizados">
+      <h5 class="titulo-seccion">Insumos Utilizados</h5>
+      <p class="detalle">{{ ticket.insumos_utilizados }}</p>
+    </section>
 
+    <section *ngIf="ticket.nota">
+      <h5 class="titulo-seccion">Nota de Trabajo</h5>
+      <p class="detalle">{{ ticket.nota }}</p>
+    </section>
+
+    <section>
+      <h5 class="titulo-seccion">Atención Realizada</h5>
+      <div class="datos-grid">
+        <div>
+          <strong>Fecha:</strong>
+          {{ ticket.fecha_atencion | date: 'fullDate' }}
+        </div>
+        <div>
+          <strong>Hora:</strong> {{ hora | date: 'shortTime' }}
+        </div>
+      </div>
+    </section>
+
+    <footer class="mt-5 text-center">
+      <p><strong>Técnico Responsable:</strong> {{ ticket.usuario }}</p>
+      <div class="firma">
+        <span>Firma: </span>
+        <div class="linea-firma"></div>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<div *ngIf="cargando" class="text-center py-5 text-muted">
+  Generando ticket PDF...
 </div>
