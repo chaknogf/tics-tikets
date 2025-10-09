@@ -9,6 +9,7 @@ import { FormEquipoComponent } from './equipos/formEquipo/formEquipo.component';
 import { VerEquipoComponent } from './equipos/verEquipo/verEquipo.component';
 import { EquiposComponent } from './equipos/equipos/equipos.component';
 import { ReporteComponent } from './equipos/reporte/reporte.component';
+import { PdfTicketComponent } from './pdfTicket/pdfTicket.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'tiket/:origen', component: FormularioComponent, canActivate: [AuthGuard] },
   { path: 'ticket/:id', component: FormularioComponent, canActivate: [AuthGuard] }, // Formulario para editar un ticket existente
   { path: 'detail/:id', component: DetalleComponent }, // Detalle del ticket
+  { path: 'ticketPdf/:id', component: PdfTicketComponent },
   { path: 'equipo/:id', component: FormEquipoComponent, canActivate: [AuthGuard] },
   { path: 'equipo', component: FormEquipoComponent, canActivate: [AuthGuard] },
   { path: 'ver-equipo/:id', component: VerEquipoComponent, canActivate: [AuthGuard] },

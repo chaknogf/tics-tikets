@@ -124,16 +124,25 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
   async guardar() {
     const ticket = this.form.getRawValue();
 
-    if (ticket.id) {
-      await this.update(ticket);
-    } else {
-      await this.create();
-    }
+    try {
+      let response;
+      if (ticket.id) {
+        await this.update(ticket);
+        response = { id: ticket.id };
+      } else {
+        response = await this.api.createTicket(ticket); // asegúrese que devuelve el objeto creado con su `id`
+      }
 
-    await this.generarPDF();
-    setTimeout(() => {
-      window.location.reload(); // o this.form.reset();
-    }, 1000);
+      const idTicket = response.id;
+      this.mensaje = '✅ Ticket guardado correctamente';
+
+      // Redirigir al componente que genera el PDF
+      this.router.navigate(['/ticketPdf', idTicket]);
+
+    } catch (error) {
+      this.mensaje = '❌ Error al guardar el ticket';
+      console.error(error);
+    }
   }
 
   open() {

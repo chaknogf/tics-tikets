@@ -1,5 +1,5 @@
 <div class="comprobante-container">
-  <button class="no-print btn btn-secondary mb-3" (click)="cerrar()">Cerrar</button>
+  <!-- <button class="no-print btn btn-secondary mb-3" (click)="cerrar()">Cerrar</button> -->
 
   <div class="comprobante">
     <header class="text-center border-bottom pb-3 mb-4">
@@ -22,7 +22,7 @@
       </div>
     </section>
 
-    <section>
+    <section *ngIf="ticket.numero_bien">
       <h5 class="titulo-seccion">Información del Equipo</h5>
       <div class="datos-grid">
         <div><strong>Número de Bien:</strong> {{ ticket.numero_bien }}</div>
@@ -35,47 +35,6 @@
       <p class="detalle">{{ ticket.detalle }}</p>
     </section>
 
-    <section>
-      <h5 class="titulo-seccion">Insumos Utilizados</h5>
-      <p class="detalle">{{ ticket.insumos_utilizados || 'N/A' }}</p>
-    </section>
-
-    <section>
-      <h5 class="titulo-seccion">Nota de Trabajo</h5>
-      <p class="detalle">{{ ticket.nota }}</p>
-    </section>
-
-    <section>
-      <h5 class="titulo-seccion">Atención Realizada</h5>
-      <div class="datos-grid">
-        <div><strong>Fecha:</strong> {{ ticket.fecha_atencion | date:'fullDate' }}</div>
-        <div><strong>Hora:</strong> {{ getHoraComoFecha() | date:'shortTime' }}</div>
-      </div>
-    </section>
-
-    <footer class="mt-5 d-flex gap-4">
-      <div class="col-6">
-        <p><strong>Técnico Responsable:</strong> {{ ticket.usuario }}</p>
-        <div class="firma mt-4">
-          <span>Firma:</span>
-          <span class="linea-firma"></span>
-        </div>
-      </div>
-
-      <div class="col-6">
-        <p><strong>Usuario:</strong> {{ ticket.nombre_solicitante }}</p>
-        <div class="firma mt-4">
-          <span>Firma:</span>
-          <span class="linea-firma"></span>
-        </div>
-      </div>
-
-    </footer>
   </div>
 
-  <div class="text-center no-print mt-4">
-    <button class="btn btn-primary" (click)="imprimir()">
-      <i class="bi bi-printer me-1"></i> Imprimir
-    </button>
-  </div>
 </div>
