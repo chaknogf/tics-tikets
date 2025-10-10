@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-lg  text-light mb-4 shadow-sm">
   <div class="container-fluid">
     <button class="btn btn-outline-info ms-auto d-flex align-items-center gap-2" (click)="open()">
-      <span class="svg-shadow" [innerHTML]="pirateIcon"></span>
+      <span class="svg-shadow" [innerHTML]="icons['pirata']"></span>
       Specter
     </button>
   </div>
@@ -79,18 +79,27 @@
       </div>
 
       <!-- Prioridad -->
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-12">
         <label class="form-label mb-2 d-block">Prioridad:</label>
-        <div class="btn-group w-100 flex-wrap" role="group">
+        <div class="btn-group w-100 flex-wrap gap-2" role="group">
           <button type="button" class="btn mb-2 flex-fill"
                   [ngClass]="{'btn-success': form.get('prioridad')?.value==='Baja','btn-outline-success': form.get('prioridad')?.value!=='Baja'}"
-                  (click)="form.get('prioridad')?.setValue('Baja')">Baja</button>
+                  (click)="form.get('prioridad')?.setValue('Baja')">
+                  <span [innerHTML]="icons['clock']"></span>
+                  <p class="small">Baja</p>
+          </button>
           <button type="button" class="btn mb-2 flex-fill"
                   [ngClass]="{'btn-warning': form.get('prioridad')?.value==='Media','btn-outline-warning': form.get('prioridad')?.value!=='Media'}"
-                  (click)="form.get('prioridad')?.setValue('Media')">Media</button>
+                  (click)="form.get('prioridad')?.setValue('Media')">
+                  <span [innerHTML]="icons['ok']"></span>
+                  <p class="small">Media</p>
+                </button>
           <button type="button" class="btn mb-2 flex-fill"
                   [ngClass]="{'btn-danger': form.get('prioridad')?.value==='Alta','btn-outline-danger': form.get('prioridad')?.value!=='Alta'}"
-                  (click)="form.get('prioridad')?.setValue('Alta')">Alta</button>
+                  (click)="form.get('prioridad')?.setValue('Alta')">
+                  <span [innerHTML]="icons['critic']"></span>
+                  <p class="small">Alta</p>
+                </button>
         </div>
         <div *ngIf="form.get('prioridad')?.invalid && form.get('prioridad')?.touched">
           <small class="text-danger">Campo requerido.</small>
@@ -98,24 +107,39 @@
       </div>
 
       <!-- Atención en -->
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-12 justify-content-center">
         <label class="form-label mb-2 d-block">Atención en:</label>
-        <div class="btn-group w-100 flex-wrap" role="group">
+        <div class="btn-group w-100 flex-wrap gap-1" role="group">
           <button type="button" class="btn mb-2 flex-fill"
                   [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Menores','btn-outline-primary': form.get('atencion_en')?.value!=='Menores'}"
-                  (click)="form.get('atencion_en')?.setValue('Menores')">Trabajos Menores</button>
+                  (click)="form.get('atencion_en')?.setValue('Menores')">
+                  <span [innerHTML]="icons['work']" ></span>
+                  <p class="small">Trabajos Menores</p>
+                </button>
           <button type="button" class="btn mb-2 flex-fill"
                   [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Computo','btn-outline-primary': form.get('atencion_en')?.value!=='Computo'}"
-                  (click)="form.get('atencion_en')?.setValue('Computo')">Equipo de Computo</button>
+                  (click)="form.get('atencion_en')?.setValue('Computo')">
+                  <span [innerHTML]="icons['computer']" ></span>
+                  <p class="small">Equipo de Computo</p>
+                </button>
           <button type="button" class="btn mb-2 flex-fill"
                   [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Red','btn-outline-primary': form.get('atencion_en')?.value!=='Red'}"
-                  (click)="form.get('atencion_en')?.setValue('Red')">Redes y Telecomunicaciones</button>
+                  (click)="form.get('atencion_en')?.setValue('Red')">
+                  <span [innerHTML]="icons['net']" ></span>
+                  <p class="small">Redes y Telecomunicaciones</p>
+                </button>
           <button type="button" class="btn mb-2 flex-fill"
                   [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Software','btn-outline-primary': form.get('atencion_en')?.value!=='Software'}"
-                  (click)="form.get('atencion_en')?.setValue('Software')">Software</button>
+                  (click)="form.get('atencion_en')?.setValue('Software')">
+                  <span [innerHTML]="icons['software']" ></span>
+                  <p class="small">Software</p>
+                </button>
           <button type="button" class="btn mb-2 flex-fill"
                   [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Diseño','btn-outline-primary': form.get('atencion_en')?.value!=='Diseño'}"
-                  (click)="form.get('atencion_en')?.setValue('Diseño')">Diseños Audiovisuales</button>
+                  (click)="form.get('atencion_en')?.setValue('Diseño')">
+                  <span [innerHTML]="icons['diseño']" ></span>
+                  <p class="small">Diseños Audiovisuales y Multimedia</p>
+                </button>
         </div>
         <div *ngIf="form.get('atencion_en')?.invalid && form.get('atencion_en')?.touched">
           <small class="text-danger">Campo requerido.</small>

@@ -8,10 +8,13 @@ import { LoginComponent } from '../login/login.component';
 import { ModalService } from '../services/modal.service';
 import { Subscription } from 'rxjs';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
-import { alienIcon, pirateIcon } from '../shared/icons/icons';
+import { alienIcon, clockMove, critical, diseño, ok, pirateIcon, software } from '../shared/icons/icons';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Router } from '@angular/router';
+import { IconService } from './../services/icon.service';
+
+
 
 @Component({
   selector: 'app-solicitudUsuario',
@@ -28,6 +31,11 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
   private sub: Subscription;
   buscarTicket: string = '';
 
+  options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
+
+  // iconos
+  icons: { [key: string]: any } = {};
+
   private sanitizarSvg(svg: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
@@ -40,10 +48,26 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private modalService: ModalService,
     private sanitizer: DomSanitizer,
+    private iconService: IconService,
     private router: Router
   ) {
-    this.alienIcon = this.sanitizarSvg(alienIcon);
-    this.pirateIcon = this.sanitizarSvg(pirateIcon);
+    this.icons = {
+
+      alien: this.iconService.getIcon("alienIcon"),
+      pirata: this.iconService.getIcon("pirateIcon"),
+      work: this.iconService.getIcon("work"),
+      computer: this.iconService.getIcon("computer"),
+      net: this.iconService.getIcon("redes"),
+      software: this.iconService.getIcon("software"),
+      diseño: this.iconService.getIcon("diseño"),
+      critic: this.iconService.getIcon("critical"),
+      ok: this.iconService.getIcon("ok"),
+      clockMove: this.iconService.getIcon("clockMove"),
+      clock: this.iconService.getIcon("clock"),
+
+
+    }
+
 
     this.sub = this.modalService.abrirLogin$.subscribe(() => this.open());
     this.form = this.fb.group({

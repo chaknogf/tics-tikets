@@ -1,6 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from './../services/api.service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Ticket } from './../interface/interfaces';
@@ -14,7 +13,7 @@ import html2canvas from 'html2canvas';
   templateUrl: './pdfTicket.component.html',
   styleUrls: ['./pdfTicket.component.css']
 })
-export class PdfTicketComponent implements OnInit, AfterViewInit {
+export class PdfTicketComponent implements OnInit {
   ticket!: Ticket;
   cargando = true;
   hora: string = '';
@@ -30,21 +29,7 @@ export class PdfTicketComponent implements OnInit, AfterViewInit {
     await this.obtenerTicket();
   }
 
-  async ngAfterViewInit() {
-    // Espera unos milisegundos para asegurar el render
-    const intento = async (reintentos = 10) => {
-      const elemento = document.getElementById('pdf-ticket');
-      if (elemento) {
-        await this.generarPDF(elemento);
-      } else if (reintentos > 0) {
-        setTimeout(() => intento(reintentos - 1), 300);
-      } else {
-        console.warn('⚠️ No se encontró el elemento para generar PDF.');
-      }
-    };
-    intento();
-  }
-
+  /** Obtiene el ticket por ID */
   private async obtenerTicket(): Promise<void> {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (isNaN(id)) return;
@@ -52,18 +37,29 @@ export class PdfTicketComponent implements OnInit, AfterViewInit {
     try {
       this.ticket = await this.api.getTicket(id);
       this.cargando = false;
+
+      // Esperar un poco para que Angular pinte el HTML
+      setTimeout(() => this.generarPDF(), 500);
     } catch (error) {
       console.error('❌ Error al obtener ticket:', error);
       this.cargando = false;
     }
   }
 
-  private async generarPDF(elemento: HTMLElement) {
+  /** Genera y descarga el PDF */
+  private async generarPDF() {
+    const elemento = document.getElementById('pdf-ticket');
+    if (!elemento) {
+      console.warn('⚠️ No se encontró el elemento del ticket para generar PDF.');
+      return;
+    }
+
     try {
       const canvas = await html2canvas(elemento, {
         backgroundColor: '#ffffff',
         scale: 2,
-        useCORS: true
+        useCORS: true,
+        logging: false
       });
 
       const imgData = canvas.toDataURL('image/png');
@@ -79,9 +75,8 @@ export class PdfTicketComponent implements OnInit, AfterViewInit {
 
       pdf.save(`${this.ticket.ticket || 'ticket'}.pdf`);
 
-      // Redirigir después de guardar el PDF
+      // Redirigir luego de guardar el PDF
       setTimeout(() => this.router.navigate(['/dash']), 2000);
-
     } catch (error) {
       console.error('❌ Error al generar PDF:', error);
     }
