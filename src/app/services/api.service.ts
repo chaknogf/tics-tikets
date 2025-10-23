@@ -391,6 +391,17 @@ export class ApiService {
     }
   }
 
+  async getDashboardSolicitudes(): Promise<any> {
+    try {
+      const response = await this.api.get('/dashboard/solicitudes');
+      //console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener solicitudes:', error);
+      throw error;
+    }
+  }
+
 
 
 }

@@ -2,12 +2,12 @@
   "name": "solicitudes",
   "version": "0.0.0",
   "scripts": {
-  "ng": "ng",
-  "start": "ng serve",
-  "purge": "postcss src/styles.full.css -o src/styles.css",
-  "build": "yarn purge && ng build --configuration production",
-  "serve": "ng serve"
-},
+    "ng": "ng",
+    "start": "ng serve",
+    "purge": "postcss src/styles.full.css -o src/styles.css",
+    "build": "yarn purge && ng build --configuration production",
+    "serve": "ng serve"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "^19.2.0",
@@ -20,8 +20,11 @@
     "axios": "^1.9.0",
     "bootstrap": "^5.3.7",
     "bootswatch": "^5.3.6",
+    "chart.js": "4",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
+    "ng2-charts": "4.1.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

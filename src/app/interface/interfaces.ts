@@ -135,3 +135,35 @@ export interface EquipoCrear {
   estado: string;
   actualizacion?: Actualizacion;
 }
+
+export interface Estados {
+  abierto: number;
+  en_proceso: number;
+  cerrado: number;
+}
+
+export interface Prioridades {
+  alta: number;
+  media: number;
+  baja: number;
+}
+
+export interface Variacion {
+  total: number;
+  abiertos: number;
+  en_proceso: number;
+  cerrados: number;
+}
+
+export interface DashboardPeriodo {
+  total: number;
+  estados: Estados;
+  prioridades: Prioridades;
+  variacion: Variacion;
+}
+
+export interface DashboardSolicitudes {
+  hoy: DashboardPeriodo;
+  mes_actual: DashboardPeriodo;
+  año_actual: DashboardPeriodo;
+}

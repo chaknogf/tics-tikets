@@ -1,29 +1,30 @@
-<nav class="navbar navbar-expand-lg sticky-top  bg-primary noprint rounded w-100 no-print" data-bs-theme="" >
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#" (click)="menu()">Soporte App</a>
-    <button class="btn btn-outline-dark ms-3 rounded-3"  (click)="equipos()">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="nav-left">
+    <a href="#" class="brand" (click)="menu()">Soporte App</a>
+  </div>
+
+  <div class="nav-right" [class.active]="menuAbierto">
+    <button class="nav-btn" (click)="equipos()">
       <span [innerHTML]="icons['equipos']"></span>
-      Equipos</button>
-    <button class="btn btn-outline-dark ms-3 rounded-3" (click)="tickets()">
-      <span [innerHTML]="icons['tickets']"></span>
-      Tickets</button>
-    <button class="btn btn-outline-dark ms-3 rounded-3" (click)="ticket()">
-      <span [innerHTML]="icons['ticket']"></span>
-      Ticket
+      <span>Equipos</span>
     </button>
-    <div class="collapse navbar-collapse" *ngIf="estaAutenticado">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <span class="navbar-text">
-          Usuario:
-            <span class="badge bg-dark ms-1 rounded">[{{ usuario }}]</span>
-            <span class="badge bg-dark ms-1 rounded">[{{ rol }}]</span>
-          </span>
-        </li>
-        <li class="nav-item">
-          <button class="btn btn-outline-dark btn-light text-dark ms-3 rounded-3" (click)="logout()">Salir</button>
-        </li>
-      </ul>
+    <button class="nav-btn" (click)="tickets()">
+      <span [innerHTML]="icons['tickets']"></span>
+      <span>Tickets</span>
+    </button>
+    <button class="nav-btn w-25" (click)="ticket()">
+      <span [innerHTML]="icons['ticket']"></span>
+      <span class="text-wrap ">Generar Ticket</span>
+    </button>
+
+    <div class="user-info" *ngIf="estaAutenticado">
+      <span class="badge">{{ usuario }}</span>
+      <span class="badge">{{ rol }}</span>
+      <button class="logout-btn" (click)="logout()">Salir</button>
     </div>
   </div>
+
+  <button class="menu-toggle" (click)="menuAbierto = !menuAbierto">
+    <span></span><span></span><span></span>
+  </button>
 </nav>

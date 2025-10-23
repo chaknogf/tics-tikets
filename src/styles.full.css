@@ -3986,7 +3986,7 @@ textarea.form-control-lg {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: var(--bs-navbar-padding-y) var(--bs-navbar-padding-x);
+  /* padding: var(--bs-navbar-padding-y) var(--bs-navbar-padding-x); */
 }
 .navbar > .container,
 .navbar > .container-fluid,
@@ -7684,6 +7684,10 @@ textarea.form-control-lg {
 
 .border-opacity-100 {
   --bs-border-opacity: 1;
+}
+
+.w-15 {
+  width: 15% !important;
 }
 
 .w-25 {

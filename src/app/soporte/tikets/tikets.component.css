@@ -1,7 +1,7 @@
 :host {
   display: block;
   min-height: 100vh;
-  padding: 2rem;
+  padding: 0.7rem;
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(145deg, #0f1a2b, #11233e);
   color: #e0f7fa;
@@ -16,6 +16,7 @@ form.row.g-2, form.row.g-1 {
   margin-bottom: 1rem;
   box-shadow: 0 6px 20px rgba(0,0,0,0.5);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+
 }
 
 form.row.g-2:hover, form.row.g-1:hover {
@@ -64,8 +65,8 @@ form.row.g-2:hover, form.row.g-1:hover {
 
 .btn-primary {
   background: linear-gradient(135deg, #00e5ff, #00bcd4);
-  border: none;
-  color: #0a1f2a;
+  color: #d8effb;
+  border: #00e5ff 1px solid;
 }
 
 .btn-primary:hover {
@@ -105,55 +106,83 @@ form.row.g-2:hover, form.row.g-1:hover {
 .table-info { background-color: rgba(0,229,255,0.2) !important; color: #0a1f2a; }
 .table-dark { background-color: rgba(50,50,50,0.5) !important; color: #b2ebf2; }
 
-/* === Cards para móviles === */
-.card {
-  background: rgba(30,40,60,0.5);
-  backdrop-filter: blur(14px);
-  border-radius: 14px;
-  margin-bottom: 1rem;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+/* === Modo móvil estilo “consola” === */
+.table-responsive-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 0.5rem;
+  width: 100%;
+
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(0,0,0,0.6);
-}
-
-.card-body {
-  border-radius: 12px;
-  padding: 1rem;
+.card-mobile {
+  padding: 0.3rem;
+  font-size: 0.9em;
   color: #e0f7fa;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease;
+  border: #293475ec 1px solid;
+  border-radius: 0.75rem;
+
 }
 
-/* Estados dentro de cards */
-.card-body.bg-danger { background: rgba(255,80,80,0.3); color: #fff; }
-.card-body.bg-info { background: rgba(0,229,255,0.3); color: #0a1f2a; }
-.card-body.bg-dark { background: rgba(50,50,50,0.5); color: #b2ebf2; }
-
-/* Botones en cards */
-.card .btn-outline-light {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.3);
-  color: #e0f7fa;
+.svg-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
 }
 
-.card .btn-outline-light:hover {
-  background: rgba(0,229,255,0.2);
-  color: #0a1f2a;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+.svg-icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  pointer-events: none; /* así el click va al botón */
 }
 
-/* === Responsividad === */
-@media (max-width: 768px) {
-  .table-responsive { display: none !important; }
-  .d-md-none { display: block !important; }
-  form.row.g-1 { padding: 0.8rem; }
-  .btn { width: 100%; margin-top: 0.5rem; }
+.svg-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  stroke: currentColor;
+  color: #fff;
+  display: block;
+  margin: auto;
 }
-@media (min-width: 768px) {
-  .d-none.d-md-block { display: block !important; }
-  .d-md-none { display: none !important; }
+
+button.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+}
+
+.card-mobile:hover {
+  transform: scale(1.01);
+  box-shadow: 0 5px 16px rgba(0, 229, 255, 0.3);
+}
+
+.card-mobile p {
+  margin: -0.1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-mobile strong {
+  color: #00e5ff;
+  font-weight: 600;
+}
+
+.card-mobile span {
+  font-weight: 500;
+}
+
+.card-mobile .acciones {
+  z-index: 1000;
 }
 
 .estado-badge {
@@ -184,4 +213,128 @@ form.row.g-2:hover, form.row.g-1:hover {
 
 .estado-badge:hover {
   transform: scale(1.05);
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fw-bold.small {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+
+/* Contenedor general: gráfico + tabla */
+.layout-container {
+  display: flex;
+  flex-wrap: wrap; /* para que en pantallas pequeñas se apile */
+  gap: 0.1rem;
+  align-items: flex-start;
+  margin: 0.1rem 0;
+}
+
+/* Columna del chart */
+.layout-container app-charts {
+  padding: 0.3rem;
+  backdrop-filter: blur(6px);
+  transition: transform 0.3s ease;
+}
+
+.layout-container app-charts:hover {
+  transform: scale(1.02);
+}
+
+/* Columna principal (formularios y tablas) */
+.layout-container .table-responsive  {
+  flex: 1;
+  min-width: 200px;
+  background: transparent;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.layout-container .table-responsive-mobile  {
+  flex: 1;
+  min-width: 200px;
+  background: transparent;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+
+
+  .layout-container app-charts {
+    max-width: 100%;
+
+    order: 1; /* opcional: puedes ponerlo debajo del formulario */
+  }
+
+  .layout-container .table-responsive-mobile {
+    order: 2;
+    flex: 1;
+  }
+
+
+}
+
+
+.filtros-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+/* Botón hamburguesa */
+.filtro-toggle {
+  display:none
+}
+
+.filtro-toggle span {
+  display: block;
+  width: 22px;
+  height: 3px;
+
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Estilos del formulario */
+.filtros-form {
+  transition: all 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+.filtro-toggle {
+    display: flex;
+    background: linear-gradient(135deg, #d0149e4b, #ff59d0af);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(208, 20, 158, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .filtros-form {
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .filtros-form.activo {
+    display: flex;
+  }
 }

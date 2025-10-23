@@ -19,6 +19,8 @@ export class NavbarComponent {
   @Input() rol: string = 'rol';
   @Output() cerrarSesion = new EventEmitter<void>();
 
+  // Controla si el menú hamburguesa está abierto
+  menuAbierto = false;
 
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
@@ -74,4 +76,8 @@ export class NavbarComponent {
     this.router.navigate(['/tiket', 'dash']);
   }
 
+  /** Alterna la visibilidad del menú hamburguesa */
+  toggleMenu() {
+    this.menuAbierto = !this.menuAbierto;
+  }
 }
