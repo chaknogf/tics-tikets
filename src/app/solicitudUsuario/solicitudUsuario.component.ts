@@ -30,6 +30,7 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
   visible = signal(false);
   private sub: Subscription;
   buscarTicket: string = '';
+  loading = false;
 
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
@@ -145,27 +146,38 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     }
   }
 
-  async guardar() {
+
+
+  async onSubmit() {
+    if (this.form.invalid || this.loading) return;
+
+    this.loading = true;
+    this.mensaje = '';
+
     const ticket = this.form.getRawValue();
 
     try {
       let response;
+
       if (ticket.id) {
         await this.update(ticket);
         response = { id: ticket.id };
       } else {
-        response = await this.api.createTicket(ticket); // asegúrese que devuelve el objeto creado con su `id`
+        response = await this.api.createTicket(ticket);
       }
 
       const idTicket = response.id;
       this.mensaje = '✅ Ticket guardado correctamente';
 
-      // Redirigir al componente que genera el PDF
+      // Redirigir al componente PDF
       this.router.navigate(['/ticketPdf', idTicket]);
 
     } catch (error) {
+      console.error('❌ Error al guardar el ticket:', error);
       this.mensaje = '❌ Error al guardar el ticket';
-      console.error(error);
+    } finally {
+      // 🔥 Esto SIEMPRE se ejecuta, éxito o error
+      this.loading = false;
     }
   }
 
@@ -297,4 +309,6 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
       canvas.height = window.innerHeight;
     });
   }
+
+
 }

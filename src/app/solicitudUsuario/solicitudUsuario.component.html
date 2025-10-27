@@ -38,7 +38,7 @@
     </div>
 
     <!-- Formulario principal -->
-    <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="guardar()" class="ticket-form">
+    <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="onSubmit()" class="ticket-form">
 
       <div class="row g-3">
 
@@ -91,21 +91,21 @@
                     (click)="form.get('prioridad')?.setValue('Baja')">
               <span [innerHTML]="icons['clock']"></span>
               <p class="info-priority">Baja</p>
-              <p class="info-priority">necesito ayuda pero puedo continuar trabajando</p>
+              <p class="info-priority">Soporte no urgente. Puedo seguir trabajando.</p>
             </button>
             <button type="button" class="btn mb-2 flex-fill"
                     [ngClass]="{'btn-warning': form.get('prioridad')?.value==='Media','btn-outline-warning': form.get('prioridad')?.value!=='Media', 'active-priority': form.get('prioridad')?.value==='Media'}"
                     (click)="form.get('prioridad')?.setValue('Media')">
               <span [innerHTML]="icons['ok']"></span>
               <p class="info-priority">Media</p>
-              <p class="info-priority">me urge pero puedo continuar trabajando!</p>
+              <p class="info-priority">Importante. Una demora podría bloquear mi trabajo.</p>
             </button>
             <button type="button" class="btn mb-2 flex-fill"
                     [ngClass]="{'btn-danger': form.get('prioridad')?.value==='Alta','btn-outline-danger': form.get('prioridad')?.value!=='Alta', 'active-priority': form.get('prioridad')?.value==='Alta'}"
                     (click)="form.get('prioridad')?.setValue('Alta')">
               <span [innerHTML]="icons['critic']"></span>
               <p class="info-priority">Alta</p>
-              <p class="info-priority">me Muero y No Puedo continuar trabajando!!</p>
+              <p class="info-priority">¡Bloqueo Total! No puedo continuar mi trabajo.</p>
             </button>
           </div>
         </div>
@@ -167,7 +167,20 @@
 
         <!-- Botón Guardar -->
         <div class="col-12 d-flex justify-content-center">
-          <button type="submit" class="btn btn-primary w-75" [disabled]="form.invalid">Guardar</button>
+          <button
+            type="submit"
+            class="btn btn-primary w-75 d-flex justify-content-center align-items-center gap-2"
+            [disabled]="form.invalid || loading"
+          >
+            <span *ngIf="!loading">Guardar</span>
+            <div
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm text-light"
+              role="status"
+            >
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </button>
         </div>
 
       </div>
