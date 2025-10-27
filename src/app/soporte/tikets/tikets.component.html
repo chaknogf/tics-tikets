@@ -1,13 +1,22 @@
 
-  <div class="filtros-container">
-  <!-- Botón de menú (solo visible en móviles) -->
-  <button class="filtro-toggle" (click)="toggleFiltros()">
-    <span [innerHTML]="icons['filter']"></span>
-  </button>
+<!-- nuevo estilo -->
 
-  <!-- Formulario de filtros -->
-  <form class="row g-2 mb-3 filtros-form" [class.activo]="mostrarFiltros">
-    <div class="col-12 col-md-2">
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <app-charts></app-charts>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <!-- Formulario de búsqueda -->
+    <section class="filtros-container">
+      <button class="filtro-toggle" (click)="toggleFiltros()">
+        <span [innerHTML]="icons['filter']"></span>
+      </button>
+
+      <form class="filtros-form row g-2 mb-3" [class.activo]="mostrarFiltros">
+       <div class="col-12 col-md-2">
       <input type="text" class="form-control" placeholder="Buscar ID" [(ngModel)]="buscarId" name="buscarId">
     </div>
     <div class="col-12 col-md-2">
@@ -41,75 +50,72 @@
         Buscar
       </button>
     </div>
-  </form>
-</div>
-<div class="layout-container">
-  <app-charts></app-charts>
+      </form>
+    </section>
 
-  <!-- 🔹 Tabla para pantallas medianas en adelante -->
-  <div class="table-responsive d-none d-md-block m-1 p-1" *ngIf="!cargando; else cargandoTemplate">
-    <table class="table table-sm table-primary table-striped table-hover align-middle mb-0 rounded-3">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Ticket</th>
-          <th>Fecha</th>
-          <th>Servicio</th>
-          <th>Prioridad</th>
-          <th>Atención en</th>
-          <th>Estado</th>
-          <th>Fecha de Atención</th>
-          <th class="text-center">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let t of tikets">
-          <td>{{ t.id }}</td>
-          <td>{{ t.ticket }}</td>
-          <td>{{ t.fecha_solicitud | date: 'shortDate' }}</td>
-          <td class="text-nowrap">{{ t.servicio }}</td>
-          <td>
-            <p class="mb-0" [ngClass]="{
-              'text-danger': t.prioridad === 'Alta',
-              'text-info': t.prioridad === 'Media',
-              'text-white': t.prioridad === 'Baja'
-            }">
-              {{ t.prioridad || 'N/A' }}
-            </p>
-          </td>
-          <td>{{ t.atencion_en }}</td>
-          <td>
-            <span class="estado-badge"
-                  [ngClass]="{
-                    'abierto': t.estado === 'Abierto',
-                    'en-proceso': t.estado === 'En Proceso',
-                    'cerrado': t.estado === 'Cerrado'
-                  }">
-              {{ t.estado || 'Sin estado' }}
-            </span>
-          </td>
-          <td>{{ t.fecha_atencion | date: 'shortDate' }}</td>
-         <td class="text-center">
-  <div class="d-flex justify-content-center align-items-center gap-3">
-    <span class="svg-icon m-0 p-0"
-          [innerHTML]="icons['editor']"
-          (click)="editar(t.id)"
-          title="Editar"></span>
-    <span class="svg-icon m-0 p-0"
-          [innerHTML]="icons['detalle']"
-          (click)="detalle(t.id)"
-          title="Detalles"></span>
-  </div>
-</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Tabla desktop -->
+    <section class="tabla-modern-container" *ngIf="!cargando; else cargandoTemplate">
+      <table class="tabla-modern">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ticket</th>
+        <th>Fecha</th>
+        <th>Servicio</th>
+        <th>Prioridad</th>
+        <th>Atención en</th>
+        <th>Estado</th>
+        <th>Fecha de Atención</th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of tikets" class="fila">
+        <td>{{ t.id }}</td>
+        <td>{{ t.ticket }}</td>
+        <td>{{ t.fecha_solicitud | date: 'shortDate' }}</td>
+        <td class="text-nowrap">{{ t.servicio }}</td>
+        <td>
+          <span class="badge prioridad"
+                [ngClass]="{
+                  'alta': t.prioridad === 'Alta',
+                  'media': t.prioridad === 'Media',
+                  'baja': t.prioridad === 'Baja'
+                }">
+            {{ t.prioridad || 'N/A' }}
+          </span>
+        </td>
+        <td>{{ t.atencion_en }}</td>
+        <td>
+          <span class="badge estado"
+                [ngClass]="{
+                  'abierto': t.estado === 'Abierto',
+                  'en-proceso': t.estado === 'En Proceso',
+                  'cerrado': t.estado === 'Cerrado'
+                }">
+            {{ t.estado || 'Sin estado' }}
+          </span>
+        </td>
+        <td>{{ t.fecha_atencion | date: 'shortDate' }}</td>
+        <td>
+          <button class="icon-btn editar" (click)="editar(t.id)" title="Editar">
+            <span [innerHTML]="icons['editor']"></span>
+          </button>
+        </td>
+        <td>
+          <button class="icon-btn detalle" (click)="detalle(t.id)" title="Detalles">
+            <span [innerHTML]="icons['detalle']"></span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+    </section>
 
-  <!-- 🔹 Versión “consola” para móviles -->
-
-  <div class="table-responsive-mobile m-1 p-1 d-md-none " *ngIf="!cargando; else cargandoTemplate">
-    <div class="card-mobile" *ngFor="let t of tikets">
+    <!-- Cards móviles -->
+    <section class="table-responsive-mobile" *ngIf="!cargando; else cargandoTemplate">
+       <div class="card-mobile" *ngFor="let t of tikets">
       <p><strong>ID:</strong> {{ t.id }}</p>
       <p><strong>Ticket:</strong> {{ t.ticket }}</p>
       <p><strong>Fecha:</strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
@@ -144,13 +150,28 @@
   </button>
 </div>
     </div>
-  </div>
+    </section>
+
+    <!-- 🔹 Paginador -->
+<div class="paginador-container">
+  <button class="page-btn" [disabled]="paginaActual === 1" (click)="cambiarPagina('prev')">
+    ‹
+  </button>
+
+  <span class="page-info">
+    Página {{ paginaActual }} de {{ totalPaginas }}
+  </span>
+
+  <button class="page-btn" [disabled]="paginaActual === totalPaginas" (click)="cambiarPagina('next')">
+    ›
+  </button>
+</div>
+  </main>
 </div>
 
-
 <ng-template #cargandoTemplate>
-  <div class="alert alert-dark d-flex align-items-center" role="alert">
-    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+  <div class="loading-alert">
+    <span class="spinner"></span>
     Cargando tickets...
   </div>
 </ng-template>
