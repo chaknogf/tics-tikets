@@ -67,12 +67,13 @@
       <tr>
         <th>ID</th>
         <th>Ticket</th>
-        <th>Fecha</th>
+        <th>Fecha Solicitud</th>
+         <th>Fecha de Atención</th>
         <th>Servicio</th>
         <th>Prioridad</th>
         <th>Atención en</th>
         <th>Estado</th>
-        <th>Fecha de Atención</th>
+
         <th></th>
         <th></th>
       </tr>
@@ -80,8 +81,14 @@
     <tbody>
       <tr *ngFor="let t of tikets" class="fila">
         <td>{{ t.id }}</td>
-        <td>{{ t.ticket }}</td>
+        <td > <span class="badge estado"
+                [ngClass]="{
+                  'abierto': t.estado === 'Abierto',
+                  'en-proceso': t.estado === 'En Proceso',
+                  'cerrado': t.estado === 'Cerrado'
+                }">{{ t.ticket }}</span></td>
         <td>{{ t.fecha_solicitud | date: 'shortDate' }}</td>
+        <td>{{ t.fecha_atencion | date: 'shortDate' }}</td>
         <td class="text-nowrap">{{ t.servicio }}</td>
         <td>
           <span  class="badge prioridad {{ t.prioridad | lowercase }} estado-{{ t.estado | lowercase }}">
@@ -90,16 +97,11 @@
         </td>
         <td>{{ t.atencion_en }}</td>
         <td>
-          <span class="badge estado"
-                [ngClass]="{
-                  'abierto': t.estado === 'Abierto',
-                  'en-proceso': t.estado === 'En Proceso',
-                  'cerrado': t.estado === 'Cerrado'
-                }">
+          <span >
             {{ t.estado || 'Sin estado' }}
           </span>
         </td>
-        <td>{{ t.fecha_atencion | date: 'shortDate' }}</td>
+
         <td>
           <button class="icon-btn editar" (click)="editar(t.id)" title="Editar">
             <span [innerHTML]="icons['editor']"></span>
@@ -119,24 +121,25 @@
     <section class="table-responsive-mobile" *ngIf="!cargando; else cargandoTemplate">
        <div class="card-mobile" *ngFor="let t of tikets">
       <p><strong>ID: </strong> {{ t.id }}</p>
-      <p><strong>Ticket: </strong> {{ t.ticket }}</p>
-      <p><strong>Fecha: </strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
+      <p><strong>Ticket: </strong> <span class="badge estado ticket-number"
+                [ngClass]="{
+                  'abierto': t.estado === 'Abierto',
+                  'en-proceso': t.estado === 'En Proceso',
+                  'cerrado': t.estado === 'Cerrado'
+                }">{{ t.ticket }}</span></p>
+      <p><strong>Fecha Solicitud: </strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
+      <p><strong>Fecha Atención: </strong> {{ t.fecha_atencion | date: 'shortDate' }}</p>
       <p><strong>Servicio: </strong> {{ t.servicio }}</p>
       <p><strong>Prioridad: </strong>
         <span class="badge prioridad {{ t.prioridad | lowercase }} estado-{{ t.estado | lowercase }}">{{ t.prioridad || 'N/A' }}</span>
       </p>
       <p><strong>Atención en: </strong> {{ t.atencion_en }}</p>
       <p><strong>Estado: </strong>
-        <span class="badge estado"
-                [ngClass]="{
-                  'abierto': t.estado === 'Abierto',
-                  'en-proceso': t.estado === 'En Proceso',
-                  'cerrado': t.estado === 'Cerrado'
-                }">
+        <span >
           {{ t.estado || 'Sin estado' }}
         </span>
       </p>
-      <p><strong>Fecha Atención: </strong> {{ t.fecha_atencion | date: 'shortDate' }}</p>
+
       <div class="acciones d-flex justify-content-center gap-2 mt-2">
   <button class="btn" (click)="editar(t.id)" title="Editar">
     <span class="svg-icon" [innerHTML]="icons['editorMini']"></span>

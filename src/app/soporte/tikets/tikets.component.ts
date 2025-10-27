@@ -1,4 +1,4 @@
-import { editorIconMini, detalleIconMini, filterIcons } from '../../shared/icons/icons';
+import { editorIcon, detalleIcon, filterIcons } from '../../shared/icons/icons';
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -50,8 +50,6 @@ export class TiketsComponent implements OnInit {
     this.icons = {
       editor: this.iconService.getIcon("editorIcon"),
       detalle: this.iconService.getIcon("detalleIcon"),
-      editorMini: this.iconService.getIcon("editorIconMini"),
-      detalleMini: this.iconService.getIcon("detalleIconMini"),
       filter: this.iconService.getIcon("filterIcons"),
     }
 
