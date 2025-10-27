@@ -12,7 +12,7 @@ import { ReporteComponent } from './equipos/reporte/reporte.component';
 import { PdfTicketComponent } from './pdfTicket/pdfTicket.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+  { path: '', component: SolicitudUsuarioComponent, pathMatch: 'full' },
   { path: 'inicio', component: SolicitudUsuarioComponent },
   { path: 'login', component: LoginComponent },
   { path: 'dash', component: TiketsComponent, canActivate: [AuthGuard] },
