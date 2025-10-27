@@ -91,14 +91,14 @@
                     (click)="form.get('prioridad')?.setValue('Baja')">
               <span [innerHTML]="icons['clock']"></span>
               <p class="info-priority">Baja</p>
-              <p class="info-priority">Soporte no urgente. Puedo seguir trabajando.</p>
+              <p class="info-priority">Soporte no urgente, Puedo seguir trabajando.</p>
             </button>
             <button type="button" class="btn mb-2 flex-fill"
                     [ngClass]="{'btn-warning': form.get('prioridad')?.value==='Media','btn-outline-warning': form.get('prioridad')?.value!=='Media', 'active-priority': form.get('prioridad')?.value==='Media'}"
                     (click)="form.get('prioridad')?.setValue('Media')">
               <span [innerHTML]="icons['ok']"></span>
               <p class="info-priority">Media</p>
-              <p class="info-priority">Importante. Una demora podría bloquear mi trabajo.</p>
+              <p class="info-priority">Importante! Una demora podría bloquear mi trabajo.</p>
             </button>
             <button type="button" class="btn mb-2 flex-fill"
                     [ngClass]="{'btn-danger': form.get('prioridad')?.value==='Alta','btn-outline-danger': form.get('prioridad')?.value!=='Alta', 'active-priority': form.get('prioridad')?.value==='Alta'}"
