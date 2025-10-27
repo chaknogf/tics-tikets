@@ -1730,6 +1730,10 @@ textarea.form-control-sm {
   width: 25% !important;
 }
 
+.w-50 {
+  width: 50% !important;
+}
+
 .w-75 {
   width: 75% !important;
 }
@@ -1904,10 +1908,6 @@ textarea.form-control-sm {
 
 .gap-2 {
   gap: 0.5rem !important;
-}
-
-.gap-3 {
-  gap: 1rem !important;
 }
 
 .gap-4 {

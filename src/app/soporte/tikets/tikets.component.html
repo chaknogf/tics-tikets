@@ -26,7 +26,15 @@
       <input type="text" class="form-control" placeholder="Buscar Servicio" [(ngModel)]="buscarServicio" name="buscarServicio">
     </div>
     <div class="col-12 col-md-2">
-      <input type="text" class="form-control" placeholder="Atención en" [(ngModel)]="buscarAtencionEn" name="buscarAtencionEn">
+      <select class="form-select" name="buscarAtencion" id="buscarAtencion" [(ngModel)]="buscarAtencionEn">
+        <option value="">Atención en</option>
+        <option value="Menores">Trabajos menores</option>
+        <option value="Computo">Computo</option>
+        <option value="Red">Red</option>
+        <option value="Software">Software</option>
+        <option value="Diseño">Diseño</option>
+      </select>
+
     </div>
     <div class="col-12 col-md-2">
       <select class="form-select" [(ngModel)]="buscarPrioridad" name="buscarPrioridad">
@@ -45,10 +53,9 @@
       </select>
     </div>
 
-    <div class="col-12 mt-2">
-      <button class="btn btn-primary w-100" type="button" (click)="obtenerTikets()">
-        Buscar
-      </button>
+    <div class="d-flex gap-2 align-items-center justify-content-center">
+      <button class="btn btn-primary w-50" type="button" (click)="obtenerTikets()">Buscar</button>
+      <button class="btn btn-warning w-10" type="button" (click)="limpiarFiltros()">Reset</button>
     </div>
       </form>
     </section>
@@ -77,12 +84,7 @@
         <td>{{ t.fecha_solicitud | date: 'shortDate' }}</td>
         <td class="text-nowrap">{{ t.servicio }}</td>
         <td>
-          <span class="badge prioridad"
-                [ngClass]="{
-                  'alta': t.prioridad === 'Alta',
-                  'media': t.prioridad === 'Media',
-                  'baja': t.prioridad === 'Baja'
-                }">
+          <span  class="badge prioridad {{ t.prioridad | lowercase }} estado-{{ t.estado | lowercase }}">
             {{ t.prioridad || 'N/A' }}
           </span>
         </td>
@@ -116,29 +118,25 @@
     <!-- Cards móviles -->
     <section class="table-responsive-mobile" *ngIf="!cargando; else cargandoTemplate">
        <div class="card-mobile" *ngFor="let t of tikets">
-      <p><strong>ID:</strong> {{ t.id }}</p>
-      <p><strong>Ticket:</strong> {{ t.ticket }}</p>
-      <p><strong>Fecha:</strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
-      <p><strong>Servicio:</strong> {{ t.servicio }}</p>
-      <p><strong>Prioridad:</strong>
-        <span [ngClass]="{
-          'text-danger': t.prioridad === 'Alta',
-          'text-info': t.prioridad === 'Media',
-          'text-white': t.prioridad === 'Baja'
-        }">{{ t.prioridad || 'N/A' }}</span>
+      <p><strong>ID: </strong> {{ t.id }}</p>
+      <p><strong>Ticket: </strong> {{ t.ticket }}</p>
+      <p><strong>Fecha: </strong> {{ t.fecha_solicitud | date: 'shortDate' }}</p>
+      <p><strong>Servicio: </strong> {{ t.servicio }}</p>
+      <p><strong>Prioridad: </strong>
+        <span class="badge prioridad {{ t.prioridad | lowercase }} estado-{{ t.estado | lowercase }}">{{ t.prioridad || 'N/A' }}</span>
       </p>
-      <p><strong>Atención en:</strong> {{ t.atencion_en }}</p>
-      <p><strong>Estado:</strong>
-        <span class="estado-badge"
-              [ngClass]="{
-                'abierto': t.estado === 'Abierto',
-                'en-proceso': t.estado === 'En Proceso',
-                'cerrado': t.estado === 'Cerrado'
-              }">
+      <p><strong>Atención en: </strong> {{ t.atencion_en }}</p>
+      <p><strong>Estado: </strong>
+        <span class="badge estado"
+                [ngClass]="{
+                  'abierto': t.estado === 'Abierto',
+                  'en-proceso': t.estado === 'En Proceso',
+                  'cerrado': t.estado === 'Cerrado'
+                }">
           {{ t.estado || 'Sin estado' }}
         </span>
       </p>
-      <p><strong>Fecha Atención:</strong> {{ t.fecha_atencion | date: 'shortDate' }}</p>
+      <p><strong>Fecha Atención: </strong> {{ t.fecha_atencion | date: 'shortDate' }}</p>
       <div class="acciones d-flex justify-content-center gap-2 mt-2">
   <button class="btn" (click)="editar(t.id)" title="Editar">
     <span class="svg-icon" [innerHTML]="icons['editorMini']"></span>

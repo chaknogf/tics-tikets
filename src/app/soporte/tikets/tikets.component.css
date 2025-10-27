@@ -172,6 +172,7 @@ app-charts {
   color: #93c5fd;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.8rem;
+  border-radius: 8px;
 }
 
 .tabla-modern tbody tr {
@@ -191,12 +192,122 @@ app-charts {
 }
 
 /* ======= BADGES ======= */
-.badge.prioridad.alta { color: #f87171; }
-.badge.prioridad.media { color: #facc15; }
+
+.badge.prioridad.media  { color: #facc15; }
 .badge.prioridad.baja { color: #34d399; }
 
-.badge.estado.abierto { color: #60a5fa; }
-.badge.estado.en-proceso { color: #fbbf24; }
+/* 🔹 Animación: pulso con brillo */
+@keyframes pulseGlowPriority {
+  0% {
+    text-shadow: 0 0 4px rgba(248, 113, 113, 0.4),
+                 0 0 10px rgba(248, 113, 113, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 8px rgba(248, 113, 113, 0.7),
+                 0 0 20px rgba(248, 113, 113, 0.4);
+    transform: scale(1.05);
+  }
+  100% {
+    text-shadow: 0 0 4px rgba(248, 113, 113, 0.4),
+                 0 0 10px rgba(248, 113, 113, 0.2);
+    transform: scale(1);
+  }
+}
+
+/* 🔹 Solo aplica el pulso a prioridad alta si el estado es abierto o en proceso */
+.badge.prioridad.alta.estado-abierto,
+.badge.prioridad.alta.estado-en-proceso {
+  animation: pulseGlowPriority 2.2s ease-in-out infinite;
+  transition: all 0.3s ease;
+  color: #f87171;
+  font-size: large;
+}
+
+
+.badge.estado.abierto {
+  color: #021227;
+  background-color: #fafbfc89;
+  padding: 0.8rem;
+  border-radius: 14px;
+  font-weight: 600;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+  animation: pulseGlow 2.2s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+/* 🔹 Efecto al pasar el mouse */
+.badge.estado.abierto:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+}
+
+/* 🔹 Animación suave de pulsación */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.25);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(96, 165, 250, 0.55);
+    background-color: white;
+    transform: scale(1.03);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.25);
+    transform: scale(1);
+  }
+}
+
+.badge.estado.en-proceso {
+  color: #3b8af1;
+  background-color: #06a7e737;
+  border-radius: 14px;
+  font-weight: 400;
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* 🔹 Efecto de "puntitos animados" en dirección horizontal */
+.badge.estado.en-proceso::after {
+  content: "............... ";
+  position: absolute;
+  right: 10px;
+  top: 80%;
+  transform: translateY(-50%);
+  letter-spacing: 2px;
+  animation: dotMove 1.5s infinite linear;
+  color: #fff;
+  opacity: 0.7;
+}
+
+/* 🔹 Animación: los puntitos se mueven cíclicamente */
+@keyframes dotMove {
+  0% {
+    content: ".  ";
+    opacity: 0.3;
+  }
+  33% {
+    content: ".. ";
+    opacity: 0.6;
+  }
+  66% {
+    content: "...";
+    opacity: 1;
+  }
+  100% {
+    content: "......  ";
+    opacity: 0.3;
+  }
+}
+
+/* 🔹 Efecto visual al pasar el mouse */
+.badge.estado.en-proceso:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(6, 167, 231, 0.5);
+  transition: all 0.3s ease;
+}
 .badge.estado.cerrado { color: #22c55e; }
 
 /* ======= MOBILE ======= */

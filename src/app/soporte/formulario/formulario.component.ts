@@ -79,7 +79,7 @@ export class FormularioComponent implements OnInit {
       fecha_atencion: [''],  // Si es string o ISODate
       hora_atencion: [''],   // Asegúrate que sea string si espera eso
       nota: [''],
-      estado: [''],
+      estado: ['Abierto'],
       usuario: [''],
       metadatos: this.fb.group({
         r0: this.fb.group({

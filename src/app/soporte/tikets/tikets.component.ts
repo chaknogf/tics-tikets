@@ -77,7 +77,7 @@ export class TiketsComponent implements OnInit {
       id: this.buscarId,
       skip,
       limit: this.limite,
-      estado_excluir: 'Cerrado'
+
     };
 
     try {
@@ -115,5 +115,15 @@ export class TiketsComponent implements OnInit {
 
   toggleFiltros() {
     this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  limpiarFiltros() {
+    this.buscarTicket = '';
+    this.buscarServicio = '';
+    this.buscarAtencionEn = '';
+    this.buscarEstado = '';
+    this.buscarPrioridad = '';
+    this.buscarId = '';
+    this.obtenerTikets();
   }
 }
