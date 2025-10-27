@@ -274,4 +274,27 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit(): void {
+    const canvas = document.querySelector('.matrix-bg') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Letras/íconos estáticos
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    ctx.fillStyle = 'rgba(0,255,0,0.3)';
+    ctx.font = '18px monospace';
+
+    for (let i = 0; i < 100; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, x, y);
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  }
 }

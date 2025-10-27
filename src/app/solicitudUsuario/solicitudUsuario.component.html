@@ -8,180 +8,187 @@
   </div>
 </nav>
 
-<!-- Contenedor Principal -->
-<div class="container-fluid p-3">
+<!-- Contenedor principal -->
+<div class="app-container">
 
-  <!-- Título -->
-  <h2 class="text-center text-light mb-4">Formulario de Solicitud</h2>
+  <!-- Fondo con partículas tipo Matrix -->
+  <canvas class="background-canvas"></canvas>
 
-  <!-- Buscador Ticket -->
-  <div class="mb-4 p-3 rounded search-card shadow-sm">
-    <form class="d-flex flex-wrap align-items-center gap-2" (ngSubmit)="obtenerTicket()">
-      <input
-        type="text"
-        class="form-control search-input flex-grow-1"
-        placeholder="Buscar ticket"
-        [(ngModel)]="buscarTicket"
-        name="buscarTicket"
-        autocomplete="off"
-      />
-      <button type="submit" class="btn btn-primary search-btn flex-shrink-0">
-        Buscar
-      </button>
-    </form>
-  </div>
+  <!-- Card central del formulario -->
+  <div class="form-card shadow-lg">
 
-  <!-- Formulario Principal -->
-  <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="guardar()"
-        class="ticket-form card p-3 mb-4 rounded shadow-sm text-light">
+    <!-- Título -->
+    <h2 class="form-title">Formulario de Solicitud</h2>
 
-    <div class="row g-3">
-
-      <!-- Ticket y Fecha -->
-      <div class="col-12 col-md-6">
-        <label for="ticket" class="form-label">Ticket:</label>
-        <input id="ticket" type="text" class="form-control" formControlName="ticket" readonly />
-      </div>
-
-      <div class="col-12 col-md-6">
-        <label for="fecha_solicitud" class="form-label">Fecha de Solicitud:</label>
-        <input id="fecha_solicitud" type="date" class="form-control" formControlName="fecha_solicitud" />
-        <div *ngIf="form.get('fecha_solicitud')?.invalid && form.get('fecha_solicitud')?.touched">
-          <small class="text-danger">Campo requerido.</small>
-        </div>
-      </div>
-
-      <!-- Nombre del solicitante -->
-      <div class="col-12">
-        <label for="nombre_solicitante" class="form-label">Nombre del Solicitante:</label>
-        <input id="nombre_solicitante" type="text" class="form-control" formControlName="nombre_solicitante" />
-        <div *ngIf="form.get('nombre_solicitante')?.invalid && form.get('nombre_solicitante')?.touched">
-          <small class="text-danger">Campo requerido.</small>
-        </div>
-      </div>
-
-      <!-- Servicio -->
-      <div class="col-12 col-md-6">
-        <label for="servicio" class="form-label">Servicio/Sección:</label>
-        <input id="servicio" type="text" class="form-control" formControlName="servicio" />
-        <div *ngIf="form.get('servicio')?.invalid && form.get('servicio')?.touched">
-          <small class="text-danger">Campo requerido.</small>
-        </div>
-      </div>
-
-      <!-- Detalle -->
-      <div class="col-12 col-md-6">
-        <label for="detalle" class="form-label">Detalle:</label>
-        <textarea id="detalle" class="form-control" formControlName="detalle"></textarea>
-        <div *ngIf="form.get('detalle')?.invalid && form.get('detalle')?.touched">
-          <small class="text-danger">Campo requerido.</small>
-        </div>
-      </div>
-
-      <!-- Prioridad -->
-      <div class="col-12 col-md-12">
-        <label class="form-label mb-2 d-block">Prioridad:</label>
-        <div class="btn-group w-100 flex-wrap gap-2" role="group">
-          <button type="button" class="btn mb-2 flex-fill"
-                  [ngClass]="{'btn-success': form.get('prioridad')?.value==='Baja','btn-outline-success': form.get('prioridad')?.value!=='Baja'}"
-                  (click)="form.get('prioridad')?.setValue('Baja')">
-                  <span [innerHTML]="icons['clock']"></span>
-                  <p class="small">Baja</p>
-          </button>
-          <button type="button" class="btn mb-2 flex-fill"
-                  [ngClass]="{'btn-warning': form.get('prioridad')?.value==='Media','btn-outline-warning': form.get('prioridad')?.value!=='Media'}"
-                  (click)="form.get('prioridad')?.setValue('Media')">
-                  <span [innerHTML]="icons['ok']"></span>
-                  <p class="small">Media</p>
-                </button>
-          <button type="button" class="btn mb-2 flex-fill"
-                  [ngClass]="{'btn-danger': form.get('prioridad')?.value==='Alta','btn-outline-danger': form.get('prioridad')?.value!=='Alta'}"
-                  (click)="form.get('prioridad')?.setValue('Alta')">
-                  <span [innerHTML]="icons['critic']"></span>
-                  <p class="small">Alta</p>
-                </button>
-        </div>
-        <div *ngIf="form.get('prioridad')?.invalid && form.get('prioridad')?.touched">
-          <small class="text-danger">Campo requerido.</small>
-        </div>
-      </div>
-
-      <!-- Atención en -->
-      <div class="col-12 col-md-12 justify-content-center">
-        <label class="form-label mb-2 d-block">Atención en:</label>
-        <div class="btn-group w-100 flex-wrap gap-1" role="group">
-          <button type="button" class="btn mb-2 flex-fill"
-                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Menores','btn-outline-primary': form.get('atencion_en')?.value!=='Menores'}"
-                  (click)="form.get('atencion_en')?.setValue('Menores')">
-                  <span [innerHTML]="icons['work']" ></span>
-                  <p class="small">Trabajos Menores</p>
-                </button>
-          <button type="button" class="btn mb-2 flex-fill"
-                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Computo','btn-outline-primary': form.get('atencion_en')?.value!=='Computo'}"
-                  (click)="form.get('atencion_en')?.setValue('Computo')">
-                  <span [innerHTML]="icons['computer']" ></span>
-                  <p class="small">Equipo de Computo</p>
-                </button>
-          <button type="button" class="btn mb-2 flex-fill"
-                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Red','btn-outline-primary': form.get('atencion_en')?.value!=='Red'}"
-                  (click)="form.get('atencion_en')?.setValue('Red')">
-                  <span [innerHTML]="icons['net']" ></span>
-                  <p class="small">Redes y Telecomunicaciones</p>
-                </button>
-          <button type="button" class="btn mb-2 flex-fill"
-                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Software','btn-outline-primary': form.get('atencion_en')?.value!=='Software'}"
-                  (click)="form.get('atencion_en')?.setValue('Software')">
-                  <span [innerHTML]="icons['software']" ></span>
-                  <p class="small">Software</p>
-                </button>
-          <button type="button" class="btn mb-2 flex-fill"
-                  [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Diseño','btn-outline-primary': form.get('atencion_en')?.value!=='Diseño'}"
-                  (click)="form.get('atencion_en')?.setValue('Diseño')">
-                  <span [innerHTML]="icons['diseño']" ></span>
-                  <p class="small">Diseños Audiovisuales y Multimedia</p>
-                </button>
-        </div>
-        <div *ngIf="form.get('atencion_en')?.invalid && form.get('atencion_en')?.touched">
-          <small class="text-danger">Campo requerido.</small>
-        </div>
-      </div>
-
-      <legend>Opcional solo si es un Equipo inventariado</legend>
-      <!-- Número de Bien y Descripción -->
-      <div class="col-12 col-md-6">
-        <label for="numero_bien" class="form-label">Número de Bien:</label>
-        <input id="numero_bien" type="text" class="form-control text-uppercase" formControlName="numero_bien" />
-      </div>
-      <div class="col-12 col-md-6">
-        <label for="descripcion_equipo" class="form-label">Descripción del Equipo:</label>
-        <input id="descripcion_equipo" type="text" class="form-control" formControlName="descripcion_equipo" />
-      </div>
-
-      <!-- Mensaje -->
-      <div class="col-12" *ngIf="mensaje">
-        <div class="alert alert-info">{{ mensaje }}</div>
-      </div>
-
-      <!-- Botón Guardar -->
-      <div class="col-12 d-flex justify-content-center">
-        <button type="submit" class="btn btn-primary w-75" [disabled]="form.invalid">Guardar</button>
-      </div>
-
+    <!-- Buscador Ticket -->
+    <div class="search-card mb-4">
+      <form class="d-flex flex-wrap align-items-center gap-2" (ngSubmit)="obtenerTicket()">
+        <input
+          type="text"
+          class="form-control search-input flex-grow-1"
+          placeholder="Buscar ticket"
+          [(ngModel)]="buscarTicket"
+          name="buscarTicket"
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary search-btn flex-shrink-0">
+          Buscar
+        </button>
+      </form>
     </div>
-  </form>
+
+    <!-- Formulario principal -->
+    <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="guardar()" class="ticket-form">
+
+      <div class="row g-3">
+
+       <!-- Ticket y Fecha -->
+<div class="col-12 col-md-6">
+  <label for="ticket">Ticket:</label>
+  <input id="ticket" type="text" class="form-control input-readonly" formControlName="ticket" readonly />
 </div>
 
-<!-- Modal -->
-<div class="modal fade show d-block" tabindex="-1" *ngIf="visibleFn()" style="background: rgba(0,0,0,0.82);">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-light shadow-lg rounded-3 p-3">
-      <button type="button" class="btn-close btn-close-white ms-auto" aria-label="Close" (click)="close()"></button>
-      <div class="modal-body">
-        <app-login class="login-modal-wrapper"></app-login>
+<div class="col-12 col-md-6">
+  <label for="fecha_solicitud">Fecha de Solicitud:</label>
+  <input id="fecha_solicitud" type="date" class="form-control input-readonly" formControlName="fecha_solicitud" readonly />
+  <div *ngIf="form.get('fecha_solicitud')?.invalid && form.get('fecha_solicitud')?.touched">
+    <small class="text-danger">Campo requerido.</small>
+  </div>
+</div>
+
+      <!-- Nombre del solicitante -->
+<div class="col-12 required-field">
+  <label class="label-principal" for="nombre_solicitante">Nombre del Solicitante:</label>
+  <input id="nombre_solicitante" type="text" class="form-control" formControlName="nombre_solicitante" />
+  <div *ngIf="form.get('nombre_solicitante')?.invalid && form.get('nombre_solicitante')?.touched">
+    <small class="text-danger">Campo requerido.</small>
+  </div>
+</div>
+
+<!-- Servicio -->
+<div class="col-12  required-field">
+  <label class="label-principal" for="servicio">Servicio/Sección:</label>
+  <input id="servicio" type="text" class="form-control" formControlName="servicio" />
+  <div *ngIf="form.get('servicio')?.invalid && form.get('servicio')?.touched">
+    <small class="text-danger">Campo requerido.</small>
+  </div>
+</div>
+
+<!-- Detalle -->
+<div  class="col-12  required-field">
+  <label  class="label-principal" for="detalle">Detalle:</label>
+  <textarea id="detalle" class="form-control" formControlName="detalle"></textarea>
+  <div *ngIf="form.get('detalle')?.invalid && form.get('detalle')?.touched">
+    <small class="text-danger">Campo requerido.</small>
+  </div>
+</div>
+        <!-- Prioridad -->
+        <div class="col-12">
+          <label class="form-label mb-2 d-block">Prioridad:</label>
+          <div class="btn-group w-100 flex-wrap gap-2">
+            <button type="button" class="btn mb-2 flex-fill text-center"
+                    [ngClass]="{'btn-success': form.get('prioridad')?.value==='Baja','btn-outline-success': form.get('prioridad')?.value!=='Baja', 'active-priority': form.get('prioridad')?.value==='Baja'}"
+                    (click)="form.get('prioridad')?.setValue('Baja')">
+              <span [innerHTML]="icons['clock']"></span>
+              <p class="info-priority">Baja</p>
+              <p class="info-priority">necesito ayuda pero puedo continuar trabajando</p>
+            </button>
+            <button type="button" class="btn mb-2 flex-fill"
+                    [ngClass]="{'btn-warning': form.get('prioridad')?.value==='Media','btn-outline-warning': form.get('prioridad')?.value!=='Media', 'active-priority': form.get('prioridad')?.value==='Media'}"
+                    (click)="form.get('prioridad')?.setValue('Media')">
+              <span [innerHTML]="icons['ok']"></span>
+              <p class="info-priority">Media</p>
+              <p class="info-priority">me urge pero puedo continuar trabajando!</p>
+            </button>
+            <button type="button" class="btn mb-2 flex-fill"
+                    [ngClass]="{'btn-danger': form.get('prioridad')?.value==='Alta','btn-outline-danger': form.get('prioridad')?.value!=='Alta', 'active-priority': form.get('prioridad')?.value==='Alta'}"
+                    (click)="form.get('prioridad')?.setValue('Alta')">
+              <span [innerHTML]="icons['critic']"></span>
+              <p class="info-priority">Alta</p>
+              <p class="info-priority">me Muero y No Puedo continuar trabajando!!</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Atención en -->
+        <div class="col-12">
+          <label class="form-label mb-2 d-block">Atención en:</label>
+          <div class="btn-group w-100 flex-wrap gap-1">
+            <button type="button" class="btn mb-2 flex-fill"
+                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Menores','btn-outline-primary': form.get('atencion_en')?.value!=='Menores'}"
+                    (click)="form.get('atencion_en')?.setValue('Menores')">
+              <span [innerHTML]="icons['work']"></span>
+              <p class="small">Trabajos Menores</p>
+            </button>
+            <button type="button" class="btn mb-2 flex-fill"
+                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Computo','btn-outline-primary': form.get('atencion_en')?.value!=='Computo'}"
+                    (click)="form.get('atencion_en')?.setValue('Computo')">
+              <span [innerHTML]="icons['computer']"></span>
+              <p class="small">Equipo de Computo</p>
+            </button>
+            <button type="button" class="btn mb-2 flex-fill"
+                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Red','btn-outline-primary': form.get('atencion_en')?.value!=='Red'}"
+                    (click)="form.get('atencion_en')?.setValue('Red')">
+              <span [innerHTML]="icons['net']"></span>
+              <p class="small">Redes y Telecomunicaciones</p>
+            </button>
+            <button type="button" class="btn mb-2 flex-fill"
+                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Software','btn-outline-primary': form.get('atencion_en')?.value!=='Software'}"
+                    (click)="form.get('atencion_en')?.setValue('Software')">
+              <span [innerHTML]="icons['software']"></span>
+              <p class="small">Software</p>
+            </button>
+            <button type="button" class="btn mb-2 flex-fill"
+                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Diseño','btn-outline-primary': form.get('atencion_en')?.value!=='Diseño'}"
+                    (click)="form.get('atencion_en')?.setValue('Diseño')">
+              <span [innerHTML]="icons['diseño']"></span>
+              <p class="small">Diseños Audiovisuales</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Opcional Equipo Inventariado -->
+        <fieldset class="metadatos" *ngIf="form.get('atencion_en')?.value==='Computo'">
+          <legend>Opcional solo si es un Equipo inventariado</legend>
+          <div class="col-12 col-md-6">
+            <label for="numero_bien">Número de Bien:</label>
+            <input id="numero_bien" type="text" class="form-control text-uppercase" formControlName="numero_bien" />
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="descripcion_equipo">Descripción del Equipo:</label>
+            <input id="descripcion_equipo" type="text" class="form-control" formControlName="descripcion_equipo" />
+          </div>
+        </fieldset>
+
+        <!-- Mensaje -->
+        <div class="col-12" *ngIf="mensaje">
+          <div class="alert alert-info">{{ mensaje }}</div>
+        </div>
+
+        <!-- Botón Guardar -->
+        <div class="col-12 d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary w-75" [disabled]="form.invalid">Guardar</button>
+        </div>
+
       </div>
-      <div class="modal-footer justify-content-end">
-        <button class="btn btn-secondary" (click)="close()">Cerrar</button>
-      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<!-- Modal fullscreen con fondo animado -->
+<div class="modal-fullscreen" *ngIf="visibleFn()">
+  <!-- Fondo animado estilo Matrix -->
+  <canvas class="matrix-bg"></canvas>
+
+  <!-- Contenedor del login -->
+  <div class="modal-content-wrapper">
+
+    <div class="modal-body">
+       <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="close()"></button>
+      <app-login class="login-modal-wrapper"></app-login>
     </div>
+
   </div>
 </div>

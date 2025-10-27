@@ -1,130 +1,95 @@
-/* Fuente recomendada */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap');
 
-/* Contenedor principal */
-.cyber-login-container {
-  min-height: 100dvh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: transparent;
-  padding: 2rem;
-  font-family: 'Orbitron', 'Segoe UI', Roboto, sans-serif;
-}
-
-/* Caja de formulario */
-.cyber-login-box {
-  background: rgba(2, 2, 2, 0.967);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 2rem;
+/* ============================
+   LOGIN ESTILO APP MODERNA
+   ============================ */
+.login-container {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
   width: 100%;
-  max-width: 420px;
-  box-shadow:
-    0 0 10px rgba(0, 255, 255, 0.2),
-    0 0 30px rgba(255, 0, 128, 0.1);
-  color: #e0fdfd;
-}
-
-/* Título */
-.cyber-login-title {
-  text-align: center;
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #00ffe7;
-  text-shadow: 0 0 10px #00ffe7;
-  margin-bottom: 0.5rem;
-}
-
-/* Subtítulo */
-.cyber-login-subtitle {
-  text-align: center;
-  color: #aaa;
-  font-size: 1rem;
-  margin-bottom: 2rem;
-}
-
-/* Inputs */
-.cyber-login-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.cyber-login-input {
-  background: rgba(255, 255, 255, 0.21);
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  color: #fff;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
-}
-
-.cyber-login-input::placeholder {
-  color: #aaa;
-}
-
-.cyber-login-input:focus {
-  border-color: #00ffe0;
-  box-shadow: 0 0 12px #00ffe0;
-  outline: none;
-}
-
-/* Botón */
-.cyber-login-button {
-  margin-top: 2rem;
-  padding: 0.85rem;
-  background: linear-gradient(135deg, #ff00cc, #3333ff);
-  color: white;
-  font-weight: 600;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 8px #ff00cc88;
-}
-
-.cyber-login-button:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 14px #ff00cc, 0 0 20px #00ffe0;
-}
-
-/* Cargando */
-.cyber-loading {
-  color: #00ffe0;
-  text-align: center;
-  font-weight: bold;
+  min-height: 100vh;
   padding: 1rem;
-  animation: pulse 1.5s ease-in-out infinite;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+/* Card login */
+.login-card {
+  background: linear-gradient(145deg, rgba(17, 24, 39, 0.85), rgba(17, 24, 39, 0.65));
+  backdrop-filter: blur(15px);
+  border-radius: 24px;
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-  .cyber-login-box {
-    padding: 1.5rem;
-  }
-
-  .cyber-login-title {
-    font-size: 1.8rem;
-  }
-
-  .cyber-login-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .cyber-login-button {
-    font-size: 1rem;
-  }
+/* Card hover */
+.login-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.6);
 }
-.cyber-login-form {
-  background-color: #0077ff35;
+
+/* Titulo */
+.login-title {
+  color: #60a5fa;
+  font-weight: 700;
+  text-align: center;
+}
+
+.login-subtitle {
+  color: #cbd5e1;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Inputs estilo app */
+.login-input {
+  background: rgba(255,255,255,0.05);
+  border: none;
+  border-radius: 14px;
+  color: #f3f4f6;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+/* Efecto focus */
+.login-input:focus {
+  outline: none;
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+  color: #fff;
+}
+
+/* Botón estilo app */
+.login-btn {
+  background: linear-gradient(135deg, #3b82f6, #0ea5e9);
+  border: none;
+  border-radius: 14px;
+  padding: 0.6rem 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.6);
+}
+
+/* Responsivo para móviles */
+@media (max-width: 576px) {
+  .login-card {
+    padding: 1.5rem 1rem;
+    border-radius: 18px;
+  }
+
+  .login-title {
+    font-size: 1.4rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.85rem;
+  }
 }

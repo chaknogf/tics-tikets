@@ -8,7 +8,7 @@
   </aside>
 
   <!-- Contenido principal -->
-  <main class="main-content">
+  <main class="main-content" *ngIf="!cargando; else cargandoTemplate">
     <!-- Formulario de búsqueda -->
     <section class="filtros-container">
       <button class="filtro-toggle" (click)="toggleFiltros()">
@@ -61,7 +61,7 @@
     </section>
 
     <!-- Tabla desktop -->
-    <section class="tabla-modern-container" *ngIf="!cargando; else cargandoTemplate">
+    <section class="tabla-modern-container" >
       <table class="tabla-modern">
     <thead>
       <tr>
@@ -118,7 +118,7 @@
     </section>
 
     <!-- Cards móviles -->
-    <section class="table-responsive-mobile" *ngIf="!cargando; else cargandoTemplate">
+    <section class="table-responsive-mobile" >
        <div class="card-mobile" *ngFor="let t of tikets">
       <p><strong>ID: </strong> {{ t.id }}</p>
       <p><strong>Ticket: </strong> <span class="badge estado ticket-number"
