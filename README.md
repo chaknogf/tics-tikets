@@ -1,5 +1,15 @@
 # Solicitudes
 
+**Instalación
+
+dentro del directorio raiz del proyecto
+
+```bash
+rm -rf node_modules
+rm -f pnpm-lock.yaml
+pnpm install
+```
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.11.
 
 ## Development server
