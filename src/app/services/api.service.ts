@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
-import { Equipo, Ticket, Usuarios } from '../interface/interfaces';
+import { DashboardResumen, Equipo, Ticket, Usuarios } from '../interface/interfaces';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -394,8 +394,8 @@ export class ApiService {
 
   async getDashboardSolicitudes(): Promise<any> {
     try {
-      const response = await this.api.get('/dashboard/solicitudes');
-      //console.log(response.data);
+      const response = await this.api.get<DashboardResumen[]>('/dashboard/solicitudes');
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener solicitudes:', error);

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { DashboardSolicitudes, DashboardPeriodo } from '../../interface/interfaces';
+import { DashboardSolicitudes, DashboardPeriodo, DashboardResumen, PeriodoResumen } from '../../interface/interfaces';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -12,7 +12,26 @@ import { CommonModule } from '@angular/common';
 })
 export class ChartsComponent implements OnInit {
 
-  datosDashboard!: DashboardSolicitudes;
+  datosDashboard: DashboardResumen = {
+    hoy: {
+      total: 0,
+      estados: [],
+      prioridades: [],
+      variacion: []
+    },
+    mes_actual: {
+      total: 0,
+      estados: [],
+      prioridades: [],
+      variacion: []
+    },
+    año_actual: {
+      total: 0,
+      estados: [],
+      prioridades: [],
+      variacion: []
+    }
+  };
   hoy!: DashboardPeriodo;
   mesActual!: DashboardPeriodo;
   anioActual!: DashboardPeriodo;
@@ -37,21 +56,8 @@ export class ChartsComponent implements OnInit {
   async cargarDatos() {
     try {
       this.cargando = true;
-      const data: DashboardSolicitudes = await this.service.getDashboardSolicitudes();
-
-      this.datosDashboard = data;
-      this.hoy = data.hoy;
-      this.totalHoy = data.hoy.total;
-      this.porcentajeHoy = Math.round(this.hoy.estados.cerrado / this.hoy.total * 100);
-      this.mesActual = data.mes_actual;
-      this.totalMesActual = data.mes_actual.total;
-      this.porcentajeMesActual = Math.round(
-        (this.mesActual.estados.cerrado / this.mesActual.total) * 100
-      );
-      this.anioActual = data.año_actual;
-      this.totalAnioActual = data.año_actual.total;
-      this.porcentajeAnioActual = Math.round(this.anioActual.estados.cerrado / this.anioActual.total * 100);
-      this.anioActual = data.año_actual;
+      this.datosDashboard = await this.service.getDashboardSolicitudes();
+      console.log('Datos del dashboard cargados:', this.datosDashboard);
 
     } catch (err) {
       console.error('Error al cargar dashboard:', err);
@@ -65,7 +71,7 @@ export class ChartsComponent implements OnInit {
     if (!this.mesActual || !this.mesActual.estados) return 0;
     const total = this.mesActual.estados.abierto + this.mesActual.estados.en_proceso + this.mesActual.estados.cerrado;
     if (total === 0) return 0;
-    return Math.round((valor || 0) * 100 / total);
+    return Math.round((valor || 0) * 100 / total) || 0;
   }
 
 
