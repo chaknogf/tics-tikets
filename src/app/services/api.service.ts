@@ -5,7 +5,7 @@ import { Equipo, Ticket, Usuarios } from '../interface/interfaces';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
-  public readonly baseUrl = 'https://hgtecpan.duckdns.org/tik';
+  public readonly baseUrl = 'https://www.hosptecpan.space/tik';
   // public readonly baseUrl = 'http://localhost:8000';
   public token: string | null = null;
   public username: string | null = null;
