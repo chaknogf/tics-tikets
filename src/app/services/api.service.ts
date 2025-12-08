@@ -162,8 +162,15 @@ export class ApiService {
 
   async updateUser(userId: number, user: any): Promise<any> {
     try {
-      const response = await this.api.put(`/user/actualizar/${userId}`, user);
-      console.log('👤 Usuario actualizado correctamente');
+      const response = await this.api.put(`/user/actualizar/${userId}`, user,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+        
+      );
+      //console.log('👤 Usuario actualizado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar usuario:', error);
