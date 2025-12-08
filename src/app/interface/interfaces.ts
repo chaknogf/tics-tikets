@@ -167,3 +167,37 @@ export interface DashboardSolicitudes {
   mes_actual: DashboardPeriodo;
   año_actual: DashboardPeriodo;
 }
+
+
+export type Estado = 'Cerrado' | 'En Proceso' | 'Abierto';
+export type Prioridad = 'Alta' | 'Media' | 'Baja';
+
+export interface EstadoItem {
+  estado: Estado;
+  total: number;
+}
+
+export interface PrioridadItem {
+  prioridad: Prioridad;
+  total: number;
+}
+
+export interface DashboardResumen {
+  hoy: PeriodoResumen;
+  mes_actual: PeriodoResumen;
+  año_actual: PeriodoResumen;
+}
+
+export interface PeriodoResumen {
+  total: number;
+  estados: EstadoItem[];
+  prioridades: PrioridadItem[];
+  variacion: VariacionResumen[];
+}
+
+export interface VariacionResumen {
+  total: number;
+  abiertos: number;
+  en_proceso: number;
+  cerrados: number;
+}

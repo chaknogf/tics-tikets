@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
-import { Equipo, Ticket, Usuarios } from '../interface/interfaces';
+import { DashboardResumen, Equipo, Ticket, Usuarios } from '../interface/interfaces';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
-  public readonly baseUrl = 'https://hgtecpan.duckdns.org/tik';
-  //public readonly baseUrl = 'http://localhost:8000';
+  public readonly baseUrl = 'https://www.hosptecpan.space/tik';
+  // public readonly baseUrl = 'http://localhost:8000';
   public token: string | null = null;
   public username: string | null = null;
   public role: string | null = null;
@@ -394,8 +394,8 @@ export class ApiService {
 
   async getDashboardSolicitudes(): Promise<any> {
     try {
-      const response = await this.api.get('/dashboard/solicitudes');
-      //console.log(response.data);
+      const response = await this.api.get<DashboardResumen[]>('/dashboard/solicitudes');
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener solicitudes:', error);

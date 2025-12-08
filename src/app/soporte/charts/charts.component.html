@@ -1,31 +1,35 @@
-
-
-
-
 <div class="chart-section">
-
   <h4>Res.%</h4>
-   <label for="mes">Año</label>
+  <label for="mes">Año</label>
   <div class="donut-container">
-    <div class="donut-chart" style="--percentage: {{porcentajeAnioActual}}; --color: #0dcaf0;">
+    <div
+      class="donut-chart"
+      style="--percentage: {{ porcentajeAnioActual }}; --color: #0dcaf0;"
+    >
       <div class="donut-hole">
-        <span class="donut-label">{{porcentajeAnioActual}}%</span>
+        <span class="donut-label">{{ porcentajeAnioActual }}%</span>
       </div>
     </div>
   </div>
   <label for="mes">Mes</label>
   <div class="donut-container">
-    <div class="donut-chart" style="--percentage: {{porcentajeMesActual}}; --color: #0dcaf0;">
+    <div
+      class="donut-chart"
+      style="--percentage: {{ porcentajeMesActual }}; --color: #0dcaf0;"
+    >
       <div class="donut-hole">
-        <span class="donut-label">{{porcentajeMesActual}}%</span>
+        <span class="donut-label">{{ porcentajeMesActual }}%</span>
       </div>
     </div>
   </div>
-   <label for="mes" *ngIf="porcentajeHoy">Hoy</label>
+  <label for="mes" *ngIf="porcentajeHoy">Hoy</label>
   <div class="donut-container" *ngIf="porcentajeHoy">
-    <div class="donut-chart" style="--percentage: {{porcentajeHoy}}; --color: #0dcaf0;">
+    <div
+      class="donut-chart"
+      style="--percentage: {{ porcentajeHoy }}; --color: #0dcaf0;"
+    >
       <div class="donut-hole">
-        <span class="donut-label">{{porcentajeHoy}}%</span>
+        <span class="donut-label">{{ porcentajeHoy }}%</span>
       </div>
     </div>
   </div>
@@ -34,25 +38,22 @@
   <div class="estado-resumen-container" *ngIf="mesActual">
     <div class="estado-card">
       <label>Abierto</label>
-      <h3 class="valor">{{ mesActual.estados.abierto }}</h3>
+      <h3 class="valor">{{ datosDashboard.mes_actual.estados[0] }}</h3>
     </div>
-
 
     <div class="estado-card">
       <label>En Proceso</label>
-      <h3 class="valor">{{ mesActual.estados.en_proceso }}</h3>
+      <h3 class="valor">{{ datosDashboard.mes_actual.estados[1] }}</h3>
     </div>
 
     <div class="estado-card">
       <label>Cerrado</label>
-      <h3 class="valor">{{ mesActual.estados.cerrado }}</h3>
+      <h3 class="valor">{{ datosDashboard.mes_actual.estados[2] }}</h3>
     </div>
 
     <div class="estado-card">
       <label>Total</label>
-      <h3 class="valor">{{ mesActual.total }}</h3>
+      <h3 class="valor">{{ datosDashboard.mes_actual.total }}</h3>
     </div>
   </div>
 </div>
-
-
