@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "solicitudes": {
+    "tics": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -19,7 +19,7 @@
               "rgbcolor",
               "core-js"
             ],
-            "outputPath": "dist/solicitudes",
+            "outputPath": "dist/tics",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -67,10 +67,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "solicitudes:build:production"
+              "buildTarget": "tics:build:production"
             },
             "development": {
-              "buildTarget": "solicitudes:build:development"
+              "buildTarget": "tics:build:development"
             }
           },
           "defaultConfiguration": "development"

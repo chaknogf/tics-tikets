@@ -4,9 +4,9 @@ echo "🚀 Iniciando despliegue de la app 'Soporte'..."
 
 # Ruta al proyecto Angular
 PROYECTO_DIR="/home/matrix/Programas/tics-tikets"
-DIST_DIR="$PROYECTO_DIR/dist/solicitudes/browser"
-DESTINO="/var/www/solicitudes"
-BASE_HREF="/solicitudes/"
+DIST_DIR="$PROYECTO_DIR/dist/tics/browser"
+DESTINO="/var/www/tics"
+BASE_HREF="/tics/"
 
 # 1. Ir al directorio del proyecto
 cd "$PROYECTO_DIR" || { echo "❌ No se pudo acceder al proyecto"; exit 1; }
@@ -46,4 +46,4 @@ sudo systemctl reload nginx
 
 # 9. Mensaje final
 echo "✅ Despliegue completado correctamente. Visite:"
-echo "🌐 https://hgtecpan.duckdns.org/solicitudes/"
+echo "🌐 https://hgtecpan.duckdns.org/tics/"
