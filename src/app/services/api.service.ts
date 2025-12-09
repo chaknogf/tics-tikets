@@ -5,8 +5,8 @@ import { DashboardResumen, Equipo, Ticket, Usuarios } from '../interface/interfa
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
-  public readonly baseUrl = 'https://www.hosptecpan.space/tik';
-  // public readonly baseUrl = 'http://localhost:8000';
+  // public readonly baseUrl = 'https://www.hosptecpan.space/tik';
+  public readonly baseUrl = 'http://localhost:8000';
   public token: string | null = null;
   public username: string | null = null;
   public role: string | null = null;
@@ -121,6 +121,17 @@ export class ApiService {
 
   // ======= USERS =======
 
+  async usuarioActual(): Promise<any> {
+    try {
+      const response = await this.api.get<Usuarios>('/auth/me');
+      //console.log('👤 Usuario actual obtenido correctamente', response);
+      return response.data;
+
+    } catch (error) {
+      console.error('❌ Error al obtener usuario actual:', error);
+      throw error;
+    }
+  }
 
 
   async getUsers(filtros: any): Promise<any> {
@@ -168,7 +179,7 @@ export class ApiService {
             'Content-Type': 'application/json'
           }
         }
-        
+
       );
       //console.log('👤 Usuario actualizado correctamente');
       return response.data;
@@ -277,7 +288,7 @@ export class ApiService {
           }
         }
       );
-      console.log('📝 Ticket actualizado correctamente');
+      // console.log('📝 Ticket actualizado correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar ticket:', error);

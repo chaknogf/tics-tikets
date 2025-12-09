@@ -37,7 +37,8 @@
   border: none;
   color: #fff;
   border-radius: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 0.6rem;
+  margin: 0.2rem;
   font-size: 0.95rem;
   display: flex;
   align-items: center;
@@ -63,7 +64,7 @@
   background: #374151;
   border-radius: 0.6rem;
   padding: 0;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 
@@ -73,9 +74,11 @@
   color: #fff;
   border: none;
   border-radius: 1rem;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 0.7rem;
+  margin: 0.2rem;
   font-weight: 600;
   transition: all 0.25s;
+  font-size: 12px;
 }
 
 .logout-btn:hover {
@@ -132,5 +135,13 @@
 
   .navbar {
     border-radius: 0.8rem;
+  }
+
+  .text-wrap {
+    margin: 0.2rem;
+  }
+
+  .w-30{
+    width: 30% !important;
   }
 }

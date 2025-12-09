@@ -80,4 +80,9 @@ export class NavbarComponent {
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
   }
+
+  editarUsuario() {
+    this.router.navigate(['/editarUsuario']);
+  }
+
 }

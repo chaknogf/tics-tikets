@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Usuarios } from '../../interface/interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
-import { promises } from 'dns';
+
 
 @Component({
   selector: 'app-editar-usuario',
@@ -15,6 +15,7 @@ import { promises } from 'dns';
 })
 export class EditarUsuario implements OnInit {
 
+  mostrarPassword: boolean = false;
   public enEdicion: Boolean = false;
   usuario: Usuarios = {
     id: 0,
@@ -27,32 +28,41 @@ export class EditarUsuario implements OnInit {
   }
 
   constructor(
-     private route: ActivatedRoute,
+    private route: ActivatedRoute,
     private router: Router,
     private api: ApiService
-  ) {}
+  ) { }
 
 
- async ngOnInit(): Promise<void> {
-    const idParam = this.route.snapshot.paramMap.get('id');
+  async ngOnInit(): Promise<void> {
+    this.usuarioActual();
+  }
 
+  async guardar(): Promise<void> {
+    try {
 
-    if (idParam) {
-      const id = Number(idParam);
-      if (!isNaN(id)) {
-        try {
-          const data = await this.api.getUser(id);
-          this.usuario = data[0];
-          this.enEdicion = true;
+      await this.api.updateUser(this.usuario.id, this.usuario);
+      console.log('✅ Usuario actualizado con éxito');
 
-          
-        } catch (error) {
-          console.error('❌ Error al cargar usuario para edición:', error);
-        }
-      } else {
-        console.warn('⚠️ ID inválido en la URL:', idParam);
-      }
+      this.router.navigate(['/dash']);
+    } catch (error) {
+      console.error('❌ Error al guardar usuario:', error);
     }
   }
+
+  async usuarioActual(): Promise<void> {
+    try {
+      const data = await this.api.usuarioActual();
+      this.usuario = data;
+    } catch (error) {
+      console.error('❌ Error al obtener usuario actual:', error);
+    }
+  }
+
+  cancelar(): void {
+    this.router.navigate(['/dash']);
+  }
+
+
 
 }

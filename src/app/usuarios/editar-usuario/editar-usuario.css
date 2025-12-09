@@ -1,0 +1,178 @@
+/* ================================
+   Panel principal
+================================ */
+.panel-container {
+  max-width: 750px;
+  margin: 40px auto;
+  padding: 35px;
+  background: rgba(20, 20, 30, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 18px;
+  border: 1px solid rgba(100, 160, 255, 0.2);
+  box-shadow: 0 0 25px rgba(0, 120, 255, 0.25);
+  color: #e0e6ff;
+  font-family: "Segoe UI", sans-serif;
+
+}
+
+/* ================================
+   Header futurista
+================================ */
+.panel-header h2 {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 700;
+  color: #78a8ff;
+  text-shadow: 0 0 8px rgba(120, 168, 255, 0.5);
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: #9bb6ff;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* ================================
+   Formulario en cuadrícula
+================================ */
+.form-grid {
+  margin-top: 25px;
+ display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-basis: 200;
+}
+
+/* ================================
+   Labels
+================================ */
+label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #bcd4ff;
+  letter-spacing: 0.4px;
+}
+
+/* ================================
+   Inputs futuristas
+================================ */
+input, select {
+  background: rgba(15, 15, 25, 0.7);
+  border: 1px solid rgba(120, 168, 255, 0.3);
+  padding: 10px 14px;
+  border-radius: 10px;
+  outline: none;
+  color: #e8eeff;
+  font-size: 15px;
+  transition: 0.2s ease;
+  width: 300px;
+}
+
+input:focus, select:focus {
+  border-color: #6da2ff;
+  box-shadow: 0 0 8px rgba(110, 160, 255, 0.4);
+  background: rgba(20, 20, 30, 0.8);
+}
+
+select option {
+  background: #1a1e28;
+}
+
+/* ================================
+   Botonera
+================================ */
+.button-zone {
+  margin-top: 30px;
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+button {
+  padding: 12px 26px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* Botón principal */
+.btn-guardar {
+  background: linear-gradient(135deg, #4c8bff, #1f57ff);
+  color: white;
+  box-shadow: 0 0 10px rgba(76, 139, 255, 0.5);
+}
+
+.btn-guardar:hover {
+  background: linear-gradient(135deg, #6da2ff, #2f66ff);
+  box-shadow: 0 0 14px rgba(120, 168, 255, 0.6);
+}
+
+/* Botón secundario */
+.btn-cancelar {
+  background: rgba(255, 80, 80, 0.25);
+  color: #ffb3b3;
+  border: 1px solid rgba(255, 80, 80, 0.35);
+}
+
+.btn-cancelar:hover {
+  background: rgba(255, 100, 100, 0.35);
+  color: #ffd7d7;
+}
+
+/* ================================
+   Responsivo
+================================ */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .button-zone {
+    justify-content: center;
+  }
+}
+
+/* ==================
+toggle contraseña
+====================*/
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-field {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.btn-eye {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #bcd4ff;
+  transition: 0.2s ease;
+}
+
+.btn-eye:hover {
+  color: #6da2ff;
+  transform: scale(1.1);
+}

@@ -4,22 +4,23 @@
   </div>
 
   <div class="nav-right" [class.active]="menuAbierto">
-    <button class="nav-btn" (click)="equipos()">
+    <button class="nav-btn w-30" (click)="equipos()">
       <span [innerHTML]="icons['equipos']"></span>
       <span>Equipos</span>
     </button>
-    <button class="nav-btn" (click)="tickets()">
+    <button class="nav-btn w-30" (click)="tickets()">
       <span [innerHTML]="icons['tickets']"></span>
       <span>Tickets</span>
     </button>
-    <button class="nav-btn w-25" (click)="ticket()">
+    <button class="nav-btn w-30" (click)="ticket()">
       <span [innerHTML]="icons['ticket']"></span>
-      <span class="text-wrap ">Generar Ticket</span>
+      <span class="text-wrap">Generar Ticket</span>
     </button>
 
     <div class="user-info" *ngIf="estaAutenticado">
       <span class="badge">{{ usuario }}</span>
       <span class="badge">{{ rol }}</span>
+      <span class="badge" (click)="editarUsuario()">Actualizar Perfil</span>
       <button class="logout-btn" (click)="logout()">Salir</button>
     </div>
   </div>
