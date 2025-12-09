@@ -26,7 +26,11 @@ export class EditarUsuario implements OnInit {
     role: '',
     estado: ''
   }
-
+  passwordConfirm: string = '';
+  passwordsMatch: boolean = true;
+  passwordChanged: boolean = false;
+  passwordActual: string = '';
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -52,7 +56,7 @@ export class EditarUsuario implements OnInit {
 
   async usuarioActual(): Promise<void> {
     try {
-      const data = await this.api.usuarioActual();
+      const data = await this.api.meUser();
       this.usuario = data;
     } catch (error) {
       console.error('❌ Error al obtener usuario actual:', error);

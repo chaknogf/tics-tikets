@@ -98,6 +98,23 @@ export class ApiService {
     }
   }
 
+  async meUser(): Promise<any> {
+    const token = localStorage.getItem('access_token');
+    
+    if (!token) {
+      throw new Error('🔒 No estás autenticado.');
+    }
+
+    try {
+      const response = await this.api.get<Usuarios>('/auth/allme');
+      //console.log('👤 Usuario actual obtenido correctamente', response);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener usuario actual:', error);
+      throw error;
+    }
+  }
+
   logOut() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
