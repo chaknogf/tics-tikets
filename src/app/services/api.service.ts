@@ -1,7 +1,9 @@
+// src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
 import { DashboardResumen, Equipo, Ticket, Usuarios } from '../interface/interfaces';
+import { NotificacionesService } from './notificaciones.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -13,6 +15,7 @@ export class ApiService {
 
   constructor(
     private router: Router,
+    // private notificationsService: NotificacionesService
   ) {
 
 
@@ -44,22 +47,24 @@ export class ApiService {
    * @param username Usuario
    * @param password Contraseña
    */
-  async login(username: string, password: string): Promise<void> {
-    const response = await this.api.post('/auth/login', new URLSearchParams({ username, password }), {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    });
+  async login(username: string, password: string): Promise<any> {
+  const response = await this.api.post(
+    '/auth/login',
+    new URLSearchParams({ username, password }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
 
-    const token = response.data.access_token;
-    if (token) {
-      localStorage.setItem('access_token', token);
-      this.getCurrentUser();
-      console.log('🔑 Atenticado');
-      this.router.navigate(['/dash']);
-    } else {
-      throw new Error('No se recibió el token.');
-
-    }
+  const token = response.data.access_token;
+  if (!token) {
+    throw new Error('No se recibió el token');
   }
+
+  localStorage.setItem('access_token', token);
+
+  // 🔑 Obtener y RETORNAR el usuario real
+  return await this.getCurrentUser();
+}
+
 
   /**
    * Obtiene la información del usuario autenticado.

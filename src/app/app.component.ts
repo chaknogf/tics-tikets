@@ -6,11 +6,12 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { ApiService } from './services/api.service';
 import { filter } from 'rxjs/operators';
 import { ViewEncapsulation } from '@angular/core';
+import { NotificadorComponent } from "./notificador/notificador";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, CommonModule],
+  imports: [RouterOutlet, NavbarComponent, CommonModule, NotificadorComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   encapsulation: ViewEncapsulation.None

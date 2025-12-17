@@ -1,0 +1,10 @@
+<div class="notificador">
+  <div class="toast" *ngFor="let n of notificaciones; let i = index">
+    <strong>📢 Nuevo evento</strong> <br>
+    <strong>{{ n.ticket }}</strong>
+    <p> <span [innerHTML]="icons['notificador']" ></span> {{ n.prioridad }}</p>
+    <p>Servicio: {{n.servicio}}</p>
+    <p>{{ n.atencion_en }}</p>
+    <button (click)="cerrar(i)">✖</button>
+  </div>
+</div>

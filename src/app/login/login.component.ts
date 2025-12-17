@@ -1,9 +1,11 @@
+// src/app/login/login.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
+import { NotificacionesService } from '../services/notificaciones.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private notificacionesService: NotificacionesService
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -28,31 +31,32 @@ export class LoginComponent {
     });
   }
 
-  onSubmit() {
-    if (this.loginForm.invalid) {
-      this.errorMessage = 'Por favor complete todos los campos.';
-      return;
-    }
-
-    this.loading = true;
-    this.errorMessage = '';
-
-    const { username, password } = this.loginForm.value;
-
-    this.apiService.login(username, password)
-      .then((res: any) => {
-        this.loading = false;
-        localStorage.setItem('token', res.token); // Guarda el token JWT
-        console.log('inicio de sesión exitoso');
-        this.loading = true;
-        console.log('Redirigiendo al dashboard...');
-        this.router.navigate(['/tikets']);
-      })
-      .catch((error) => {
-        this.loading = false;
-        this.errorMessage = this.getErrorMessage(error);
-      });
+ onSubmit() {
+  if (this.loginForm.invalid) {
+    this.errorMessage = 'Por favor complete todos los campos.';
+    return;
   }
+
+  this.loading = true;
+  const { username, password } = this.loginForm.value;
+
+  this.apiService.login(username, password)
+    .then((user) => {
+      console.log('✅ Usuario autenticado:', user);
+
+      // 🔌 Conectar WebSocket UNA VEZ
+      this.notificacionesService.conectar(user.id);
+
+      this.router.navigate(['/dash']);
+    })
+    .catch((error) => {
+      this.errorMessage = this.getErrorMessage(error);
+    })
+    .finally(() => {
+      this.loading = false;
+    });
+}
+
 
   getErrorMessage(error: any): string {
     if (!error || !error.response) {
