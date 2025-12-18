@@ -38,17 +38,17 @@
   <div class="estado-resumen-container" *ngIf="mesActual">
     <div class="estado-card">
       <label>Abierto</label>
-      <h3 class="valor">{{ datosDashboard.mes_actual.estados[0] }}</h3>
+      <h3 class="valor">{{ datosDashboard.mes_actual.estados.abierto }}</h3>
     </div>
 
     <div class="estado-card">
       <label>En Proceso</label>
-      <h3 class="valor">{{ datosDashboard.mes_actual.estados[1] }}</h3>
+      <h3 class="valor">{{ datosDashboard.mes_actual.estados.en_proceso }}</h3>
     </div>
 
     <div class="estado-card">
       <label>Cerrado</label>
-      <h3 class="valor">{{ datosDashboard.mes_actual.estados[2] }}</h3>
+      <h3 class="valor">{{ datosDashboard.mes_actual.estados.cerrado }}</h3>
     </div>
 
     <div class="estado-card">

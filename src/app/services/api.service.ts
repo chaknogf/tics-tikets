@@ -7,8 +7,8 @@ import { NotificacionesService } from './notificaciones.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
-  // public readonly baseUrl = 'https://www.hosptecpan.space/tik';
-  public readonly baseUrl = 'http://localhost:8000';
+  public readonly baseUrl = 'https://www.hosptecpan.space/tik';
+  // public readonly baseUrl = 'http://localhost:8000';
   public token: string | null = null;
   public username: string | null = null;
   public role: string | null = null;

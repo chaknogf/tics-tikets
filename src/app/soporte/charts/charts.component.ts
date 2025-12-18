@@ -43,7 +43,7 @@ export class ChartsComponent implements OnInit {
 
       // Calcular porcentajes totales para donuts
       this.porcentajeHoy = this.calcularPorcentajeTotal(this.hoy);
-      this.porcentajeMesActual = this.calcularPorcentajeTotal(this.mesActual);
+      this.porcentajeMesActual = this.calcularPorcentajeTotalMes(this.mesActual);
       this.porcentajeAnioActual = this.calcularPorcentajeTotal(this.anioActual);
 
       console.log('Dashboard cargado:', this.datosDashboard);
@@ -59,6 +59,12 @@ export class ChartsComponent implements OnInit {
   calcularPorcentajeTotal(periodo: DashboardPeriodo): number {
     const total = periodo.total || 0;
     const cerrados = this.anioActual.estados.cerrado;
+    return total ? Math.round((cerrados * 100) / total) : 0;
+  }
+
+  calcularPorcentajeTotalMes(periodo: DashboardPeriodo): number {
+    const total = periodo.total || 0;
+    const cerrados = this.mesActual.estados.cerrado;
     return total ? Math.round((cerrados * 100) / total) : 0;
   }
 
