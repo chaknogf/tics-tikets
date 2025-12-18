@@ -211,6 +211,36 @@ export class ApiService {
     }
   }
 
+  async cambiarPassword(
+    userId: number,
+    passwordActual: string,
+    passwordNueva: string
+  ): Promise<any> {
+    try {
+      const body = {
+        password_actual: passwordActual,
+        password_nueva: passwordNueva
+      };
+
+      const response = await this.api.patch(
+        `/user/${userId}/password`,
+        body,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // ✔️ Retornamos la respuesta del backend
+      return response.data;
+
+    } catch (error) {
+      console.error('❌ Error al cambiar la contraseña:', error);
+      throw error;
+    }
+  }
+
   async deleteUser(userId: number | string): Promise<any> {
     try {
       const response = await this.api.delete(`/user/eliminar/${userId}`);
