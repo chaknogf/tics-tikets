@@ -574,3 +574,31 @@ app-charts {
   transform: scale(1.05);
   box-shadow: 0 4px 16px rgba(14, 165, 233, 0.6);
 }
+
+.tabla-modern th,
+.tabla-modern td {
+  text-align: center;
+  padding: 0.8rem;
+  word-wrap: break-word;
+  white-space: nowrap;  /* 🔹 evita que se parta el contenido */
+}
+
+.tabla-modern-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tabla-modern-container::-webkit-scrollbar-thumb {
+  background: rgba(96, 165, 250, 0.4);
+  border-radius: 4px;
+}
+
+.tabla-modern-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+.tabla-modern th,
+.tabla-modern td {
+  text-align: center;
+  padding: 0.8rem;
+  word-wrap: break-word;
+  white-space: nowrap;  /* 🔹 evita que se parta el contenido */
+}

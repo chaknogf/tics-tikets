@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
-import { DashboardResumen, Equipo, Ticket, Usuarios } from '../interface/interfaces';
+import { DashboardResumen, Equipo, ResumenResponse, Ticket, Usuarios } from '../interface/interfaces';
 import { NotificacionesService } from './notificaciones.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -48,22 +48,22 @@ export class ApiService {
    * @param password Contraseña
    */
   async login(username: string, password: string): Promise<any> {
-  const response = await this.api.post(
-    '/auth/login',
-    new URLSearchParams({ username, password }),
-    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-  );
+    const response = await this.api.post(
+      '/auth/login',
+      new URLSearchParams({ username, password }),
+      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    );
 
-  const token = response.data.access_token;
-  if (!token) {
-    throw new Error('No se recibió el token');
+    const token = response.data.access_token;
+    if (!token) {
+      throw new Error('No se recibió el token');
+    }
+
+    localStorage.setItem('access_token', token);
+
+    // 🔑 Obtener y RETORNAR el usuario real
+    return await this.getCurrentUser();
   }
-
-  localStorage.setItem('access_token', token);
-
-  // 🔑 Obtener y RETORNAR el usuario real
-  return await this.getCurrentUser();
-}
 
 
   /**
@@ -105,7 +105,7 @@ export class ApiService {
 
   async meUser(): Promise<any> {
     const token = localStorage.getItem('access_token');
-    
+
     if (!token) {
       throw new Error('🔒 No estás autenticado.');
     }
@@ -439,6 +439,26 @@ export class ApiService {
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener solicitudes:', error);
+      throw error;
+    }
+  }
+
+  async getResumen(fechaInicio: string, fechaFin: string, usuario: string): Promise<ResumenResponse> {
+    try {
+      const response = await this.api.get<ResumenResponse>(
+        '/tik/resumen/',
+        {
+          params: {
+            fecha_inicio: fechaInicio,
+            fecha_fin: fechaFin,
+            usuario: usuario
+          }
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener resumen:', error);
       throw error;
     }
   }

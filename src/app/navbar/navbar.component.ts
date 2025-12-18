@@ -7,6 +7,7 @@ import { ApiService } from '../services/api.service';
 import { ticketIcon } from '../shared/icons/icons';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 
+
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -39,6 +40,8 @@ export class NavbarComponent {
       ticket: this.iconService.getIcon("ticketIcon"),
       tickets: this.iconService.getIcon("ticketsIcon"),
       equipos: this.iconService.getIcon("equiposIcon"),
+      reportes: this.iconService.getIcon("reportIcon"),
+
 
     };
 
@@ -74,6 +77,10 @@ export class NavbarComponent {
 
   ticket() {
     this.router.navigate(['/tiket', 'dash']);
+  }
+
+  reportes() {
+    this.router.navigate(['/reporteria']);
   }
 
   /** Alterna la visibilidad del menú hamburguesa */

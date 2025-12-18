@@ -137,6 +137,9 @@ export interface EquipoCrear {
 }
 
 export interface Estados {
+  find(arg0: (e: any) => boolean): unknown;
+  estado: string;
+  total: number;
   abierto: number;
   en_proceso: number;
   cerrado: number;
@@ -168,10 +171,11 @@ export interface DashboardSolicitudes {
   año_actual: DashboardPeriodo;
 }
 
+// Tipos básicos
+export type Estado = 'abiertos' | 'en_proceso' | 'cerrados';
+export type Prioridad = 'alta' | 'media' | 'baja';
 
-export type Estado = 'Cerrado' | 'En Proceso' | 'Abierto';
-export type Prioridad = 'Alta' | 'Media' | 'Baja';
-
+// Items para arrays
 export interface EstadoItem {
   estado: Estado;
   total: number;
@@ -182,22 +186,49 @@ export interface PrioridadItem {
   total: number;
 }
 
-export interface DashboardResumen {
-  hoy: PeriodoResumen;
-  mes_actual: PeriodoResumen;
-  año_actual: PeriodoResumen;
-}
-
-export interface PeriodoResumen {
-  total: number;
-  estados: EstadoItem[];
-  prioridades: PrioridadItem[];
-  variacion: VariacionResumen[];
-}
-
+// Variación
 export interface VariacionResumen {
   total: number;
   abiertos: number;
   en_proceso: number;
   cerrados: number;
+}
+
+// Periodo del dashboard
+export interface DashboardPeriodo {
+  total: number;
+  estados: Estados;       // Array de estados
+  prioridades: Prioridades; // Array de prioridades
+  variacion: VariacionResumen;  // Solo 1 objeto
+}
+
+// Dashboard completo
+export interface DashboardResumen {
+  hoy: DashboardPeriodo;
+  mes_actual: DashboardPeriodo;
+  año_actual: DashboardPeriodo;
+}
+
+// Resumen para tablas
+export interface ResumenItem {
+  usuario: string;
+  fecha_solicitud?: string; // solo en diario
+  total: number;
+  cerrados: number;
+  abiertos: number;
+  en_proceso: number;
+  alta: number;
+  media: number;
+  baja: number;
+  red: number;
+  computo: number;
+  diseno: number;
+  software: number;
+  menores: number;
+  efectividad: number;
+}
+
+export interface ResumenResponse {
+  diario: ResumenItem[];
+  acumulado: ResumenItem[];
 }

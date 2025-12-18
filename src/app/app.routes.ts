@@ -11,6 +11,7 @@ import { EquiposComponent } from './equipos/equipos/equipos.component';
 import { ReporteComponent } from './equipos/reporte/reporte.component';
 import { PdfTicketComponent } from './pdfTicket/pdfTicket.component';
 import { EditarUsuario } from './usuarios/editar-usuario/editar-usuario';
+import { ReporteriaComponent } from './soporte/reporteria/reporteria.component';
 
 export const routes: Routes = [
   { path: '', component: SolicitudUsuarioComponent, pathMatch: 'full' },
@@ -28,5 +29,6 @@ export const routes: Routes = [
   { path: 'equipos', component: EquiposComponent, canActivate: [AuthGuard] },
   { path: 'reporteEquipos', component: ReporteComponent, canActivate: [AuthGuard] },
   { path: 'editarUsuario', component: EditarUsuario, canActivate: [AuthGuard] },
+  { path: 'reporteria', component: ReporteriaComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }, // 🔚 Siempre debe ir al final
 ];
