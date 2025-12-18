@@ -57,13 +57,13 @@ export class ChartsComponent implements OnInit {
 
   // Porcentaje total de cerrados
   calcularPorcentajeTotal(periodo: DashboardPeriodo): number {
-    const total = periodo.total || 0;
+    const total = this.anioActual.total || 0;
     const cerrados = this.anioActual.estados.cerrado;
     return total ? Math.round((cerrados * 100) / total) : 0;
   }
 
   calcularPorcentajeTotalMes(periodo: DashboardPeriodo): number {
-    const total = periodo.total || 0;
+    const total = this.mesActual.total || 0;
     const cerrados = this.mesActual.estados.cerrado;
     return total ? Math.round((cerrados * 100) / total) : 0;
   }
