@@ -68,6 +68,12 @@ export class ChartsComponent implements OnInit {
     return total ? Math.round((cerrados * 100) / total) : 0;
   }
 
+  calcularPorcentajeTotalDia(periodo: DashboardPeriodo): number {
+    const total = this.mesActual.total || 0;
+    const cerrados = this.mesActual.estados.cerrado;
+    return total ? Math.round((cerrados * 100) / total) : 0;
+  }
+
   // Devuelve conteo seguro por estado
   getCount(key: 'abiertos' | 'en_proceso' | 'cerrados', periodo: DashboardPeriodo): number {
     if (Array.isArray(periodo.estados)) {

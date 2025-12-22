@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Usuarios } from '../../interface/interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { CambiarPasswordComponent } from "../cambiarPassword/cambiarPassword.component";
 
 
 @Component({
   selector: 'app-editar-usuario',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CambiarPasswordComponent],
   templateUrl: './editar-usuario.html',
   styleUrl: './editar-usuario.css',
   standalone: true

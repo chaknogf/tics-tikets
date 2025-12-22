@@ -40,31 +40,9 @@
         required
       />
     </div>
-    <div class="form-group password-wrapper">
-      <label for="password">Contraseña</label>
-
-      <div class="password-field">
-        <input
-          id="password"
-          [type]="mostrarPassword ? 'text' : 'password'"
-          [(ngModel)]="usuario.password"
-          name="password"
-          placeholder="********"
-          [required]="!enEdicion"
-        />
-
-        <button
-          type="button"
-          class="btn-eye"
-          (click)="mostrarPassword = !mostrarPassword"
-        >
-          {{ mostrarPassword ? '*' : '👁️‍🗨️' }}
-        </button>
-      </div>
-    </div>
-
+    
+    
    
-
     <div class="button-zone">
       <button type="submit" class="btn-guardar" (click)="guardar()">
         Guardar Cambios

@@ -133,9 +133,9 @@
                 >{{ t.ticket }}</span
               >
             </td>
-            <td>{{ t.fecha_solicitud | date : "dd-MM-yyyy HH:mm" }}</td>
+            <td class="text-wrap">{{ t.fecha_solicitud | date : "dd-MM-yy HH:mm" }}</td>
             <td>{{ t.fecha_atencion | date : "shortDate" }}</td>
-            <td class="text-nowrap">{{ t.servicio }}</td>
+            <td class="text-wrap">{{ t.servicio }}</td>
             <td>
               <span
                 class="badge prioridad {{ t.prioridad | lowercase }} estado-{{
