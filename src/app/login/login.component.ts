@@ -42,7 +42,7 @@ export class LoginComponent {
 
   this.apiService.login(username, password)
     .then((user) => {
-      console.log('✅ Usuario autenticado:', user);
+      // console.log('✅ Usuario autenticado:', user);
 
       // 🔌 Conectar WebSocket UNA VEZ
       this.notificacionesService.conectar(user.id);

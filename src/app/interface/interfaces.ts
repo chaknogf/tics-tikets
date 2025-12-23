@@ -28,6 +28,7 @@ export interface Ticket {
   id: number;
   ticket: string;
   fecha_solicitud?: string; // ISO date string
+  hora?: string;
   nombre_solicitante?: string;
   servicio?: string;
   detalle?: string;

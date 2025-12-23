@@ -46,7 +46,7 @@ export class ChartsComponent implements OnInit {
       this.porcentajeMesActual = this.calcularPorcentajeTotalMes(this.mesActual);
       this.porcentajeAnioActual = this.calcularPorcentajeTotal(this.anioActual);
 
-      console.log('Dashboard cargado:', this.datosDashboard);
+      // console.log('Dashboard cargado:', this.datosDashboard);
     } catch (err) {
       console.error('Error al cargar dashboard:', err);
       this.error = 'No se pudieron cargar los datos del dashboard.';

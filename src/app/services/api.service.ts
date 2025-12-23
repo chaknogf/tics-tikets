@@ -261,7 +261,7 @@ export class ApiService {
       const response = await this.api.get<Ticket[]>('/tickets/', {
         params: filtrosLimpiados
       });
-      console.log('📝 Tickets obtenidos correctamente');
+      // console.log('📝 Tickets obtenidos correctamente');
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener tickets:', error);
@@ -465,7 +465,7 @@ export class ApiService {
   async getDashboardSolicitudes(): Promise<any> {
     try {
       const response = await this.api.get<DashboardResumen[]>('/dashboard/solicitudes');
-      console.log(response.data);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener solicitudes:', error);
