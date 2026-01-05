@@ -12,9 +12,11 @@ import { ReporteComponent } from './equipos/reporte/reporte.component';
 import { PdfTicketComponent } from './pdfTicket/pdfTicket.component';
 import { EditarUsuario } from './usuarios/editar-usuario/editar-usuario';
 import { ReporteriaComponent } from './soporte/reporteria/reporteria.component';
+import { FueraDeServicio } from './fuera-de-servicio/fuera-de-servicio';
 
 export const routes: Routes = [
-  { path: '', component: SolicitudUsuarioComponent, pathMatch: 'full' },
+  // { path: '', component: SolicitudUsuarioComponent, pathMatch: 'full' },
+  { path: '', component: FueraDeServicio, pathMatch: 'full' },
   { path: 'inicio', component: SolicitudUsuarioComponent },
   { path: 'login', component: LoginComponent },
   { path: 'dash', component: TiketsComponent, canActivate: [AuthGuard] },
@@ -32,3 +34,4 @@ export const routes: Routes = [
   { path: 'reporteria', component: ReporteriaComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }, // 🔚 Siempre debe ir al final
 ];
+ 
