@@ -46,4 +46,4 @@ sudo systemctl reload nginx
 
 # 9. Mensaje final
 echo "✅ Despliegue completado correctamente. Visite:"
-echo "🌐 https://hgtecpan.duckdns.org/tics/"
+echo "🌐 https://htecpan.com/tics/"
