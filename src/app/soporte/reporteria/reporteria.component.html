@@ -1,127 +1,312 @@
-<h3>Resumen diario</h3>
-<div class="filtro-container">
-  <form (ngSubmit)="filtrar()">
-    <div class="campo">
-      <label for="fechaInicio">Fecha Inicio:</label>
-      <input
-        type="date"
-        id="fechaInicio"
-        [(ngModel)]="filtros.fechaInicio"
-        name="fechaInicio"
-      />
+<main class="informe" id="informe">
+  <header class="informe-encabezado">
+    <img src="assets/logo-Tecpan.avif" alt="" class="informe-logo" />
+    <div>
+      <p class="informe-organizacion">TECPAN · Departamento de soporte técnico</p>
+      <h1>Informe de soporte técnico</h1>
+      <p class="informe-periodo">
+        Periodo: <strong>{{ periodo }}</strong> · Generado: {{ generadoEn }}
+      </p>
     </div>
+  </header>
 
-    <div class="campo">
-      <label for="fechaFin">Fecha Fin:</label>
-      <input
-        type="date"
-        id="fechaFin"
-        [(ngModel)]="filtros.fechaFin"
-        name="fechaFin"
-      />
+  <section class="panel-filtros no-pdf" aria-labelledby="filtros-titulo">
+    <h2 id="filtros-titulo">Criterios del informe</h2>
+    <form class="filtros-form" (ngSubmit)="filtrar()">
+      <div class="campo">
+        <label for="fechaInicio">Desde</label>
+        <input type="date" id="fechaInicio" [(ngModel)]="filtros.fechaInicio" name="fechaInicio" />
+      </div>
+      <div class="campo">
+        <label for="fechaFin">Hasta</label>
+        <input type="date" id="fechaFin" [(ngModel)]="filtros.fechaFin" name="fechaFin" />
+      </div>
+      <div class="campo">
+        <label for="mes">Mes</label>
+        <input type="month" id="mes" [(ngModel)]="filtros.mes" name="mes" />
+      </div>
+      <div class="campo">
+        <label for="usuario">Usuario</label>
+        <select id="usuario" name="usuario" [(ngModel)]="filtros.usuario">
+          <option value="">Todos</option>
+          <option *ngFor="let item of usuarios" [value]="item.username">{{ item.nombre }}</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="servicio">Servicio</label>
+        <select id="servicio" name="servicio" [(ngModel)]="filtros.servicio">
+          <option value="">Todos</option>
+          <option value="Red">Redes</option>
+          <option value="Computo">Cómputo</option>
+          <option value="Diseño">Diseño</option>
+          <option value="Software">Software</option>
+          <option value="Menores">Atenciones menores</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="prioridad">Prioridad</label>
+        <select id="prioridad" name="prioridad" [(ngModel)]="filtros.prioridad">
+          <option value="">Todas</option>
+          <option value="Alta">Alta</option>
+          <option value="Media">Media</option>
+          <option value="Baja">Baja</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="estado">Estado</label>
+        <select id="estado" name="estado" [(ngModel)]="filtros.estado">
+          <option value="">Todos</option>
+          <option value="Abierto">Abierto</option>
+          <option value="En Proceso">En proceso</option>
+          <option value="Cerrado">Cerrado</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="atencionEn">Atención en</label>
+        <select id="atencionEn" name="atencionEn" [(ngModel)]="filtros.atencionEn">
+          <option value="">Todas</option>
+          <option value="Red">Redes</option>
+          <option value="Computo">Cómputo</option>
+          <option value="Diseño">Diseño</option>
+          <option value="Software">Software</option>
+          <option value="Menores">Atenciones menores</option>
+        </select>
+      </div>
+
+      <div class="acciones-form">
+        <button class="btn btn-primary" type="submit" [disabled]="cargando">Aplicar filtros</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="limpiar()">Limpiar</button>
+        <button class="btn btn-outline-success" type="button" (click)="descargarExcel()">
+          Descargar Excel
+        </button>
+        <button class="btn btn-outline-danger" type="button" (click)="descargarPdf()"
+          [disabled]="generandoPdf">
+          {{ generandoPdf ? 'Generando…' : 'Descargar PDF' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <p *ngIf="aviso" class="aviso" role="status">{{ aviso }}</p>
+  <p *ngIf="cargando" class="cargando" role="status">Cargando información del informe…</p>
+
+  <section class="indicadores" aria-label="Indicadores del periodo">
+    <article>
+      <span class="indicador-valor">{{ totalSolicitudes }}</span>
+      <span class="indicador-etiqueta">Solicitudes atendidas</span>
+    </article>
+    <article>
+      <span class="indicador-valor">{{ efectividad }}%</span>
+      <span class="indicador-etiqueta">Efectividad</span>
+    </article>
+    <article>
+      <span class="indicador-valor">{{ bajas.length }}</span>
+      <span class="indicador-etiqueta">Bajas registradas</span>
+    </article>
+    <article>
+      <span class="indicador-valor">{{ mantenimientos.length }}</span>
+      <span class="indicador-etiqueta">Mantenimientos ejecutados</span>
+    </article>
+  </section>
+
+  <section aria-labelledby="graficas-titulo">
+    <h2 id="graficas-titulo">1. Distribución de solicitudes</h2>
+    <div class="graficas">
+      <figure>
+        <figcaption>Por estado</figcaption>
+        <div class="grafica-canvas">
+          <canvas #graficoEstado role="img"
+            aria-label="Distribución de solicitudes por estado"></canvas>
+        </div>
+        <table class="tabla-grafica">
+          <caption>Datos de la gráfica por estado</caption>
+          <thead><tr><th scope="col">Estado</th><th scope="col">Total</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of estadisticas?.por_estado">
+              <th scope="row">{{ item.etiqueta }}</th><td>{{ item.total }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+
+      <figure>
+        <figcaption>Por prioridad</figcaption>
+        <div class="grafica-canvas">
+          <canvas #graficoPrioridad role="img"
+            aria-label="Distribución de solicitudes por prioridad"></canvas>
+        </div>
+        <table class="tabla-grafica">
+          <caption>Datos de la gráfica por prioridad</caption>
+          <thead><tr><th scope="col">Prioridad</th><th scope="col">Total</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of estadisticas?.por_prioridad">
+              <th scope="row">{{ item.etiqueta }}</th><td>{{ item.total }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+
+      <figure>
+        <figcaption>Por tipo de atención</figcaption>
+        <div class="grafica-canvas">
+          <canvas #graficoAtencion role="img"
+            aria-label="Distribución de solicitudes por tipo de atención"></canvas>
+        </div>
+        <table class="tabla-grafica">
+          <caption>Datos de la gráfica por tipo de atención</caption>
+          <thead><tr><th scope="col">Atención</th><th scope="col">Total</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of estadisticas?.por_atencion">
+              <th scope="row">{{ item.etiqueta }}</th><td>{{ item.total }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
     </div>
+  </section>
 
-    <div class="campo">
-      <label for="usuario">Usuario:</label>
-      <select id="usuario" name="usuario" [(ngModel)]="filtros.usuario">
-        <option value="">Todos</option>
-        <option *ngFor="let item of usuarios" [value]="item.username">
-          {{ item.nombre }}
-        </option>
-      </select>
+  <section aria-labelledby="diario-titulo">
+    <h2 id="diario-titulo">2. Resumen diario</h2>
+    <div class="table-wrapper" tabindex="0" role="region" aria-labelledby="diario-caption">
+      <table class="resumen-table">
+        <caption id="diario-caption">Solicitudes agrupadas por fecha y usuario</caption>
+        <thead>
+          <tr>
+            <th rowspan="2" scope="col">Fecha</th>
+            <th rowspan="2" scope="col">Usuario</th>
+            <th rowspan="2" scope="col">Total</th>
+            <th rowspan="2" scope="col">Cerrados</th>
+            <th rowspan="2" scope="col">Efectividad</th>
+            <th colspan="3" scope="colgroup" class="prioridad">Prioridad</th>
+            <th colspan="5" scope="colgroup" class="categoria">Atención en</th>
+          </tr>
+          <tr>
+            <th scope="col" class="prioridad">Baja</th>
+            <th scope="col" class="prioridad">Media</th>
+            <th scope="col" class="prioridad">Alta</th>
+            <th scope="col" class="categoria">Redes</th>
+            <th scope="col" class="categoria">Cómputo</th>
+            <th scope="col" class="categoria">Menores</th>
+            <th scope="col" class="categoria">Software</th>
+            <th scope="col" class="categoria">Diseño</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of diario">
+            <td>{{ r.fecha_solicitud | date:'dd-MM-yyyy' }}</td>
+            <td>{{ r.usuario }}</td>
+            <td>{{ r.total }}</td>
+            <td>{{ r.cerrados }}</td>
+            <td>{{ r.efectividad }}%</td>
+            <td>{{ r.baja }}</td><td>{{ r.media }}</td><td>{{ r.alta }}</td>
+            <td>{{ r.red }}</td><td>{{ r.computo }}</td><td>{{ r.menores }}</td>
+            <td>{{ r.software }}</td><td>{{ r.diseno }}</td>
+          </tr>
+          <tr *ngIf="!cargando && !diario.length">
+            <td colspan="13" class="vacio">No hay solicitudes en el periodo seleccionado.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </section>
 
-    <button type="submit">Filtrar</button>
-  </form>
-</div>
+  <section aria-labelledby="acumulado-titulo">
+    <h2 id="acumulado-titulo">3. Resumen acumulado</h2>
+    <div class="table-wrapper" tabindex="0" role="region" aria-labelledby="acumulado-caption">
+      <table class="resumen-table">
+        <caption id="acumulado-caption">Solicitudes acumuladas por usuario</caption>
+        <thead>
+          <tr>
+            <th rowspan="2" scope="col">Usuario</th>
+            <th rowspan="2" scope="col">Total</th>
+            <th rowspan="2" scope="col">Cerrados</th>
+            <th rowspan="2" scope="col">Efectividad</th>
+            <th colspan="3" scope="colgroup">Prioridad</th>
+            <th colspan="5" scope="colgroup">Atención en</th>
+          </tr>
+          <tr>
+            <th scope="col">Baja</th><th scope="col">Media</th><th scope="col">Alta</th>
+            <th scope="col">Redes</th><th scope="col">Cómputo</th><th scope="col">Menores</th>
+            <th scope="col">Software</th><th scope="col">Diseño</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of acumulado">
+            <td>{{ r.usuario }}</td>
+            <td>{{ r.total }}</td>
+            <td>{{ r.cerrados }}</td>
+            <td>{{ r.efectividad }}%</td>
+            <td>{{ r.baja }}</td><td>{{ r.media }}</td><td>{{ r.alta }}</td>
+            <td>{{ r.red }}</td><td>{{ r.computo }}</td><td>{{ r.menores }}</td>
+            <td>{{ r.software }}</td><td>{{ r.diseno }}</td>
+          </tr>
+          <tr *ngIf="!cargando && !acumulado.length">
+            <td colspan="12" class="vacio">No hay información acumulada.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-<div class="table-wrapper">
-  <table *ngIf="!cargando" class="resumen-table">
-    <thead>
-      <tr>
-        <th rowspan="2">Fecha</th>
-        <th rowspan="2">Usuario</th>
-        <th rowspan="2">Total</th>
-        <th rowspan="2">Cerrados</th>
-        <th rowspan="2">Efectividad</th>
-        <th colspan="3" class="prioridad">Prioridad</th>
-        <th colspan="5" class="categoria">Atención En</th>
-      </tr>
-      <tr>
-        <th class="prioridad">Baja</th>
-        <th class="prioridad">Media</th>
-        <th class="prioridad">Alta</th>
-        <th class="categoria">Redes</th>
-        <th class="categoria">Cómputo</th>
-        <th class="categoria">Aten. Menores</th>
-        <th class="categoria">Software</th>
-        <th class="categoria">Diseño</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let r of diario">
-        <td>{{ r.fecha_solicitud | date : "dd-MM-yyyy" }}</td>
-        <td>{{ r.usuario }}</td>
-        <td>{{ r.total }}</td>
-        <td>{{ r.cerrados }}</td>
-        <td>{{ r.efectividad }}%</td>
+  <section aria-labelledby="bajas-titulo">
+    <h2 id="bajas-titulo">4. Bajas registradas</h2>
+    <div class="table-wrapper" tabindex="0" role="region" aria-labelledby="bajas-caption">
+      <table class="resumen-table">
+        <caption id="bajas-caption">Actas de bajas técnicas registradas en el periodo</caption>
+        <thead>
+          <tr>
+            <th scope="col">Correlativo</th><th scope="col">Fecha</th>
+            <th scope="col">Responsable</th><th scope="col">Bien</th>
+            <th scope="col">Dictamen</th><th scope="col">Destino</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let baja of bajas">
+            <td>{{ baja.correlativo }}</td>
+            <td>{{ baja.fecha_solicitud | date:'dd-MM-yyyy' }}</td>
+            <td>{{ baja.responsable_nombre }}</td>
+            <td>{{ baja.no_bien }}</td>
+            <td>{{ baja.dictamen }}</td>
+            <td>{{ baja.destino_final === 'reasignacion' ? 'Reasignación' : 'Inventarios' }}</td>
+          </tr>
+          <tr *ngIf="!cargando && !bajas.length">
+            <td colspan="6" class="vacio">No hay bajas registradas en el periodo.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-        <!-- Prioridad -->
-        <td>{{ r.baja }}</td>
-        <td>{{ r.media }}</td>
-        <td>{{ r.alta }}</td>
+  <section aria-labelledby="mantenimientos-titulo">
+    <h2 id="mantenimientos-titulo">5. Mantenimientos realizados</h2>
+    <div class="table-wrapper" tabindex="0" role="region" aria-labelledby="mant-caption">
+      <table class="resumen-table">
+        <caption id="mant-caption">Mantenimientos ejecutados en el periodo</caption>
+        <thead>
+          <tr>
+            <th scope="col">ID</th><th scope="col">Fecha</th><th scope="col">Bien</th>
+            <th scope="col">Tipo</th><th scope="col">Técnico</th><th scope="col">Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of mantenimientos">
+            <td>{{ item.id }}</td>
+            <td>{{ item.fecha_mantenimiento | date:'dd-MM-yyyy' }}</td>
+            <td>{{ item.no_bien }}</td>
+            <td>{{ item.tipo }}</td>
+            <td>{{ item.tecnico || '—' }}</td>
+            <td>{{ item.descripcion || '—' }}</td>
+          </tr>
+          <tr *ngIf="!cargando && !mantenimientos.length">
+            <td colspan="6" class="vacio">No hay mantenimientos ejecutados en el periodo.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-        <!-- Categorías -->
-        <td>{{ r.red }}</td>
-        <td>{{ r.computo }}</td>
-        <td>{{ r.menores }}</td>
-        <td>{{ r.software }}</td>
-        <td>{{ r.diseno }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-<hr />
-
-<h3>Acumulado</h3>
-
-<table class="resumen-table">
-  <thead>
-    <tr>
-      <th rowspan="2">Usuario</th>
-      <th rowspan="2">Total</th>
-      <th rowspan="2">Cerrados</th>
-      <th rowspan="2">Efectividad</th>
-      <th colspan="3">Prioridad</th>
-      <th colspan="5">Atención en</th>
-    </tr>
-    <tr>
-      <th>Baja</th>
-      <th>Media</th>
-      <th>Alta</th>
-      <th>Redes</th>
-      <th>Cómputo</th>
-      <th>Atenciones Menores</th>
-      <th>Software</th>
-      <th>Diseño</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let r of acumulado">
-      <td data-label="Usuario">{{ r.usuario }}</td>
-      <td data-label="Total">{{ r.total }}</td>
-      <td data-label="Cerrados">{{ r.cerrados }}</td>
-      <td data-label="Efectividad">{{ r.efectividad }}%</td>
-
-      <td data-label="Baja">{{ r.baja }}</td>
-      <td data-label="Media">{{ r.media }}</td>
-      <td data-label="Alta">{{ r.alta }}</td>
-
-      <td data-label="Redes">{{ r.red }}</td>
-      <td data-label="Cómputo">{{ r.computo }}</td>
-      <td data-label="Atenciones Menores">{{ r.menores }}</td>
-      <td data-label="Software">{{ r.software }}</td>
-      <td data-label="Diseño">{{ r.diseno }}</td>
-    </tr>
-  </tbody>
-</table>
+  <footer class="informe-pie">
+    <p>Informe generado automáticamente por el sistema de soporte técnico.</p>
+    <p>Las cifras corresponden a los criterios indicados en la sección de filtros.</p>
+  </footer>
+</main>
