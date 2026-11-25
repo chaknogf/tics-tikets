@@ -4,8 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "test": "node scripts/run-tests.mjs",
     "purge": "postcss src/styles.full.css -o src/styles.css",
-    "build": "yarn purge && ng build --configuration production",
+    "build": "pnpm run purge && ng build --configuration production",
     "serve": "ng serve"
   },
   "private": true,
