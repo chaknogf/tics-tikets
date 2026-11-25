@@ -4,11 +4,12 @@ import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
 import {
   BajaCrear, BajaItem, CorrelativoPreview, DashboardResumen, Equipo, EstadisticasResponse,
-  FrecuenciaItem, MantenimientoCrear, MantenimientoItem, MantenimientoResumen,
-  ResumenResponse, Ticket, Usuarios
+  FrecuenciaItem, ListaConTotal, MantenimientoCrear, MantenimientoItem,
+  MantenimientoRealizadoItem, MantenimientoResumen, ResumenResponse, Ticket, Usuarios
 } from '../interface/interfaces';
 import { NotificacionesService } from './notificaciones.service';
 import { paginar, RangoTickets, ticketEnRango } from './filtros-tickets';
+import { parametrosEstadisticas } from './reporte-datos';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -152,6 +153,27 @@ export class ApiService {
       }
     }
     return filtrosLimpiados;
+  }
+
+  private async listarConTotal<T>(
+    ruta: string,
+    filtros: any,
+    etiqueta: string,
+  ): Promise<ListaConTotal<T>> {
+    try {
+      const response = await this.api.get<T[]>(ruta, {
+        params: this.limpiarParametros(filtros)
+      });
+      const cabecera = response.headers?.['x-total-count'];
+      const total = Number(cabecera ?? response.data.length);
+      return {
+        items: response.data,
+        total: Number.isFinite(total) ? total : response.data.length
+      };
+    } catch (error) {
+      console.error(etiqueta, error);
+      throw error;
+    }
   }
 
   // ======= USERS =======
@@ -568,9 +590,10 @@ export class ApiService {
 
   async getEstadisticas(filtros: any = {}): Promise<EstadisticasResponse> {
     try {
+      const parametros = parametrosEstadisticas(filtros);
       const response = await this.api.get<EstadisticasResponse>(
         '/reportes/estadisticas',
-        { params: this.limpiarParametros(filtros) }
+        { params: this.limpiarParametros(parametros) }
       );
       return response.data;
     } catch (error) {
@@ -580,16 +603,28 @@ export class ApiService {
   }
 
   async getMantenimientos(filtros: any = {}): Promise<MantenimientoItem[]> {
-    try {
-      const response = await this.api.get<MantenimientoItem[]>(
-        '/mantenimientos/',
-        { params: this.limpiarParametros(filtros) }
-      );
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener mantenimientos:', error);
-      throw error;
-    }
+    const respuesta = await this.getMantenimientosConTotal(filtros);
+    return respuesta.items;
+  }
+
+  async getMantenimientosConTotal(
+    filtros: any = {}
+  ): Promise<ListaConTotal<MantenimientoItem>> {
+    return this.listarConTotal<MantenimientoItem>(
+      '/mantenimientos/',
+      filtros,
+      '❌ Error al obtener mantenimientos:'
+    );
+  }
+
+  async getMantenimientosRealizados(
+    filtros: any = {}
+  ): Promise<ListaConTotal<MantenimientoRealizadoItem>> {
+    return this.listarConTotal<MantenimientoRealizadoItem>(
+      '/mantenimientos/realizados',
+      filtros,
+      '❌ Error al obtener el historial de mantenimientos:'
+    );
   }
 
   async getResumenMantenimientos(): Promise<MantenimientoResumen> {
@@ -627,15 +662,16 @@ export class ApiService {
   // ======== Bajas de equipos ========
 
   async getBajas(filtros: any = {}): Promise<BajaItem[]> {
-    try {
-      const response = await this.api.get<BajaItem[]>('/bajas/', {
-        params: this.limpiarParametros(filtros)
-      });
-      return response.data;
-    } catch (error) {
-      console.error('❌ Error al obtener bajas:', error);
-      throw error;
-    }
+    const respuesta = await this.getBajasConTotal(filtros);
+    return respuesta.items;
+  }
+
+  async getBajasConTotal(filtros: any = {}): Promise<ListaConTotal<BajaItem>> {
+    return this.listarConTotal<BajaItem>(
+      '/bajas/',
+      filtros,
+      '❌ Error al obtener bajas:'
+    );
   }
 
   async getBaja(id: number): Promise<BajaItem> {
