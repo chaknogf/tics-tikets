@@ -1,0 +1,76 @@
+.mantenimientos-container {
+  padding: 1rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.resumen-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 110px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: #f1f3f5;
+}
+
+.resumen-valor {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.resumen-etiqueta {
+  font-size: 0.8rem;
+}
+
+.resumen-card.verde,
+.semaforo.verde {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.resumen-card.amarillo,
+.semaforo.amarillo {
+  background: #fff3cd;
+  color: #664d03;
+}
+
+.resumen-card.rojo,
+.semaforo.rojo {
+  background: #f8d7da;
+  color: #842029;
+}
+
+.resumen-card.sin_dato,
+.semaforo.sin_dato {
+  background: #e2e3e5;
+  color: #41464b;
+}
+
+.paginador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.alta,
+.frecuencias {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+@media (max-width: 576px) {
+  .resumen-card {
+    min-width: calc(50% - 0.4rem);
+  }
+}

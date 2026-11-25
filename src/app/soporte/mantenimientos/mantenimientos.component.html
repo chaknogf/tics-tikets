@@ -1,0 +1,109 @@
+<div class="mantenimientos-container">
+  <h2>Mantenimientos por equipo</h2>
+
+  <section class="resumen" aria-label="Resumen del semáforo" *ngIf="resumen">
+    <div class="resumen-card" *ngFor="let estado of semaforos"
+      [class]="'resumen-card ' + estado">
+      <span class="resumen-valor">{{ resumen[estado] }}</span>
+      <span class="resumen-etiqueta">{{ etiquetas[estado] }}</span>
+    </div>
+  </section>
+
+  <p *ngIf="error" role="alert">{{ error }}</p>
+  <p *ngIf="mensaje" role="status">{{ mensaje }}</p>
+
+  <form class="filtros row g-2 my-3" (ngSubmit)="cargar(1)">
+    <div class="col-md-4">
+      <label class="form-label" for="mant-bien">Número de bien</label>
+      <input id="mant-bien" class="form-control" [(ngModel)]="filtroNoBien" name="mantBien" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" for="mant-tipo">Tipo de equipo</label>
+      <input id="mant-tipo" class="form-control" [(ngModel)]="filtroTipo" name="mantTipo" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" for="mant-semaforo">Semáforo</label>
+      <select id="mant-semaforo" class="form-select" [(ngModel)]="filtroSemaforo" name="mantSemaforo">
+        <option value="">Todos</option>
+        <option *ngFor="let estado of semaforos" [value]="estado">{{ etiquetas[estado] }}</option>
+      </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button class="btn btn-primary w-100" type="submit" [disabled]="cargando">Buscar</button>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <caption>Equipos con estado de próximo mantenimiento</caption>
+      <thead>
+        <tr>
+          <th scope="col">Bien</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Última fecha</th>
+          <th scope="col">Próxima fecha</th>
+          <th scope="col">Días restantes</th>
+          <th scope="col">Semáforo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td>{{ item.no_bien }}</td>
+          <td>{{ item.tipo_equipo || 'Sin tipo' }}</td>
+          <td>{{ item.ultima_fecha | date:'dd-MM-yyyy' }}</td>
+          <td>{{ item.proxima_fecha | date:'dd-MM-yyyy' }}</td>
+          <td>{{ item.dias_restantes ?? '—' }}</td>
+          <td>
+            <span class="badge" [class]="'badge semaforo ' + item.semaforo">
+              {{ etiquetas[item.semaforo] }}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="!cargando && !items.length">
+          <td colspan="6" class="text-center">No hay mantenimientos para los filtros elegidos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="paginador" aria-label="Paginación de mantenimientos">
+    <button class="btn btn-sm btn-outline-secondary" [disabled]="pagina === 1"
+      (click)="cambiarPagina('prev')">Anterior</button>
+    <span aria-live="polite">{{ totalRegistros }} registros · Página {{ pagina }} de {{ totalPaginas }}</span>
+    <button class="btn btn-sm btn-outline-secondary" [disabled]="pagina === totalPaginas"
+      (click)="cambiarPagina('next')">Siguiente</button>
+  </nav>
+
+  <section class="alta">
+    <h3>Registrar mantenimiento</h3>
+    <form class="row g-2" (ngSubmit)="guardar()">
+      <div class="col-md-4">
+        <label class="form-label" for="nuevo-bien">Número de bien</label>
+        <input id="nuevo-bien" class="form-control" required
+          [(ngModel)]="nuevo.no_bien" name="nuevoBien" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label" for="nuevo-fecha">Fecha</label>
+        <input id="nuevo-fecha" class="form-control" type="date" required
+          [(ngModel)]="nuevo.fecha_mantenimiento" name="nuevaFecha" />
+      </div>
+      <div class="col-md-5">
+        <label class="form-label" for="nuevo-descripcion">Descripción</label>
+        <input id="nuevo-descripcion" class="form-control"
+          [(ngModel)]="nuevo.descripcion" name="nuevaDescripcion" />
+      </div>
+      <div class="col-12 mt-2">
+        <button class="btn btn-success" type="submit" [disabled]="guardando">Guardar</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="frecuencias" *ngIf="frecuencias.length">
+    <h3>Frecuencias configuradas</h3>
+    <ul>
+      <li *ngFor="let frecuencia of frecuencias">
+        {{ frecuencia.tipo_equipo }}: {{ frecuencia.dias_intervalo }} días
+      </li>
+    </ul>
+  </section>
+</div>

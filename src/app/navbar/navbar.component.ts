@@ -83,6 +83,10 @@ export class NavbarComponent {
     this.router.navigate(['/reporteria']);
   }
 
+  mantenimientos() {
+    this.router.navigate(['/mantenimientos']);
+  }
+
   /** Alterna la visibilidad del menú hamburguesa */
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
