@@ -223,6 +223,41 @@ export interface MantenimientoCrear {
   tecnico?: string;
 }
 
+export interface DiagnosticoItem {
+  titulo: string;
+  descripcion: string;
+}
+
+export interface BajaCrear {
+  fecha_solicitud: string;
+  responsable_nombre: string;
+  responsable_ubicacion?: string | null;
+  responsable_firma?: string | null;
+  responsable_sello?: string | null;
+  no_bien: string;
+  tipo_dispositivo?: string | null;
+  marca?: string | null;
+  modelo?: string | null;
+  numero_serie?: string | null;
+  codigo_sicoin?: string | null;
+  diagnosticos: DiagnosticoItem[];
+  dictamen: string;
+  destino_final: 'reasignacion' | 'inventarios';
+  revision_nombre?: string | null;
+  revision_firma?: string | null;
+}
+
+export interface BajaItem extends BajaCrear {
+  id: number;
+  correlativo: string;
+  creado_en: string;
+}
+
+export interface CorrelativoPreview {
+  anio: number;
+  correlativo: string;
+}
+
 // Resumen para tablas
 export interface ResumenItem {
   usuario: string;

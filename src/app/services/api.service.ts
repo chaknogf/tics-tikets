@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
 import {
-  DashboardResumen, Equipo, EstadisticasResponse, FrecuenciaItem, MantenimientoCrear,
-  MantenimientoItem, MantenimientoResumen, ResumenResponse, Ticket, Usuarios
+  BajaCrear, BajaItem, CorrelativoPreview, DashboardResumen, Equipo, EstadisticasResponse,
+  FrecuenciaItem, MantenimientoCrear, MantenimientoItem, MantenimientoResumen,
+  ResumenResponse, Ticket, Usuarios
 } from '../interface/interfaces';
 import { NotificacionesService } from './notificaciones.service';
 import { paginar, RangoTickets, ticketEnRango } from './filtros-tickets';
@@ -619,6 +620,54 @@ export class ApiService {
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear mantenimiento:', error);
+      throw error;
+    }
+  }
+
+  // ======== Bajas de equipos ========
+
+  async getBajas(filtros: any = {}): Promise<BajaItem[]> {
+    try {
+      const response = await this.api.get<BajaItem[]>('/bajas/', {
+        params: this.limpiarParametros(filtros)
+      });
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener bajas:', error);
+      throw error;
+    }
+  }
+
+  async getBaja(id: number): Promise<BajaItem> {
+    try {
+      const response = await this.api.get<BajaItem>(`/bajas/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener el acta de baja:', error);
+      throw error;
+    }
+  }
+
+  async getSiguienteCorrelativo(anio: number): Promise<CorrelativoPreview> {
+    try {
+      const response = await this.api.get<CorrelativoPreview>('/bajas/siguiente', {
+        params: { anio }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener correlativo:', error);
+      throw error;
+    }
+  }
+
+  async crearBaja(datos: BajaCrear): Promise<BajaItem> {
+    try {
+      const response = await this.api.post<BajaItem>('/bajas/', datos, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al registrar la baja:', error);
       throw error;
     }
   }
