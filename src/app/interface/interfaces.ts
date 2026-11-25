@@ -202,6 +202,21 @@ export interface MantenimientoItem {
   semaforo: Semaforo;
 }
 
+/** Ejecución registrada; distinto del estado actual del inventario. */
+export interface MantenimientoRealizadoItem {
+  id: number;
+  no_bien: string;
+  tipo: string;
+  fecha_mantenimiento: string;
+  descripcion: string | null;
+  tecnico: string | null;
+}
+
+export interface ListaConTotal<T> {
+  items: T[];
+  total: number;
+}
+
 export interface MantenimientoResumen {
   total: number;
   verde: number;
