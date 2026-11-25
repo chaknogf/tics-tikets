@@ -54,6 +54,25 @@ export class ApiService {
       },
       error => Promise.reject(error)
     );
+
+    // Un 401 significa sesión vencida o token inválido: se limpia y vuelve al inicio.
+    // El login fallido se excluye para no borrar una sesión activa ni redirigir.
+    this.api.interceptors.response.use(
+      response => response,
+      error => {
+        const url = error.config?.url ?? '';
+        if (error.response?.status === 401 && !url.includes('/auth/login')) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('username');
+          localStorage.removeItem('role');
+          this.token = null;
+          this.username = null;
+          this.role = null;
+          void this.router.navigate(['/']);
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
   /**
