@@ -3,7 +3,7 @@ import { ApiService } from '../../services/api.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Ticket } from '../../interface/interfaces';
+import { Equipo, Seguimiento, Ticket } from '../../interface/interfaces';
 
 @Component({
   selector: 'app-detalle',
@@ -50,9 +50,9 @@ export class DetalleComponent implements OnInit {
     if (idParam) {
       const id = Number(idParam);
       if (!isNaN(id)) {
-        this.api.getTicket(id).then((data: Ticket) => {
+        this.api.getTicket(id).then(async (data: Ticket) => {
           this.ticket = data;
-          // console.log('✅ Ticket obtenido:', this.ticket);
+          await this.obtenerComplementos();
         }).catch(error => {
           console.error('❌ Error al obtener ticket:', error);
         });
@@ -70,6 +70,31 @@ export class DetalleComponent implements OnInit {
 
   imprimir(): void {
     window.print();
+  }
+
+  seguimientos: Seguimiento[] = [];
+  equipo: Equipo | null = null;
+  cargandoDetalle = true;
+
+  private async obtenerComplementos(): Promise<void> {
+    const id = this.ticket?.id;
+    if (!id) return;
+    try {
+      const [notas, equipo] = await Promise.all([
+        this.api.getNotas(id),
+        this.ticket.numero_bien ? this.api.getEquipo(this.ticket.numero_bien) : Promise.resolve(null)
+      ]);
+      this.seguimientos = Array.isArray(notas) ? notas : [];
+      this.equipo = Array.isArray(equipo) ? equipo[0] ?? null : equipo ?? null;
+    } catch (error) {
+      console.error('❌ Error al obtener complementos del ticket:', error);
+    } finally {
+      this.cargandoDetalle = false;
+    }
+  }
+
+  get tipoEquipo(): string {
+    return this.equipo?.datos_tecnicos?.tipo_equipo || 'N/A';
   }
 
   cerrar(): void {
