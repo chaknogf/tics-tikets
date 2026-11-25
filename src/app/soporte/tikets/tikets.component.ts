@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ChartsComponent } from "../charts/charts.component";
 import { IconService } from '../../services/icon.service';
+import { rolActual, tienePermiso } from '../../services/permisos';
 
 @Component({
   selector: 'app-tikets',
@@ -54,6 +55,10 @@ export class TiketsComponent implements OnInit {
       filter: this.iconService.getIcon("filterIcons"),
     }
 
+  }
+
+  get puedeEscribir(): boolean {
+    return tienePermiso(rolActual(), 'escribir');
   }
 
   ngOnInit() {
@@ -103,6 +108,7 @@ export class TiketsComponent implements OnInit {
   }
 
   editar(id: number) {
+    if (!this.puedeEscribir) return;
     this.router.navigate(['/ticket', id]);
   }
 

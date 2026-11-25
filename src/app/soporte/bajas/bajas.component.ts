@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 import { ApiService } from '../../services/api.service';
 import { anioDeFecha, formatearCorrelativo } from '../../services/correlativo-baja';
 import { moverFocoPestana } from '../../services/tabs';
+import { rolActual, tienePermiso } from '../../services/permisos';
 import { BajaCrear, BajaItem, DiagnosticoItem, Equipo } from '../../interface/interfaces';
 
 type PestanaBajas = 'formulario' | 'listado';
@@ -44,11 +45,20 @@ export class BajasComponent implements OnInit {
   mensaje = '';
   error = '';
 
+  get puedeEscribir(): boolean {
+    return tienePermiso(rolActual(), 'escribir');
+  }
+
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
+    if (!this.puedeEscribir) {
+      this.pestana = 'listado';
+    }
     this.cargar();
-    void this.alCambiarFecha();
+    if (this.puedeEscribir) {
+      void this.alCambiarFecha();
+    }
   }
 
   private nuevoFormulario(): BajaCrear {
@@ -102,6 +112,7 @@ export class BajasComponent implements OnInit {
   }
 
   async alCambiarFecha(): Promise<void> {
+    if (!this.puedeEscribir) return;
     const anio = anioDeFecha(this.formulario.fecha_solicitud) ?? new Date().getFullYear();
     this.correlativoAnio = anio;
     this.correlativoPreview = formatearCorrelativo(anio, 1);
@@ -126,6 +137,10 @@ export class BajasComponent implements OnInit {
   }
 
   async guardar(): Promise<void> {
+    if (!this.puedeEscribir) {
+      this.error = 'No tiene permisos para registrar bajas.';
+      return;
+    }
     this.mensaje = '';
     this.error = '';
     if (!this.formulario.responsable_nombre.trim() ||

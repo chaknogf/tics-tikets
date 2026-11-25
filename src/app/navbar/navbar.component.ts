@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ModalService } from '../services/modal.service';
 import { ApiService } from '../services/api.service';
 import { ticketIcon } from '../shared/icons/icons';
+import { tienePermiso } from '../services/permisos';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 
 
@@ -65,6 +66,14 @@ export class NavbarComponent {
   }
   get estaAutenticado(): boolean {
     return this.usuario !== null;
+  }
+
+  get puedeEscribir(): boolean {
+    return tienePermiso(this.rol, 'escribir');
+  }
+
+  get esAdmin(): boolean {
+    return tienePermiso(this.rol, 'admin');
   }
 
   equipos() {

@@ -6,6 +6,7 @@ import { Equipo } from '../../interface/interfaces';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { rolActual, tienePermiso } from '../../services/permisos';
 
 
 @Component({
@@ -39,6 +40,10 @@ export class EquiposComponent implements OnInit {
     this.detalleIcon = this.sanitizarSvg(detalleIcon);
 
   }
+  get esAdmin(): boolean {
+    return tienePermiso(rolActual(), 'admin');
+  }
+
   ngOnInit() {
     this.obtenerEquipos();
   }
@@ -65,7 +70,7 @@ export class EquiposComponent implements OnInit {
   }
 
   editar(id: number) {
-    //console.log('📝 Editando ticket con ID:', id);
+    if (!this.esAdmin) return;
     this.router.navigate(['/equipo', id]);
   }
 
@@ -75,6 +80,7 @@ export class EquiposComponent implements OnInit {
   }
 
   nuevo() {
+    if (!this.esAdmin) return;
     this.router.navigate(['/equipo']);
   }
 

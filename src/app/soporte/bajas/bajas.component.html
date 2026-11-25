@@ -7,7 +7,7 @@
   <div class="pestanas">
     <div class="lista-pestanas" focusgroup="tablist nomemory"
       aria-label="Secciones de bajas" (keydown)="alTeclearPestanas($event)">
-      <button type="button" id="bajas-tab-formulario"
+      <button type="button" id="bajas-tab-formulario" *ngIf="puedeEscribir"
         [attr.aria-selected]="pestana === 'formulario'"
         [attr.focusgroupstart]="pestana === 'formulario' ? '' : null"
         (focus)="alEnfocarPestana($event, 'formulario')">Registrar baja</button>
@@ -17,7 +17,7 @@
         (focus)="alEnfocarPestana($event, 'listado')">Actas registradas</button>
     </div>
 
-    <div role="tabpanel" aria-labelledby="bajas-tab-formulario"
+    <div role="tabpanel" aria-labelledby="bajas-tab-formulario" *ngIf="puedeEscribir"
       [attr.hidden]="pestana === 'formulario' ? null : 'until-found'"
       (beforematch)="pestana = 'formulario'">
   <section aria-labelledby="form-baja-titulo">

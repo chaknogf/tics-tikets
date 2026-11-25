@@ -19,7 +19,7 @@
         [attr.aria-selected]="pestana === 'listado'"
         [attr.focusgroupstart]="pestana === 'listado' ? '' : null"
         (focus)="alEnfocarPestana($event, 'listado')">Estado e historial</button>
-      <button type="button" id="mant-tab-registro"
+      <button type="button" id="mant-tab-registro" *ngIf="puedeEscribir"
         [attr.aria-selected]="pestana === 'registro'"
         [attr.focusgroupstart]="pestana === 'registro' ? '' : null"
         (focus)="alEnfocarPestana($event, 'registro')">Registrar mantenimiento</button>
@@ -164,7 +164,7 @@
       </section>
     </div>
 
-    <div role="tabpanel" aria-labelledby="mant-tab-registro"
+    <div role="tabpanel" aria-labelledby="mant-tab-registro" *ngIf="puedeEscribir"
       [attr.hidden]="pestana === 'registro' ? null : 'until-found'"
       (beforematch)="pestana = 'registro'">
       <section class="alta" aria-labelledby="mant-alta-titulo">

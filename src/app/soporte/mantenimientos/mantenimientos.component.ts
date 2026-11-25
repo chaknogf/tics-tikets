@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { moverFocoPestana } from '../../services/tabs';
+import { rolActual, tienePermiso } from '../../services/permisos';
 import {
   FrecuenciaItem, MantenimientoCrear, MantenimientoItem, MantenimientoRealizadoItem,
   MantenimientoResumen, Semaforo
@@ -62,6 +63,10 @@ export class MantenimientosComponent implements OnInit {
     rojo: 'Vencido',
     sin_dato: 'Sin dato'
   };
+
+  get puedeEscribir(): boolean {
+    return tienePermiso(rolActual(), 'escribir');
+  }
 
   constructor(private api: ApiService) {}
 
@@ -151,6 +156,10 @@ export class MantenimientosComponent implements OnInit {
   }
 
   async guardar(): Promise<void> {
+    if (!this.puedeEscribir) {
+      this.error = 'No tiene permisos para registrar mantenimientos.';
+      return;
+    }
     this.guardando = true;
     this.mensaje = '';
     this.error = '';
