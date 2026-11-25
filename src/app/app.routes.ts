@@ -4,7 +4,7 @@ import { FormularioComponent } from './soporte/formulario/formulario.component';
 import { LoginComponent } from './login/login.component';
 import { TiketsComponent } from './soporte/tikets/tikets.component';
 import { DetalleComponent } from './soporte/detalle/detalle.component';
-import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard, AuthGuard, EscritorGuard } from './guards/auth.guard';
 import { FormEquipoComponent } from './equipos/formEquipo/formEquipo.component';
 import { VerEquipoComponent } from './equipos/verEquipo/verEquipo.component';
 import { EquiposComponent } from './equipos/equipos/equipos.component';
@@ -20,17 +20,17 @@ export const routes: Routes = [
   { path: 'inicio', component: SolicitudUsuarioComponent },
   { path: 'login', component: LoginComponent },
   { path: 'dash', component: TiketsComponent, canActivate: [AuthGuard] },
-  { path: 'ticket', component: FormularioComponent, canActivate: [AuthGuard] }, // Formulario para crear un nuevo ticket
-  { path: 'tiket/:origen', component: FormularioComponent, canActivate: [AuthGuard] },
-  { path: 'ticket/:id', component: FormularioComponent, canActivate: [AuthGuard] }, // Formulario para editar un ticket existente
+  { path: 'ticket', component: FormularioComponent, canActivate: [EscritorGuard] }, // Formulario para crear un nuevo ticket
+  { path: 'tiket/:origen', component: FormularioComponent, canActivate: [EscritorGuard] },
+  { path: 'ticket/:id', component: FormularioComponent, canActivate: [EscritorGuard] }, // Formulario para editar un ticket existente
   { path: 'detail/:id', component: DetalleComponent }, // Detalle del ticket
   { path: 'ticketPdf/:id', component: PdfTicketComponent },
-  { path: 'equipo/:id', component: FormEquipoComponent, canActivate: [AuthGuard] },
-  { path: 'equipo', component: FormEquipoComponent, canActivate: [AuthGuard] },
+  { path: 'equipo/:id', component: FormEquipoComponent, canActivate: [AdminGuard] },
+  { path: 'equipo', component: FormEquipoComponent, canActivate: [AdminGuard] },
   { path: 'ver-equipo/:id', component: VerEquipoComponent, canActivate: [AuthGuard] },
   { path: 'equipos', component: EquiposComponent, canActivate: [AuthGuard] },
   { path: 'reporteEquipos', component: ReporteComponent, canActivate: [AuthGuard] },
-  { path: 'editarUsuario', component: EditarUsuario, canActivate: [AuthGuard] },
+  { path: 'editarUsuario', component: EditarUsuario, canActivate: [AdminGuard] },
   { path: 'reporteria', component: ReporteriaComponent, canActivate: [AuthGuard] },
   { path: 'mantenimientos', component: MantenimientosComponent, canActivate: [AuthGuard] },
   { path: 'bajas', component: BajasComponent, canActivate: [AuthGuard] },
