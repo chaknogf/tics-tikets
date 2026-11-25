@@ -58,37 +58,12 @@
           </select>
         </div>
         <div class="col-12 col-md-2">
-          <label class="form-label small mb-0" for="fechaDesde">Desde</label>
-          <input
-            id="fechaDesde"
-            type="date"
-            class="form-control"
-            [(ngModel)]="fechaDesde"
-            (ngModelChange)="alCambiarFecha()"
-            name="fechaDesde"
-            [disabled]="filtroMesActivo"
-          />
-        </div>
-        <div class="col-12 col-md-2">
-          <label class="form-label small mb-0" for="fechaHasta">Hasta</label>
-          <input
-            id="fechaHasta"
-            type="date"
-            class="form-control"
-            [(ngModel)]="fechaHasta"
-            (ngModelChange)="alCambiarFecha()"
-            name="fechaHasta"
-            [disabled]="filtroMesActivo"
-          />
-        </div>
-        <div class="col-12 col-md-2">
           <label class="form-label small mb-0" for="mesFiltro">Mes (YYYY-MM)</label>
           <input
             id="mesFiltro"
             type="month"
             class="form-control"
             [(ngModel)]="mes"
-            (ngModelChange)="alCambiarMes($event)"
             name="mes"
           />
         </div>

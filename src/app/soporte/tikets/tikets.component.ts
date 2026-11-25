@@ -24,8 +24,6 @@ export class TiketsComponent implements OnInit {
   buscarEstado: string | null = null; // null = no filtrar
   buscarPrioridad = '';
   buscarId = '';
-  fechaDesde = '';
-  fechaHasta = '';
   mes = '';
   cargando = false;
   origen = '';
@@ -76,8 +74,6 @@ export class TiketsComponent implements OnInit {
       estado: this.buscarEstado,
       prioridad: this.buscarPrioridad,
       id: this.buscarId,
-      fecha_desde: this.fechaDesde,
-      fecha_hasta: this.fechaHasta,
       mes: this.mes,
       skip,
       limit: this.limite,
@@ -114,24 +110,6 @@ export class TiketsComponent implements OnInit {
     this.router.navigate(['/detail', id]);
   }
 
-  // El mes y el rango son excluyentes: al elegir uno se limpia el otro.
-  get filtroMesActivo(): boolean {
-    return Boolean(this.mes);
-  }
-
-  alCambiarMes(valor: string): void {
-    if (valor) {
-      this.fechaDesde = '';
-      this.fechaHasta = '';
-    }
-  }
-
-  alCambiarFecha(): void {
-    if (this.fechaDesde || this.fechaHasta) {
-      this.mes = '';
-    }
-  }
-
   mostrarFiltros = false;
 
   toggleFiltros() {
@@ -145,8 +123,6 @@ export class TiketsComponent implements OnInit {
     this.buscarEstado = '';
     this.buscarPrioridad = '';
     this.buscarId = '';
-    this.fechaDesde = '';
-    this.fechaHasta = '';
     this.mes = '';
     this.obtenerTikets();
   }
