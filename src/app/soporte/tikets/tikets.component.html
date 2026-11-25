@@ -64,6 +64,7 @@
             type="date"
             class="form-control"
             [(ngModel)]="fechaDesde"
+            (ngModelChange)="alCambiarFecha()"
             name="fechaDesde"
             [disabled]="filtroMesActivo"
           />
@@ -75,6 +76,7 @@
             type="date"
             class="form-control"
             [(ngModel)]="fechaHasta"
+            (ngModelChange)="alCambiarFecha()"
             name="fechaHasta"
             [disabled]="filtroMesActivo"
           />
@@ -86,6 +88,7 @@
             type="month"
             class="form-control"
             [(ngModel)]="mes"
+            (ngModelChange)="alCambiarMes($event)"
             name="mes"
           />
         </div>

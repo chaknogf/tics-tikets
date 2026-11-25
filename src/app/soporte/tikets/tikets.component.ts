@@ -114,9 +114,22 @@ export class TiketsComponent implements OnInit {
     this.router.navigate(['/detail', id]);
   }
 
-  // El mes y el rango son excluyentes: el mes manda si ambos están llenos.
+  // El mes y el rango son excluyentes: al elegir uno se limpia el otro.
   get filtroMesActivo(): boolean {
     return Boolean(this.mes);
+  }
+
+  alCambiarMes(valor: string): void {
+    if (valor) {
+      this.fechaDesde = '';
+      this.fechaHasta = '';
+    }
+  }
+
+  alCambiarFecha(): void {
+    if (this.fechaDesde || this.fechaHasta) {
+      this.mes = '';
+    }
   }
 
   mostrarFiltros = false;
