@@ -7,6 +7,7 @@ import {
   MantenimientoItem, MantenimientoResumen, ResumenResponse, Ticket, Usuarios
 } from '../interface/interfaces';
 import { NotificacionesService } from './notificaciones.service';
+import { paginar, RangoTickets, ticketEnRango } from './filtros-tickets';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -15,6 +16,14 @@ export class ApiService {
   public token: string | null = null;
   public username: string | null = null;
   public role: string | null = null;
+
+  // Solo se usa con el backend antiguo; se invalida al crear/editar/borrar tickets.
+  private cacheTickets = new Map<string, { datos: Ticket[]; fecha: number }>();
+  private readonly ttlCacheTickets = 60_000;
+
+  private invalidarCacheTickets(): void {
+    this.cacheTickets.clear();
+  }
 
   constructor(
     private router: Router,
@@ -257,17 +266,70 @@ export class ApiService {
 
   // ======= TICKETS =======
 
-  // ✅ Obtener todos los tickets con filtros; el total viaja en X-Total-Count.
+  private hayFiltroFecha(filtros: any): boolean {
+    return Boolean(filtros.fecha_desde || filtros.fecha_hasta || filtros.mes);
+  }
+
+  /** El backend antiguo pagina antes de filtrar: hay que traer todas las páginas. */
+  private async todosLosTickets(filtros: any): Promise<Ticket[]> {
+    const filtrosServidor = this.limpiarParametros({
+      id: filtros.id,
+      ticket: filtros.ticket,
+      servicio: filtros.servicio,
+      numero_bien: filtros.numero_bien,
+      atencion_en: filtros.atencion_en,
+      prioridad: filtros.prioridad,
+      estado: filtros.estado,
+    });
+    const clave = JSON.stringify(filtrosServidor);
+    const guardado = this.cacheTickets.get(clave);
+    if (guardado && Date.now() - guardado.fecha < this.ttlCacheTickets) {
+      return guardado.datos;
+    }
+
+    const tamanio = 200;
+    const resultados: Ticket[] = [];
+    for (let pagina = 0; pagina < 50; pagina++) {
+      const respuesta = await this.api.get<Ticket[]>('/tickets/', {
+        params: { ...filtrosServidor, skip: pagina * tamanio, limit: tamanio }
+      });
+      const filas = Array.isArray(respuesta.data) ? respuesta.data : [];
+      resultados.push(...filas);
+      if (filas.length < tamanio) {
+        break;
+      }
+    }
+    this.cacheTickets.set(clave, { datos: resultados, fecha: Date.now() });
+    return resultados;
+  }
+
+  // ✅ Obtener tickets con filtros; el total viaja en X-Total-Count.
+  // Si el backend es antiguo (sin esa cabecera), filtramos por fecha_solicitud aquí.
   async getTickets(filtros: any): Promise<any> {
     try {
       const filtrosLimpiados = this.limpiarParametros(filtros);
       const response = await this.api.get<Ticket[]>('/tickets/', {
         params: filtrosLimpiados
       });
-      const total = Number(response.headers['x-total-count']);
-      return Array.isArray(response.data)
-        ? Object.assign(response.data, { total: Number.isFinite(total) ? total : response.data.length })
-        : response.data;
+      const cabecera = Number(response.headers['x-total-count']);
+      const totalServidor = Number.isFinite(cabecera) ? cabecera : null;
+      let filas = Array.isArray(response.data) ? response.data : [];
+      let total = totalServidor ?? filas.length;
+
+      if (totalServidor === null && this.hayFiltroFecha(filtrosLimpiados)) {
+        const todas = await this.todosLosTickets(filtrosLimpiados);
+        const filtradas = todas.filter(ticket =>
+          ticketEnRango(ticket, filtrosLimpiados as RangoTickets)
+        );
+        total = filtradas.length;
+        filas = paginar(
+          filtradas,
+          Number(filtrosLimpiados.skip) || 0,
+          Number(filtrosLimpiados.limit) || 10
+        );
+      }
+
+      return Object.assign(filas, { total });
     } catch (error) {
       console.error('❌ Error al obtener tickets:', error);
       throw error;
@@ -312,6 +374,7 @@ export class ApiService {
         }
       );
       console.log('📝 Ticket creado correctamente');
+      this.invalidarCacheTickets();
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear ticket:', error);
@@ -346,6 +409,7 @@ export class ApiService {
         }
       );
       // console.log('📝 Ticket actualizado correctamente');
+      this.invalidarCacheTickets();
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar ticket:', error);
@@ -358,6 +422,7 @@ export class ApiService {
     try {
       const response = await this.api.delete(`/ticket/eliminar/${ticketId}`);
       console.log('📝 Ticket eliminado correctamente');
+      this.invalidarCacheTickets();
       return response.data;
     } catch (error) {
       console.error('❌ Error al eliminar ticket:', error);
