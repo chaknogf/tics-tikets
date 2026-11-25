@@ -24,6 +24,9 @@ export class TiketsComponent implements OnInit {
   buscarEstado: string | null = null; // null = no filtrar
   buscarPrioridad = '';
   buscarId = '';
+  fechaDesde = '';
+  fechaHasta = '';
+  mes = '';
   cargando = false;
   origen = '';
 
@@ -73,18 +76,20 @@ export class TiketsComponent implements OnInit {
       estado: this.buscarEstado,
       prioridad: this.buscarPrioridad,
       id: this.buscarId,
+      fecha_desde: this.fechaDesde,
+      fecha_hasta: this.fechaHasta,
+      mes: this.mes,
       skip,
       limit: this.limite,
-
     };
 
     try {
-      // ⚙️ Si tu API devuelve total de registros, puedes usar algo como:
       const response = await this.api.getTickets(filtros);
 
-      this.tikets = response;
-      this.totalRegistros = 100; // Cambia esto si tu backend devuelve el total real
-      this.totalPaginas = Math.ceil(this.totalRegistros / this.limite);
+      this.tikets = Array.isArray(response) ? response : [];
+      const total = (response as Ticket[] & { total?: number })?.total;
+      this.totalRegistros = typeof total === 'number' ? total : this.tikets.length;
+      this.totalPaginas = Math.max(1, Math.ceil(this.totalRegistros / this.limite));
       this.paginaActual = pagina;
     } catch (error) {
       console.error('❌ Error al obtener tickets:', error);
@@ -109,6 +114,11 @@ export class TiketsComponent implements OnInit {
     this.router.navigate(['/detail', id]);
   }
 
+  // El mes y el rango son excluyentes: el mes manda si ambos están llenos.
+  get filtroMesActivo(): boolean {
+    return Boolean(this.mes);
+  }
+
   mostrarFiltros = false;
 
   toggleFiltros() {
@@ -122,6 +132,9 @@ export class TiketsComponent implements OnInit {
     this.buscarEstado = '';
     this.buscarPrioridad = '';
     this.buscarId = '';
+    this.fechaDesde = '';
+    this.fechaHasta = '';
+    this.mes = '';
     this.obtenerTikets();
   }
 }

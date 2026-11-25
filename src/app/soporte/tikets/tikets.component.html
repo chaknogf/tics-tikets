@@ -58,6 +58,38 @@
           </select>
         </div>
         <div class="col-12 col-md-2">
+          <label class="form-label small mb-0" for="fechaDesde">Desde</label>
+          <input
+            id="fechaDesde"
+            type="date"
+            class="form-control"
+            [(ngModel)]="fechaDesde"
+            name="fechaDesde"
+            [disabled]="filtroMesActivo"
+          />
+        </div>
+        <div class="col-12 col-md-2">
+          <label class="form-label small mb-0" for="fechaHasta">Hasta</label>
+          <input
+            id="fechaHasta"
+            type="date"
+            class="form-control"
+            [(ngModel)]="fechaHasta"
+            name="fechaHasta"
+            [disabled]="filtroMesActivo"
+          />
+        </div>
+        <div class="col-12 col-md-2">
+          <label class="form-label small mb-0" for="mesFiltro">Mes (YYYY-MM)</label>
+          <input
+            id="mesFiltro"
+            type="month"
+            class="form-control"
+            [(ngModel)]="mes"
+            name="mes"
+          />
+        </div>
+        <div class="col-12 col-md-2">
           <select
             class="form-select"
             [(ngModel)]="buscarPrioridad"
@@ -219,11 +251,11 @@
 
         <div class="acciones d-flex justify-content-center gap-2 mt-2">
           <button class="btn" (click)="editar(t.id)" title="Editar">
-            <span class="svg-icon" [innerHTML]="icons['editorMini']"></span>
+            <span class="svg-icon" [innerHTML]="icons['editor']"></span>
             Editar
           </button>
           <button class="btn" (click)="detalle(t.id)" title="Detalles">
-            <span class="svg-icon" [innerHTML]="icons['detalleMini']"></span>
+            <span class="svg-icon" [innerHTML]="icons['detalle']"></span>
             Detalle
           </button>
         </div>
@@ -240,8 +272,8 @@
         ‹
       </button>
 
-      <span class="page-info">
-        Página {{ paginaActual }} de {{ totalPaginas }}
+      <span class="page-info" aria-live="polite">
+        {{ totalRegistros }} registros · Página {{ paginaActual }} de {{ totalPaginas }}
       </span>
 
       <button
