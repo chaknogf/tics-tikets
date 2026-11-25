@@ -6,7 +6,10 @@ import jsPDF from 'jspdf';
 
 import { ApiService } from '../../services/api.service';
 import { anioDeFecha, formatearCorrelativo } from '../../services/correlativo-baja';
+import { indiceTabSiguiente } from '../../services/tabs';
 import { BajaCrear, BajaItem, DiagnosticoItem, Equipo } from '../../interface/interfaces';
+
+type PestanaBajas = 'formulario' | 'listado';
 
 const ESTILO_IMPRESION = `
 @page { size: A4; margin: 15mm; }
@@ -23,9 +26,10 @@ body.imprimiendo-baja #acta-baja {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './bajas.component.html',
-  styleUrls: ['./bajas.component.css']
+  styleUrls: ['./bajas.component.css', '../tabs.css']
 })
 export class BajasComponent implements OnInit {
+  pestana: PestanaBajas = 'formulario';
   formulario: BajaCrear = this.nuevoFormulario();
   equipos: Equipo[] = [];
   bajas: BajaItem[] = [];
@@ -136,6 +140,7 @@ export class BajasComponent implements OnInit {
     try {
       const creada = await this.api.crearBaja(this.formulario);
       this.acta = creada;
+      this.pestana = 'listado';
       this.mensaje = `Acta ${creada.correlativo} registrada correctamente.`;
       await this.cargar();
       await this.alCambiarFecha();
@@ -145,6 +150,32 @@ export class BajasComponent implements OnInit {
     } finally {
       this.guardando = false;
     }
+  }
+
+  /** Los navegadores sin focusgroup necesitan mover el foco explícitamente. */
+  alTeclearPestanas(event: KeyboardEvent): void {
+    if ('focusGroup' in HTMLElement.prototype) {
+      return;
+    }
+    const tablist = event.currentTarget as HTMLElement;
+    const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>('button'));
+    const actual = tabs.indexOf(document.activeElement as HTMLButtonElement);
+    if (actual < 0) {
+      return;
+    }
+    const destino = indiceTabSiguiente(actual, tabs.length, event.key);
+    if (destino === null || destino === actual) {
+      return;
+    }
+    event.preventDefault();
+    tabs[destino].focus();
+  }
+
+  alEnfocarPestana(event: FocusEvent, pestana: PestanaBajas): void {
+    this.pestana = pestana;
+    (event.target as HTMLElement).scrollIntoView({
+      block: 'nearest', inline: 'nearest', container: 'nearest'
+    } as ScrollIntoViewOptions);
   }
 
   nueva(): void {

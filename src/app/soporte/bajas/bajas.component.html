@@ -4,6 +4,22 @@
   <p *ngIf="error" class="mensaje error" role="alert">{{ error }}</p>
   <p *ngIf="mensaje" class="mensaje exito" role="status" aria-live="polite">{{ mensaje }}</p>
 
+  <div class="pestanas">
+    <div class="lista-pestanas" focusgroup="tablist nomemory"
+      aria-label="Secciones de bajas" (keydown)="alTeclearPestanas($event)">
+      <button type="button" id="bajas-tab-formulario"
+        [attr.aria-selected]="pestana === 'formulario'"
+        [attr.focusgroupstart]="pestana === 'formulario' ? '' : null"
+        (focus)="alEnfocarPestana($event, 'formulario')">Registrar baja</button>
+      <button type="button" id="bajas-tab-listado"
+        [attr.aria-selected]="pestana === 'listado'"
+        [attr.focusgroupstart]="pestana === 'listado' ? '' : null"
+        (focus)="alEnfocarPestana($event, 'listado')">Actas registradas</button>
+    </div>
+
+    <div role="tabpanel" aria-labelledby="bajas-tab-formulario"
+      [attr.hidden]="pestana === 'formulario' ? null : 'until-found'"
+      (beforematch)="pestana = 'formulario'">
   <section aria-labelledby="form-baja-titulo">
     <h2 id="form-baja-titulo">Registrar acta de baja</h2>
 
@@ -152,7 +168,11 @@
       </div>
     </form>
   </section>
+    </div>
 
+    <div role="tabpanel" aria-labelledby="bajas-tab-listado"
+      [attr.hidden]="pestana === 'listado' ? null : 'until-found'"
+      (beforematch)="pestana = 'listado'">
   <section aria-labelledby="lista-bajas-titulo">
     <h2 id="lista-bajas-titulo">Actas registradas</h2>
     <div class="table-wrapper" tabindex="0" role="region" aria-labelledby="bajas-tabla-caption">
@@ -255,4 +275,6 @@
       </section>
     </article>
   </section>
+    </div>
+  </div>
 </main>
