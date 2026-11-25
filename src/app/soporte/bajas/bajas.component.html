@@ -1,0 +1,258 @@
+<main class="bajas-container">
+  <h1>Bajas de equipos</h1>
+
+  <p *ngIf="error" class="mensaje error" role="alert">{{ error }}</p>
+  <p *ngIf="mensaje" class="mensaje exito" role="status" aria-live="polite">{{ mensaje }}</p>
+
+  <section aria-labelledby="form-baja-titulo">
+    <h2 id="form-baja-titulo">Registrar acta de baja</h2>
+
+    <form class="formulario" (ngSubmit)="guardar()" aria-labelledby="form-baja-titulo">
+      <fieldset>
+        <legend>1. Información general del solicitante</legend>
+        <div class="campo">
+          <label for="baja-fecha">Fecha de solicitud <span aria-hidden="true">*</span></label>
+          <input id="baja-fecha" name="fechaSolicitud" type="date" required
+            [(ngModel)]="formulario.fecha_solicitud" (ngModelChange)="alCambiarFecha()" />
+        </div>
+        <div class="campo">
+          <label for="baja-correlativo">ID del acta</label>
+          <input id="baja-correlativo" name="correlativo" type="text" [value]="correlativoPreview" readonly
+            aria-describedby="baja-correlativo-ayuda" />
+          <span id="baja-correlativo-ayuda" class="ayuda">Se asigna al guardar; se reinicia cada año.</span>
+        </div>
+        <div class="campo">
+          <label for="baja-responsable">Responsable del equipo <span aria-hidden="true">*</span></label>
+          <input id="baja-responsable" name="responsable" type="text" required autocomplete="name"
+            maxlength="120" [(ngModel)]="formulario.responsable_nombre" />
+        </div>
+        <div class="campo">
+          <label for="baja-ubicacion">Ubicación</label>
+          <input id="baja-ubicacion" name="ubicacion" type="text" maxlength="120"
+            [(ngModel)]="formulario.responsable_ubicacion" />
+        </div>
+        <div class="campo">
+          <label for="baja-firma">Firma del responsable</label>
+          <input id="baja-firma" name="firmaResponsable" type="text" maxlength="120"
+            [(ngModel)]="formulario.responsable_firma" />
+        </div>
+        <div class="campo">
+          <label for="baja-sello">Sello</label>
+          <input id="baja-sello" name="selloResponsable" type="text" maxlength="120"
+            [(ngModel)]="formulario.responsable_sello" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. Descripción del equipo</legend>
+        <div class="campo campo-amplio">
+          <label for="baja-bien">Número de bien <span aria-hidden="true">*</span></label>
+          <input id="baja-bien" name="noBien" type="text" required list="lista-bienes"
+            autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+            aria-describedby="baja-bien-ayuda" [(ngModel)]="formulario.no_bien"
+            (ngModelChange)="alSeleccionarBien()" />
+          <datalist id="lista-bienes">
+            <option *ngFor="let equipo of equipos" [value]="equipo.no_bien">
+              {{ equipo.no_bien }} — {{ equipo.datos_tecnicos?.marca || '' }} {{ equipo.datos_tecnicos?.modelo || '' }}
+            </option>
+          </datalist>
+          <span id="baja-bien-ayuda" class="ayuda">Escribe el bien o elija una sugerencia del inventario.</span>
+        </div>
+        <div class="campo">
+          <label for="baja-tipo">Tipo de dispositivo</label>
+          <input id="baja-tipo" name="tipoDispositivo" type="text" maxlength="120"
+            [(ngModel)]="formulario.tipo_dispositivo" />
+        </div>
+        <div class="campo">
+          <label for="baja-marca">Marca</label>
+          <input id="baja-marca" name="marca" type="text" maxlength="120"
+            [(ngModel)]="formulario.marca" />
+        </div>
+        <div class="campo">
+          <label for="baja-modelo">Modelo</label>
+          <input id="baja-modelo" name="modelo" type="text" maxlength="120"
+            [(ngModel)]="formulario.modelo" />
+        </div>
+        <div class="campo">
+          <label for="baja-serie">Número de serie</label>
+          <input id="baja-serie" name="numeroSerie" type="text" maxlength="120"
+            [(ngModel)]="formulario.numero_serie" />
+        </div>
+        <div class="campo">
+          <label for="baja-sicoin">Código SICOIN</label>
+          <input id="baja-sicoin" name="codigoSicoin" type="text" maxlength="50"
+            [(ngModel)]="formulario.codigo_sicoin" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. Diagnóstico técnico detallado</legend>
+        <p class="ayuda">Registre cada fallo crítico encontrado en la revisión física y electrónica.</p>
+        <div class="diagnostico" *ngFor="let diagnostico of formulario.diagnosticos; let i = index">
+          <div class="campo">
+            <label [for]="'baja-diagnostico-' + i">Fallo {{ i + 1 }} <span aria-hidden="true">*</span></label>
+            <input [id]="'baja-diagnostico-' + i" [name]="'diagnosticoTitulo' + i" type="text" maxlength="120"
+              [(ngModel)]="diagnostico.titulo" />
+          </div>
+          <div class="campo campo-amplio">
+            <label [for]="'baja-detalle-' + i">Detalle del fallo {{ i + 1 }}</label>
+            <textarea [id]="'baja-detalle-' + i" [name]="'diagnosticoDetalle' + i" rows="2"
+              [(ngModel)]="diagnostico.descripcion"></textarea>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-danger quitar"
+            (click)="quitarDiagnostico(i)" [disabled]="formulario.diagnosticos.length === 1"
+            [attr.aria-label]="'Quitar fallo ' + (i + 1)">Quitar</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary" (click)="agregarDiagnostico()">
+          Agregar otro fallo
+        </button>
+      </fieldset>
+
+      <fieldset>
+        <legend>4. Dictamen final y 5. destino final sugerido</legend>
+        <div class="campo campo-amplio">
+          <label for="baja-dictamen">Dictamen <span aria-hidden="true">*</span></label>
+          <textarea id="baja-dictamen" name="dictamen" rows="4" required
+            [(ngModel)]="formulario.dictamen"></textarea>
+        </div>
+        <fieldset class="destino">
+          <legend>Destino final</legend>
+          <div class="opcion">
+            <input id="baja-destino-reasignacion" name="destinoFinal" type="radio"
+              value="reasignacion" [(ngModel)]="formulario.destino_final" />
+            <label for="baja-destino-reasignacion">Reasignación del bien.</label>
+          </div>
+          <div class="opcion">
+            <input id="baja-destino-inventarios" name="destinoFinal" type="radio"
+              value="inventarios" [(ngModel)]="formulario.destino_final" />
+            <label for="baja-destino-inventarios">Devolución a la sección Inventarios para proceso de baja.</label>
+          </div>
+        </fieldset>
+      </fieldset>
+
+      <fieldset>
+        <legend>6. Revisión técnica</legend>
+        <div class="campo">
+          <label for="baja-revision-nombre">Nombre del revisor</label>
+          <input id="baja-revision-nombre" name="revisionNombre" type="text" maxlength="120"
+            autocomplete="name" [(ngModel)]="formulario.revision_nombre" />
+        </div>
+        <div class="campo">
+          <label for="baja-revision-firma">Firma del revisor</label>
+          <input id="baja-revision-firma" name="revisionFirma" type="text" maxlength="120"
+            [(ngModel)]="formulario.revision_firma" />
+        </div>
+      </fieldset>
+
+      <div class="acciones">
+        <button class="btn btn-success" type="submit" [disabled]="guardando">
+          {{ guardando ? 'Guardando…' : 'Registrar acta' }}
+        </button>
+        <button class="btn btn-outline-secondary" type="button" (click)="nueva()">Limpiar</button>
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="lista-bajas-titulo">
+    <h2 id="lista-bajas-titulo">Actas registradas</h2>
+    <div class="table-wrapper" tabindex="0" role="region" aria-labelledby="bajas-tabla-caption">
+      <table>
+        <caption id="bajas-tabla-caption">Bajas técnicas registradas</caption>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Responsable</th>
+            <th scope="col">Bien</th>
+            <th scope="col">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let baja of bajas">
+            <th scope="row">{{ baja.correlativo }}</th>
+            <td>{{ baja.fecha_solicitud | date:'dd-MM-yyyy' }}</td>
+            <td>{{ baja.responsable_nombre }}</td>
+            <td>{{ baja.no_bien }}</td>
+            <td><button type="button" class="btn btn-sm btn-outline-primary"
+              (click)="verActa(baja)">Ver acta</button></td>
+          </tr>
+          <tr *ngIf="!cargando && !bajas.length">
+            <td colspan="5">No hay actas registradas.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="acta-seccion" aria-labelledby="acta-titulo" *ngIf="acta">
+    <h2 id="acta-titulo">Vista previa del acta</h2>
+    <div class="acciones">
+      <button type="button" class="btn btn-outline-primary" (click)="imprimir()">Imprimir</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="descargarPdf()"
+        [disabled]="generandoPdf">
+        {{ generandoPdf ? 'Generando…' : 'Descargar PDF' }}
+      </button>
+    </div>
+
+    <article id="acta-baja" class="acta">
+      <header class="acta-encabezado">
+        <img src="assets/logo-Tecpan.avif" alt="" class="acta-logo" />
+        <h3>ACTA DE BAJA TÉCNICA DE EQUIPO DE CÓMPUTO Y PERIFÉRICOS</h3>
+      </header>
+
+      <section class="acta-bloque">
+        <h4>1. INFORMACIÓN GENERAL DEL SOLICITANTE</h4>
+        <p><strong>Fecha de Solicitud:</strong> {{ fechaLegible }}</p>
+        <p><strong>ID:</strong> {{ acta.correlativo }}</p>
+        <p><strong>Responsable del Equipo:</strong> {{ acta.responsable_nombre }}</p>
+        <p><strong>Ubicación:</strong> {{ acta.responsable_ubicacion || '—' }}</p>
+        <p><strong>Firma:</strong> {{ acta.responsable_firma || '__________________________' }}
+          <span class="acta-sello"><strong>Sello:</strong> {{ acta.responsable_sello || '__________________________' }}</span>
+        </p>
+      </section>
+
+      <section class="acta-bloque">
+        <h4>2. DESCRIPCIÓN DEL EQUIPO</h4>
+        <p><strong>Tipo de Dispositivo:</strong> {{ acta.tipo_dispositivo || '—' }}</p>
+        <p><strong>Marca:</strong> {{ acta.marca || '—' }}</p>
+        <p><strong>Modelo:</strong> {{ acta.modelo || '—' }}</p>
+        <p><strong>Número de Serie:</strong> {{ acta.numero_serie || '—' }}</p>
+        <p><strong>Código SICOIN:</strong> {{ acta.codigo_sicoin || '—' }}</p>
+        <p><strong>Número de Bien:</strong> {{ acta.no_bien }}</p>
+      </section>
+
+      <section class="acta-bloque">
+        <h4>3. DIAGNÓSTICO TÉCNICO DETALLADO</h4>
+        <p>Tras la revisión física y electrónica del dispositivo, se determinaron los siguientes fallos críticos:</p>
+        <ol>
+          <li *ngFor="let diagnostico of acta.diagnosticos">
+            <strong>{{ diagnostico.titulo }}</strong>
+            <p *ngIf="diagnostico.descripcion">{{ diagnostico.descripcion }}</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="acta-bloque">
+        <h4>4. DICTAMEN FINAL</h4>
+        <p>{{ acta.dictamen }}</p>
+      </section>
+
+      <section class="acta-bloque">
+        <h4>5. DESTINO FINAL SUGERIDO</h4>
+        <p [class.acta-seleccionado]="acta.destino_final === 'reasignacion'">
+          [ <span [innerHTML]="acta.destino_final === 'reasignacion' ? 'X' : '&nbsp;'"></span> ] Reasignación del bien.
+        </p>
+        <p [class.acta-seleccionado]="acta.destino_final === 'inventarios'">
+          [ <span [innerHTML]="acta.destino_final === 'inventarios' ? 'X' : '&nbsp;'"></span> ] Devolución a la sección Inventarios para proceso de baja.
+        </p>
+      </section>
+
+      <section class="acta-bloque">
+        <h4>6. REVISIÓN TÉCNICA</h4>
+        <p><strong>Nombre:</strong> {{ acta.revision_nombre || '—' }}</p>
+        <p>__________________________</p>
+        <p>Firma y Sello: {{ acta.revision_firma || '__________________________' }}</p>
+      </section>
+    </article>
+  </section>
+</main>

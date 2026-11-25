@@ -87,6 +87,10 @@ export class NavbarComponent {
     this.router.navigate(['/mantenimientos']);
   }
 
+  bajas() {
+    this.router.navigate(['/bajas']);
+  }
+
   /** Alterna la visibilidad del menú hamburguesa */
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;

@@ -13,6 +13,7 @@ import { PdfTicketComponent } from './pdfTicket/pdfTicket.component';
 import { EditarUsuario } from './usuarios/editar-usuario/editar-usuario';
 import { ReporteriaComponent } from './soporte/reporteria/reporteria.component';
 import { MantenimientosComponent } from './soporte/mantenimientos/mantenimientos.component';
+import { BajasComponent } from './soporte/bajas/bajas.component';
 
 export const routes: Routes = [
   { path: '', component: SolicitudUsuarioComponent, pathMatch: 'full' },
@@ -32,5 +33,6 @@ export const routes: Routes = [
   { path: 'editarUsuario', component: EditarUsuario, canActivate: [AuthGuard] },
   { path: 'reporteria', component: ReporteriaComponent, canActivate: [AuthGuard] },
   { path: 'mantenimientos', component: MantenimientosComponent, canActivate: [AuthGuard] },
+  { path: 'bajas', component: BajasComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' }, // 🔚 Siempre debe ir al final
 ];
