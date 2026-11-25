@@ -10,6 +10,7 @@ import {
   bajasARows,
   conteoARows,
   datosGrafico,
+  fechaEnRango,
   mantenimientosARows,
   parametrosEstadisticas,
   parametrosReporte,
@@ -65,6 +66,14 @@ test('los datos de gráfica conservan etiquetas y totales', () => {
     ]),
     { etiquetas: ['Alta', 'Media'], valores: [2, 5] },
   );
+});
+
+test('el rango de fechas compara fechas ISO sin convertirlas', () => {
+  assert.equal(fechaEnRango('2026-11-01T08:30:00', '2026-11-01', '2026-11-30'), true);
+  assert.equal(fechaEnRango('2026-11-30', '2026-11-01', '2026-11-30'), true);
+  assert.equal(fechaEnRango('2026-10-31', '2026-11-01', '2026-11-30'), false);
+  assert.equal(fechaEnRango('2026-12-01', '2026-11-01', '2026-11-30'), false);
+  assert.equal(fechaEnRango(null, '2026-11-01', '2026-11-30'), false);
 });
 
 test('los parámetros de reporte usan los nombres del backend', () => {

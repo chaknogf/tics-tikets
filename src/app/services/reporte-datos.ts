@@ -55,6 +55,25 @@ export function parametrosEstadisticas(filtros: Record<string, unknown>): Record
   return parametros;
 }
 
+/** Comparación léxica de ISO: evita desplazamientos de zona horaria. */
+export function fechaEnRango(
+  fecha: string | null | undefined,
+  desde: string,
+  hasta: string,
+): boolean {
+  if (!fecha) {
+    return false;
+  }
+  const dia = fecha.slice(0, 10);
+  if (desde && dia < desde) {
+    return false;
+  }
+  if (hasta && dia > hasta) {
+    return false;
+  }
+  return true;
+}
+
 export function datosGrafico(items: ConteoItem[]): {
   etiquetas: string[];
   valores: number[];
