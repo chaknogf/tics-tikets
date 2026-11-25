@@ -16,7 +16,7 @@ import {
 
 test('el nombre de hoja respeta el límite y los caracteres de Excel', () => {
   assert.equal(nombreHojaSeguro('Resumen diario/2026'), 'Resumen diario_2026');
-  assert.equal(nombreHojaSeguro('Mantenimientos realizados 2026').length, 31);
+  assert.equal(nombreHojaSeguro('Mantenimientos realizados 2026').length, 30);
 });
 
 test('el XML escapa etiquetas y neutraliza fórmulas', () => {
