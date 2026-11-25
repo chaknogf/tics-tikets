@@ -2,7 +2,10 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance } from 'axios';
 import { Router } from '@angular/router';
-import { DashboardResumen, Equipo, ResumenResponse, Ticket, Usuarios } from '../interface/interfaces';
+import {
+  DashboardResumen, Equipo, EstadisticasResponse, FrecuenciaItem, MantenimientoCrear,
+  MantenimientoItem, MantenimientoResumen, ResumenResponse, Ticket, Usuarios
+} from '../interface/interfaces';
 import { NotificacionesService } from './notificaciones.service';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -254,15 +257,17 @@ export class ApiService {
 
   // ======= TICKETS =======
 
-  // ✅ Obtener todos los tickets con filtros
+  // ✅ Obtener todos los tickets con filtros; el total viaja en X-Total-Count.
   async getTickets(filtros: any): Promise<any> {
     try {
       const filtrosLimpiados = this.limpiarParametros(filtros);
       const response = await this.api.get<Ticket[]>('/tickets/', {
         params: filtrosLimpiados
       });
-      // console.log('📝 Tickets obtenidos correctamente');
-      return response.data;
+      const total = Number(response.headers['x-total-count']);
+      return Array.isArray(response.data)
+        ? Object.assign(response.data, { total: Number.isFinite(total) ? total : response.data.length })
+        : response.data;
     } catch (error) {
       console.error('❌ Error al obtener tickets:', error);
       throw error;
@@ -380,8 +385,10 @@ export class ApiService {
       const response = await this.api.get<Equipo[]>('/equipos/', {
         params: filtrosLimpiados
       });
-      // console.log('👤 Equipos obtenidos correctamente', response);
-      return response.data;
+      const total = Number(response.headers['x-total-count']);
+      return Array.isArray(response.data)
+        ? Object.assign(response.data, { total: Number.isFinite(total) ? total : response.data.length })
+        : response.data;
 
     } catch (error) {
       console.error('❌ Error al obtener equipos:', error);
@@ -476,7 +483,7 @@ export class ApiService {
   async getResumen(fechaInicio: string, fechaFin: string, usuario: string): Promise<ResumenResponse> {
     try {
       const response = await this.api.get<ResumenResponse>(
-        '/tik/resumen/',
+        '/resumen/',
         {
           params: {
             fecha_inicio: fechaInicio,
@@ -493,7 +500,63 @@ export class ApiService {
     }
   }
 
+  async getEstadisticas(filtros: any = {}): Promise<EstadisticasResponse> {
+    try {
+      const response = await this.api.get<EstadisticasResponse>(
+        '/reportes/estadisticas',
+        { params: this.limpiarParametros(filtros) }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener estadísticas:', error);
+      throw error;
+    }
+  }
 
+  async getMantenimientos(filtros: any = {}): Promise<MantenimientoItem[]> {
+    try {
+      const response = await this.api.get<MantenimientoItem[]>(
+        '/mantenimientos/',
+        { params: this.limpiarParametros(filtros) }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener mantenimientos:', error);
+      throw error;
+    }
+  }
+
+  async getResumenMantenimientos(): Promise<MantenimientoResumen> {
+    try {
+      const response = await this.api.get<MantenimientoResumen>('/mantenimientos/resumen');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener resumen de mantenimientos:', error);
+      throw error;
+    }
+  }
+
+  async getFrecuenciasMantenimiento(): Promise<FrecuenciaItem[]> {
+    try {
+      const response = await this.api.get<FrecuenciaItem[]>('/mantenimientos/frecuencias');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener frecuencias:', error);
+      throw error;
+    }
+  }
+
+  async crearMantenimiento(datos: MantenimientoCrear): Promise<any> {
+    try {
+      const response = await this.api.post('/mantenimientos/', datos, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al crear mantenimiento:', error);
+      throw error;
+    }
+  }
 
 }
 

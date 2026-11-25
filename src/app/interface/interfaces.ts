@@ -50,6 +50,7 @@ export interface Seguimiento {
   ticket_id: number;
   usuario: string;
   nota: string;
+  fecha_seguimiento?: string;
   datos?: any;
 }
 
@@ -137,10 +138,8 @@ export interface EquipoCrear {
   actualizacion?: Actualizacion;
 }
 
+// El backend devuelve claves en singular: abierto / cerrado.
 export interface Estados {
-  find(arg0: (e: any) => boolean): unknown;
-  estado: string;
-  total: number;
   abierto: number;
   en_proceso: number;
   cerrado: number;
@@ -152,7 +151,7 @@ export interface Prioridades {
   baja: number;
 }
 
-export interface Variacion {
+export interface VariacionResumen {
   total: number;
   abiertos: number;
   en_proceso: number;
@@ -163,51 +162,65 @@ export interface DashboardPeriodo {
   total: number;
   estados: Estados;
   prioridades: Prioridades;
-  variacion: Variacion;
+  variacion: VariacionResumen | null;
 }
 
-export interface DashboardSolicitudes {
-  hoy: DashboardPeriodo;
-  mes_actual: DashboardPeriodo;
-  año_actual: DashboardPeriodo;
-}
-
-// Tipos básicos
-export type Estado = 'abiertos' | 'en_proceso' | 'cerrados';
-export type Prioridad = 'alta' | 'media' | 'baja';
-
-// Items para arrays
-export interface EstadoItem {
-  estado: Estado;
-  total: number;
-}
-
-export interface PrioridadItem {
-  prioridad: Prioridad;
-  total: number;
-}
-
-// Variación
-export interface VariacionResumen {
-  total: number;
-  abiertos: number;
-  en_proceso: number;
-  cerrados: number;
-}
-
-// Periodo del dashboard
-export interface DashboardPeriodo {
-  total: number;
-  estados: Estados;       // Array de estados
-  prioridades: Prioridades; // Array de prioridades
-  variacion: VariacionResumen;  // Solo 1 objeto
-}
-
-// Dashboard completo
 export interface DashboardResumen {
   hoy: DashboardPeriodo;
   mes_actual: DashboardPeriodo;
   año_actual: DashboardPeriodo;
+}
+
+export type EstadoClave = 'abierto' | 'en_proceso' | 'cerrado';
+export type Prioridad = 'alta' | 'media' | 'baja';
+export type Semaforo = 'verde' | 'amarillo' | 'rojo' | 'sin_dato';
+
+export interface ConteoItem {
+  etiqueta: string;
+  total: number;
+}
+
+export interface EstadisticasResponse {
+  total: number;
+  efectividad: number;
+  por_estado: ConteoItem[];
+  por_prioridad: ConteoItem[];
+  por_atencion: ConteoItem[];
+  por_mes: ConteoItem[];
+  fecha_desde: string | null;
+  fecha_hasta: string | null;
+}
+
+export interface MantenimientoItem {
+  id: number;
+  no_bien: string;
+  tipo_equipo: string | null;
+  ultima_fecha: string | null;
+  dias_intervalo: number | null;
+  proxima_fecha: string | null;
+  dias_restantes: number | null;
+  semaforo: Semaforo;
+}
+
+export interface MantenimientoResumen {
+  total: number;
+  verde: number;
+  amarillo: number;
+  rojo: number;
+  sin_dato: number;
+}
+
+export interface FrecuenciaItem {
+  tipo_equipo: string;
+  dias_intervalo: number;
+}
+
+export interface MantenimientoCrear {
+  no_bien: string;
+  fecha_mantenimiento: string;
+  tipo?: string;
+  descripcion?: string;
+  tecnico?: string;
 }
 
 // Resumen para tablas
