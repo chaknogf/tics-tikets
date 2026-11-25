@@ -41,6 +41,20 @@ export function parametrosReporte(filtros: FiltrosReporte): Record<string, strin
   return parametros;
 }
 
+/** Compatibilidad con el formulario antiguo que enviaba `fecha_desde`/`fecha_hasta`. */
+export function parametrosEstadisticas(filtros: Record<string, unknown>): Record<string, unknown> {
+  const parametros = { ...filtros };
+  if (!parametros['fecha_inicio'] && parametros['fecha_desde']) {
+    parametros['fecha_inicio'] = parametros['fecha_desde'];
+  }
+  if (!parametros['fecha_fin'] && parametros['fecha_hasta']) {
+    parametros['fecha_fin'] = parametros['fecha_hasta'];
+  }
+  delete parametros['fecha_desde'];
+  delete parametros['fecha_hasta'];
+  return parametros;
+}
+
 export function datosGrafico(items: ConteoItem[]): {
   etiquetas: string[];
   valores: number[];

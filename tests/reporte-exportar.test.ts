@@ -11,6 +11,7 @@ import {
   conteoARows,
   datosGrafico,
   mantenimientosARows,
+  parametrosEstadisticas,
   parametrosReporte,
 } from '../src/app/services/reporte-datos';
 
@@ -80,6 +81,13 @@ test('los parámetros de reporte usan los nombres del backend', () => {
     mes: '2026-11',
     usuario: 'admin',
   });
+});
+
+test('los alias de fechas del formulario antiguo se traducen al backend', () => {
+  assert.deepEqual(
+    parametrosEstadisticas({ fecha_desde: '2026-11-01', fecha_hasta: '2026-11-25', mes: '' }),
+    { fecha_inicio: '2026-11-01', fecha_fin: '2026-11-25', mes: '' },
+  );
 });
 
 test('las tablas de bajas y mantenimientos llevan encabezado', () => {
