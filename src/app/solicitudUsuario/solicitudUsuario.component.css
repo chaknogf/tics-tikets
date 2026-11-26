@@ -350,17 +350,19 @@
   inline-size: min(100%, 24rem);
 }
 
-/* Diálogo nativo: centrado, tamaño contenido y cierre accesible. */
+/* Diálogo NEXUS: amplio, centrado y con el lenguaje visual del resto de la app. */
 .login-dialog {
-  inline-size: min(calc(100% - 2rem), 34rem);
-  max-inline-size: 34rem;
-  max-block-size: min(92dvh, 48rem);
+  inline-size: min(calc(100% - 2rem), 72rem);
+  max-inline-size: 72rem;
+  max-block-size: min(92dvh, 52rem);
   margin: auto;
   padding: 0;
-  color: var(--light-text);
-  background: transparent;
-  border: 0;
-  border-radius: 1.25rem;
+  color: var(--app-text, #e6f0ff);
+  background: var(--app-bg, #05070d);
+  border: 1px solid var(--app-border-strong, #34507a);
+  border-radius: var(--app-radius, 0.85rem);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(45, 226, 245, 0.14);
+  color-scheme: dark;
   overflow: auto;
 }
 
@@ -375,17 +377,29 @@
 .login-dialog::backdrop {
   overflow: hidden;
   overscroll-behavior: contain;
-  background: rgba(15, 30, 50, 0.55);
-  backdrop-filter: blur(4px);
+  background:
+    radial-gradient(circle at 14% 12%, rgba(45, 226, 245, 0.2), transparent 42%),
+    radial-gradient(circle at 86% 86%, rgba(255, 94, 201, 0.16), transparent 44%),
+    rgba(3, 6, 12, 0.78);
+  backdrop-filter: blur(6px);
+}
+
+.login-dialog :is(button, input, textarea):focus-visible {
+  outline: 2px solid var(--app-focus, #8bf7ff);
+  outline-offset: 2px;
 }
 
 .dialog-inner {
   inline-size: 100%;
-  padding: clamp(1rem, 3vw, 1.5rem);
-  background: var(--light-surface);
-  border: 1px solid var(--light-border);
-  border-radius: 1.25rem;
-  box-shadow: 0 24px 60px rgba(15, 30, 50, 0.25);
+  color: var(--app-text, #e6f0ff);
+  background-color: var(--app-surface, #090e18);
+  background-image:
+    linear-gradient(rgba(45, 226, 245, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(45, 226, 245, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 10% 0%, rgba(45, 226, 245, 0.12), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(255, 94, 201, 0.1), transparent 38%);
+  background-size: 46px 46px, 46px 46px, auto, auto;
+  border-radius: inherit;
 }
 
 .dialog-header {
@@ -393,45 +407,91 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-block-end: 1rem;
+  padding: 1rem clamp(1rem, 2.5vw, 1.75rem);
+  background: rgba(5, 7, 13, 0.72);
+  border-block-end: 1px solid var(--app-border, #1a2940);
+}
+
+.dialog-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.dialog-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 2.6rem;
+  block-size: 2.6rem;
+  color: var(--ink-950, #05070d);
+  background: var(--app-accent, #2de2f5);
+  border-radius: var(--app-radius-sm, 0.5rem);
+  font-family: var(--app-mono, monospace);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.08em;
 }
 
 .dialog-kicker {
   margin: 0;
-  color: var(--light-muted);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  color: var(--app-accent, #2de2f5);
+  font-family: var(--app-mono, monospace);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.dialog-header h2 {
-  margin: 0.15rem 0 0;
-  color: var(--light-text);
-  font-family: var(--light-font);
-  font-size: 1.35rem;
-  font-weight: 800;
+.dialog-sub {
+  margin: 0.25rem 0 0;
+  color: var(--app-muted, #a0b2cd);
+  font-size: 0.9rem;
 }
 
 .dialog-close {
-  min-block-size: 44px;
-  padding: 0.5rem 1rem;
-  color: var(--light-text);
-  background: var(--light-soft);
-  border: 1px solid var(--light-control-border);
-  border-radius: 0.6rem;
-  font-family: var(--light-font);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-block-size: 48px;
+  padding: 0.6rem 1.1rem;
+  color: var(--app-text, #e6f0ff);
+  background: var(--app-surface-2, #0c1422);
+  border: 1px solid var(--app-control-border, #405f88);
+  border-radius: var(--app-radius-sm, 0.5rem);
+  font-family: var(--app-font, monospace);
   font-size: 0.95rem;
-  font-weight: 700;
   cursor: pointer;
 }
 
 .dialog-close:hover {
-  background: #e7edf6;
+  color: var(--app-accent, #2de2f5);
+  border-color: var(--app-accent, #2de2f5);
 }
 
 .login-modal-wrapper {
   display: block;
+}
+
+@media (max-width: 900px) {
+  .login-dialog {
+    inline-size: calc(100% - 1.5rem);
+    max-block-size: 95dvh;
+  }
+
+  .dialog-header {
+    padding: 0.85rem 1rem;
+  }
+
+  .dialog-mark {
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+  }
+
+  .dialog-sub {
+    display: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -448,12 +508,8 @@
     inline-size: 100%;
   }
 
-  .login-dialog {
-    inline-size: calc(100% - 1.5rem);
-    max-block-size: 95dvh;
-  }
-
-  .dialog-inner {
-    padding: 1rem;
+  .dialog-close {
+    min-block-size: 44px;
+    padding: 0.5rem 0.8rem;
   }
 }

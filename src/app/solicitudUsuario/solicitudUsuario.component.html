@@ -244,18 +244,24 @@
     #loginDialog
     class="login-dialog"
     closedby="any"
-    aria-labelledby="login-dialog-title"
+    aria-labelledby="login-title"
   >
     <div class="dialog-inner">
-      <div class="dialog-header">
-        <div>
-          <p class="dialog-kicker">Solo personal autorizado</p>
-          <h2 id="login-dialog-title">Acceso al sistema</h2>
+      <header class="dialog-header">
+        <div class="dialog-identity">
+          <span class="dialog-mark" aria-hidden="true">NX</span>
+          <div>
+            <p class="dialog-kicker">NEXUS · Acceso restringido</p>
+            <p class="dialog-sub">Centro de control de soporte</p>
+          </div>
         </div>
-        <button type="button" class="dialog-close" (click)="close()">Cerrar</button>
-      </div>
+        <button type="button" class="dialog-close" (click)="close()">
+          <span aria-hidden="true">✕</span>
+          Cerrar
+        </button>
+      </header>
 
-      <app-login class="login-modal-wrapper"></app-login>
+      <app-login class="login-modal-wrapper nexus-login"></app-login>
     </div>
   </dialog>
 </div>

@@ -272,7 +272,8 @@ ul {
 }
 
 ol,
-ul {
+ul,
+dl {
   margin-top: 0;
   margin-bottom: 1rem;
 }
@@ -282,6 +283,15 @@ ul ul,
 ol ul,
 ul ol {
   margin-bottom: 0;
+}
+
+dt {
+  font-weight: 700;
+}
+
+dd {
+  margin-bottom: 0.5rem;
+  margin-left: 0;
 }
 
 b,
