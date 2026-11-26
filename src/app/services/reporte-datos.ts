@@ -41,6 +41,17 @@ export function parametrosReporte(filtros: FiltrosReporte): Record<string, strin
   return parametros;
 }
 
+/**
+ * Marca de corte del informe. Recibe la fecha explícitamente para que el
+ * componente la calcule una sola vez al cargar y no en cada detección de
+ * cambios (un getter con `new Date()` provoca NG0100 al cambiar de minuto).
+ */
+export function formatearCorte(fecha: Date): string {
+  return new Intl.DateTimeFormat('es-GT', {
+    dateStyle: 'long', timeStyle: 'short'
+  }).format(fecha);
+}
+
 /** Compatibilidad con el formulario antiguo que enviaba `fecha_desde`/`fecha_hasta`. */
 export function parametrosEstadisticas(filtros: Record<string, unknown>): Record<string, unknown> {
   const parametros = { ...filtros };

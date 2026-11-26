@@ -7,7 +7,8 @@ import jsPDF from 'jspdf';
 
 import { ApiService } from '../../services/api.service';
 import {
-  datosGrafico, fechaEnRango, hojasReporte, normalizarFiltrosReporte, parametrosReporte
+  datosGrafico, fechaEnRango, formatearCorte, hojasReporte,
+  normalizarFiltrosReporte, parametrosReporte
 } from '../../services/reporte-datos';
 import { descargarExcel as guardarExcel } from '../../services/reporte-exportar';
 import {
@@ -36,6 +37,7 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
   mantenimientos: MantenimientoRealizadoItem[] = [];
   cargando = true;
   generandoPdf = false;
+  generadoEn = '';
   aviso = '';
 
   filtros = {
@@ -77,12 +79,6 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
 
   get periodoArchivo(): string {
     return `${this.filtros.fechaInicio || 'inicio'}-${this.filtros.fechaFin || 'fin'}`;
-  }
-
-  get generadoEn(): string {
-    return new Intl.DateTimeFormat('es-GT', {
-      dateStyle: 'long', timeStyle: 'short'
-    }).format(new Date());
   }
 
   get totalSolicitudes(): number {
@@ -221,6 +217,7 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
     ));
     this.mantenimientos = mantenimientos;
     this.cargando = false;
+    this.generadoEn = formatearCorte(new Date());
 
     // El canvas existe después de la primera detección de cambios.
     window.setTimeout(() => {

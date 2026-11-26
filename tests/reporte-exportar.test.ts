@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import test from 'node:test';
 
 import {
@@ -11,6 +13,7 @@ import {
   conteoARows,
   datosGrafico,
   fechaEnRango,
+  formatearCorte,
   mantenimientosARows,
   normalizarFiltrosReporte,
   parametrosEstadisticas,
@@ -150,4 +153,21 @@ test('las tablas de bajas y mantenimientos llevan encabezado', () => {
   assert.deepEqual(mantenimientosARows([])[0], [
     'ID', 'Fecha', 'Bien', 'Tipo', 'Técnico', 'Descripción',
   ]);
+});
+
+test('la marca de corte depende solo de la fecha que se le pasa', () => {
+  const fecha = new Date('2026-11-26T15:22:00');
+
+  assert.equal(formatearCorte(fecha), formatearCorte(fecha));
+  assert.match(formatearCorte(fecha), /2026/);
+});
+
+test('la marca de corte no se recalcula en cada detección de cambios', () => {
+  const fuente = readFileSync(
+    resolve(process.cwd(), 'src/app/soporte/reporteria/reporteria.component.ts'),
+    'utf8'
+  );
+
+  assert.doesNotMatch(fuente, /get\s+generadoEn\s*\(/);
+  assert.match(fuente, /this\.generadoEn\s*=\s*formatearCorte\(/);
 });
