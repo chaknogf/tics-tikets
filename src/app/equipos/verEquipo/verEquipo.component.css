@@ -1,0 +1,44 @@
+/* Ficha técnica: documento claro intencional dentro de la app oscura.
+   `color-scheme: light` fija el contexto del navegador para impresión y
+   los colores heredados se vuelven a declarar dentro de ese contexto. */
+.container {
+  color-scheme: light;
+  color: #101828;
+  background: #ffffff;
+  accent-color: #0b6b78;
+  border: 1px solid #d9e2ec;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+}
+
+.container h2,
+.container h5,
+.container .text-primary {
+  color: #0b6b78 !important;
+}
+
+.container .border-start {
+  border-color: #0b6b78 !important;
+}
+
+.container .bg-light {
+  color: #101828;
+  background-color: #f4f8fb !important;
+}
+
+.container .no-print {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media print {
+  .container {
+    border: 0;
+    box-shadow: none;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

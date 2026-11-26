@@ -1,0 +1,167 @@
+/* Mantenimientos: semáforo neón sobre superficie oscura. */
+.mantenimientos-container {
+  padding: clamp(1rem, 2.5vw, 2rem);
+  max-inline-size: 68.75rem;
+  margin-inline: auto;
+  color: var(--app-text, #e6f0ff);
+}
+
+.mantenimientos-container h2,
+.mantenimientos-container h3 {
+  margin-block: 0 1rem;
+}
+
+.resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block-end: 1rem;
+}
+
+.resumen-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-inline-size: 7rem;
+  padding: 0.75rem 1rem;
+  background: var(--app-surface, #090e18);
+  border: 1px solid var(--app-border, #1a2940);
+  border-inline-start: 3px solid var(--app-border-strong, #34507a);
+  border-radius: var(--app-radius-sm, 0.5rem);
+}
+
+.resumen-valor {
+  font-family: var(--app-mono, monospace);
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--app-text, #e6f0ff);
+}
+
+.resumen-etiqueta {
+  font-family: var(--app-mono, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--app-muted, #a0b2cd);
+}
+
+.resumen-card.verde,
+.semaforo.verde {
+  --signal: var(--app-ok, #5ef2a4);
+}
+
+.resumen-card.amarillo,
+.semaforo.amarillo {
+  --signal: var(--app-warn, #ffc857);
+}
+
+.resumen-card.rojo,
+.semaforo.rojo {
+  --signal: var(--app-danger, #ff6b81);
+}
+
+.resumen-card.sin_dato,
+.semaforo.sin_dato {
+  --signal: var(--app-muted, #a0b2cd);
+}
+
+.resumen-card.verde,
+.resumen-card.amarillo,
+.resumen-card.rojo,
+.resumen-card.sin_dato {
+  border-inline-start-color: var(--signal);
+}
+
+.resumen-card.verde .resumen-valor,
+.resumen-card.amarillo .resumen-valor,
+.resumen-card.rojo .resumen-valor,
+.resumen-card.sin_dato .resumen-valor {
+  color: var(--signal);
+}
+
+.semaforo {
+  font-family: var(--app-mono, monospace);
+  font-size: 0.7rem;
+  color: var(--signal, var(--app-muted, #a0b2cd));
+  background: rgba(148, 163, 184, 0.1);
+  background: color-mix(in srgb, var(--signal, var(--app-muted)) 12%, transparent);
+  border: 1px solid var(--app-border-strong, #34507a);
+  border-color: color-mix(in srgb, var(--signal, var(--app-muted)) 50%, transparent);
+}
+
+.filtros {
+  padding: 1rem;
+  background: var(--app-surface, #090e18);
+  border: 1px solid var(--app-border, #1a2940);
+  border-radius: var(--app-radius, 0.85rem);
+}
+
+.filtros .form-label {
+  margin-block-end: 0.25rem;
+}
+
+.filtros .form-control,
+.filtros .form-select,
+.alta .form-control {
+  min-block-size: 44px;
+  font-size: max(1rem, 1em);
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(45, 226, 245, 0.035);
+  --bs-table-hover-bg: rgba(45, 226, 245, 0.07);
+  --bs-table-color: var(--app-text, #e6f0ff);
+  --bs-table-border-color: var(--app-border, #1a2940);
+  font-size: 0.82rem;
+}
+
+:host ::ng-deep .table thead th {
+  font-family: var(--app-mono, monospace);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--app-accent, #2de2f5);
+  border-block-end-color: var(--app-border-strong, #34507a);
+}
+
+.paginador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+  font-family: var(--app-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--app-muted, #a0b2cd);
+}
+
+.alta,
+.frecuencias {
+  margin-block-start: 1.5rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--app-border, #1a2940);
+}
+
+.alta form {
+  padding: 1rem;
+  background: var(--app-surface, #090e18);
+  border: 1px solid var(--app-border, #1a2940);
+  border-radius: var(--app-radius, 0.85rem);
+}
+
+.frecuencias ul {
+  padding-inline-start: 1.25rem;
+  font-family: var(--app-mono, monospace);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 36em) {
+  .resumen-card {
+    min-inline-size: calc(50% - 0.4rem);
+  }
+}

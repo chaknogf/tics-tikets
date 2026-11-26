@@ -1,23 +1,86 @@
-<div class="login-container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="login-card p-4 shadow rounded-3">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <h3 class="login-title mb-2">Login</h3>
-      <p class="login-subtitle mb-4">Ingresa tus credenciales</p>
+<main class="auth-screen">
+  <section class="auth-visual" aria-hidden="true">
+    <div class="auth-grid"></div>
 
-      <div class="mb-3">
-        <input type="text" class="form-control login-input" formControlName="username" placeholder="Usuario" autocomplete="off" />
+    <div class="auth-visual-content">
+      <p class="eyebrow">NEXUS / CONTROL CENTER · V2.0</p>
+      <h1 class="auth-headline">La infraestructura,<br /><span>bajo señal.</span></h1>
+      <p class="auth-copy">
+        Una sola superficie para tickets, equipos y respuesta operativa.
+      </p>
+
+      <div class="auth-readout">
+        <div>
+          <span class="readout-label">ESTADO</span>
+          <span class="readout-value">OPERATIVO</span>
+        </div>
+        <div>
+          <span class="readout-label">CANAL</span>
+          <span class="readout-value">SEGURO</span>
+        </div>
+        <div>
+          <span class="readout-label">NODO</span>
+          <span class="readout-value">01 / ACTIVO</span>
+        </div>
       </div>
-      <div class="mb-3">
-        <input type="password" class="form-control login-input" formControlName="password" placeholder="Contraseña" />
-      </div>
+    </div>
+  </section>
 
-      <button class="btn login-btn w-100" type="submit" [disabled]="loading">
-        {{ loading ? 'Cargando...' : 'Iniciar Sesión' }}
-      </button>
-    </form>
-  </div>
-</div>
+  <section class="auth-panel">
+    <div class="auth-card panel-corners">
+      <p class="eyebrow">// ACCESO SEGURO</p>
+      <h2 class="auth-title">Iniciar sesión</h2>
+      <p class="auth-hint">Ingresa tus credenciales para continuar.</p>
 
-<div *ngIf="loading === true" class="alert alert-info text-center mt-3">
-  Cargando acceso...
-</div>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" [attr.aria-busy]="loading" novalidate>
+        <div class="field">
+          <label class="form-label" for="login-usuario">Usuario</label>
+          <input
+            id="login-usuario"
+            type="text"
+            class="form-control neon-input"
+            formControlName="username"
+            placeholder="usuario"
+            autocomplete="username"
+            autocorrect="off"
+            autocapitalize="none"
+            spellcheck="false"
+            [class.is-invalid]="campoInvalido('username')"
+            [attr.aria-invalid]="campoInvalido('username')"
+            aria-describedby="error-usuario"
+          />
+          <small class="field-error" id="error-usuario" *ngIf="campoInvalido('username')">
+            Ingresa tu usuario.
+          </small>
+        </div>
+
+        <div class="field">
+          <label class="form-label" for="login-clave">Contraseña</label>
+          <input
+            id="login-clave"
+            type="password"
+            class="form-control neon-input"
+            formControlName="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            [class.is-invalid]="campoInvalido('password')"
+            [attr.aria-invalid]="campoInvalido('password')"
+            aria-describedby="error-clave"
+          />
+          <small class="field-error" id="error-clave" *ngIf="campoInvalido('password')">
+            Ingresa tu contraseña.
+          </small>
+        </div>
+
+        <p class="alert alert-error" role="alert" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+        <button class="neon-btn" type="submit" [disabled]="loading">
+          <span>{{ loading ? 'Verificando…' : 'Entrar al sistema' }}</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </form>
+
+      <p class="auth-footer eyebrow">Acceso restringido · Uso interno</p>
+    </div>
+  </section>
+</main>

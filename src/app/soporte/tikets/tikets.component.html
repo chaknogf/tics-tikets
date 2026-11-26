@@ -1,55 +1,83 @@
-<!-- nuevo estilo -->
-
 <div class="dashboard-container">
-  <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Panel de telemetría">
+    <p class="eyebrow">// TELEMETRÍA</p>
     <app-charts></app-charts>
   </aside>
 
-  <!-- Contenido principal -->
-  <main class="main-content" *ngIf="!cargando; else cargandoTemplate">
-    <!-- Formulario de búsqueda -->
-    <section class="filtros-container">
-      <button class="filtro-toggle" (click)="toggleFiltros()">
-        <span [innerHTML]="icons['filter']"></span>
+  <main class="main-content" [attr.aria-busy]="cargando">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Módulo 02 / Tickets</p>
+        <h1>Registro de solicitudes</h1>
+      </div>
+      <div class="head-count">
+        <strong>{{ totalRegistros }}</strong>
+        <span class="eyebrow">Registros</span>
+      </div>
+    </header>
+
+    <section class="filter-console panel-corners" aria-label="Filtros de tickets">
+      <button
+        type="button"
+        class="filtro-toggle"
+        aria-controls="filtros-tickets"
+        [attr.aria-expanded]="mostrarFiltros"
+        aria-label="Mostrar u ocultar filtros"
+        (click)="toggleFiltros()"
+      >
+        <span aria-hidden="true" [innerHTML]="icons['filter']"></span>
       </button>
 
-      <form class="filtros-form row g-2 mb-3" [class.activo]="mostrarFiltros">
+      <form id="filtros-tickets" class="filtros-form row g-2" [class.activo]="mostrarFiltros">
         <div class="col-12 col-md-2">
+          <label class="visually-hidden" for="buscarId">Buscar ID</label>
           <input
+            id="buscarId"
             type="text"
             class="form-control"
-            placeholder="Buscar ID"
+            placeholder="ID"
             [(ngModel)]="buscarId"
             name="buscarId"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
           />
         </div>
         <div class="col-12 col-md-2">
+          <label class="visually-hidden" for="buscarTicket">Buscar Ticket</label>
           <input
+            id="buscarTicket"
             type="text"
             class="form-control"
-            placeholder="Buscar Ticket"
+            placeholder="Ticket"
             [(ngModel)]="buscarTicket"
             name="buscarTicket"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
           />
         </div>
         <div class="col-12 col-md-2">
+          <label class="visually-hidden" for="buscarServicio">Buscar Servicio</label>
           <input
+            id="buscarServicio"
             type="text"
             class="form-control"
-            placeholder="Buscar Servicio"
+            placeholder="Servicio"
             [(ngModel)]="buscarServicio"
             name="buscarServicio"
+            autocomplete="off"
           />
         </div>
         <div class="col-12 col-md-2">
+          <label class="visually-hidden" for="buscarAtencion">Atención en</label>
           <select
             class="form-select"
             name="buscarAtencion"
             id="buscarAtencion"
             [(ngModel)]="buscarAtencionEn"
           >
-            <option value="">Atención en</option>
+            <option value="">Atención</option>
             <option value="Menores">Trabajos menores</option>
             <option value="Computo">Computo</option>
             <option value="Red">Red</option>
@@ -58,7 +86,19 @@
           </select>
         </div>
         <div class="col-12 col-md-2">
+          <label class="form-label small mb-0" for="mesFiltro">Mes</label>
+          <input
+            id="mesFiltro"
+            type="month"
+            class="form-control"
+            [(ngModel)]="mes"
+            name="mes"
+          />
+        </div>
+        <div class="col-12 col-md-2">
+          <label class="visually-hidden" for="buscarPrioridad">Prioridad</label>
           <select
+            id="buscarPrioridad"
             class="form-select"
             [(ngModel)]="buscarPrioridad"
             name="buscarPrioridad"
@@ -70,7 +110,9 @@
           </select>
         </div>
         <div class="col-12 col-md-2">
+          <label class="visually-hidden" for="buscarEstado">Estado</label>
           <select
+            id="buscarEstado"
             class="form-select"
             [(ngModel)]="buscarEstado"
             name="buscarEstado"
@@ -82,182 +124,186 @@
           </select>
         </div>
 
-        <div class="d-flex gap-2 align-items-center justify-content-center">
-          <button
-            class="btn btn-primary w-50"
-            type="button"
-            (click)="obtenerTikets()"
-          >
-            Buscar
-          </button>
-          <button
-            class="btn btn-warning w-10"
-            type="button"
-            (click)="limpiarFiltros()"
-          >
-            Reset
-          </button>
+        <div class="col-12 filter-actions">
+          <button class="btn btn-primary" type="button" (click)="obtenerTikets()">Buscar</button>
+          <button class="btn btn-outline-primary" type="button" (click)="limpiarFiltros()">Limpiar</button>
         </div>
       </form>
     </section>
 
-    <!-- Tabla desktop -->
-    <section class="tabla-modern-container">
-      <table class="tabla-modern">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Ticket</th>
-            <th>Fecha Solicitud</th>
-            <th>Fecha de Atención</th>
-            <th>Servicio</th>
-            <th>Prioridad</th>
-            <th>Atención en</th>
-            <th>Estado</th>
+    <p class="loading-alert" *ngIf="cargando" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      Consultando registros…
+    </p>
 
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let t of tikets" class="fila">
-            <td>{{ t.id }}</td>
-            <td>
-              <span
-                class="badge estado"
-                [ngClass]="{
-                  abierto: t.estado === 'Abierto',
-                  'en-proceso': t.estado === 'En Proceso',
-                  cerrado: t.estado === 'Cerrado'
-                }"
-                >{{ t.ticket }}</span
-              >
-            </td>
-            <td class="text-wrap">{{ t.fecha_solicitud | date : "dd-MM-yy HH:mm" }}</td>
-            <td>{{ t.fecha_atencion | date : "shortDate" }}</td>
-            <td class="text-wrap">{{ t.servicio }}</td>
-            <td>
-              <span
-                class="badge prioridad {{ t.prioridad | lowercase }} estado-{{
-                  t.estado | lowercase
-                }}"
-              >
-                {{ t.prioridad || "N/A" }}
-              </span>
-            </td>
-            <td>{{ t.atencion_en }}</td>
-            <td>
-              <span>
-                {{ t.estado || "Sin estado" }}
-              </span>
-            </td>
+    <div class="alert alert-error" *ngIf="error" role="alert">
+      <span aria-hidden="true">!</span>
+      {{ error }}
+      <button type="button" class="btn btn-outline-primary btn-sm ms-2" (click)="reintentar()">
+        Reintentar
+      </button>
+    </div>
 
-            <td>
-              <button
-                class="icon-btn editar"
-                (click)="editar(t.id)"
-                title="Editar"
-              >
-                <span [innerHTML]="icons['editor']"></span>
-              </button>
-            </td>
-            <td>
-              <button
-                class="icon-btn detalle"
-                (click)="detalle(t.id)"
-                title="Detalles"
-              >
-                <span [innerHTML]="icons['detalle']"></span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <section class="data-panel panel-corners" *ngIf="!cargando && !error && tikets.length">
+      <div class="data-panel-head">
+        <p class="eyebrow">Resultados</p>
+        <span class="record-count">{{ tikets.length }} en esta página</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="tabla-modern">
+          <caption class="visually-hidden">Listado de tickets filtrados</caption>
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Ticket</th>
+              <th scope="col">Solicitud</th>
+              <th scope="col">Atención</th>
+              <th scope="col">Servicio</th>
+              <th scope="col">Prioridad</th>
+              <th scope="col">Área</th>
+              <th scope="col">Estado</th>
+              <th scope="col" *ngIf="puedeEscribir"><span class="visually-hidden">Acciones</span></th>
+              <th scope="col"><span class="visually-hidden">Detalle</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of tikets; trackBy: trackPorId" class="fila">
+              <td class="mono-cell">{{ t.id }}</td>
+              <td>
+                <span
+                  class="badge estado"
+                  [ngClass]="{
+                    abierto: t.estado === 'Abierto',
+                    'en-proceso': t.estado === 'En Proceso',
+                    cerrado: t.estado === 'Cerrado'
+                  }"
+                >{{ t.ticket }}</span>
+              </td>
+              <td class="mono-cell">{{ t.fecha_solicitud | date : "dd-MM-yy HH:mm" }}</td>
+              <td class="mono-cell">{{ t.fecha_atencion | date : "shortDate" }}</td>
+              <td>{{ t.servicio }}</td>
+              <td>
+                <span
+                  class="badge prioridad {{ t.prioridad | lowercase }} estado-{{
+                    t.estado | lowercase
+                  }}"
+                >{{ t.prioridad || "N/A" }}</span>
+              </td>
+              <td>{{ t.atencion_en }}</td>
+              <td>
+                <span class="state-cell">
+                  <span
+                    class="state-dot"
+                    [class.abierto]="t.estado === 'Abierto'"
+                    [class.en-proceso]="t.estado === 'En Proceso'"
+                    [class.cerrado]="t.estado === 'Cerrado'"
+                    aria-hidden="true"
+                  ></span>
+                  {{ t.estado || "Sin estado" }}
+                </span>
+              </td>
+              <td *ngIf="puedeEscribir">
+                <button
+                  type="button"
+                  class="icon-btn editar"
+                  [attr.aria-label]="'Editar ticket ' + t.ticket"
+                  (click)="editar(t.id)"
+                >
+                  <span aria-hidden="true" [innerHTML]="icons['editor']"></span>
+                </button>
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="icon-btn detalle"
+                  [attr.aria-label]="'Ver detalle del ticket ' + t.ticket"
+                  (click)="detalle(t.id)"
+                >
+                  <span aria-hidden="true" [innerHTML]="icons['detalle']"></span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
-    <!-- Cards móviles -->
-    <section class="table-responsive-mobile">
-      <div class="card-mobile" *ngFor="let t of tikets">
-        <p><strong>ID: </strong> {{ t.id }}</p>
-        <p>
-          <strong>Ticket: </strong>
+    <section class="card-list" *ngIf="!cargando && !error && tikets.length" aria-label="Listado de tickets">
+      <article class="card-mobile panel-corners" *ngFor="let t of tikets; trackBy: trackPorId">
+        <div class="card-mobile-head">
+          <span class="eyebrow">#{{ t.id }}</span>
           <span
-            class="badge estado ticket-number"
+            class="badge estado"
             [ngClass]="{
               abierto: t.estado === 'Abierto',
               'en-proceso': t.estado === 'En Proceso',
               cerrado: t.estado === 'Cerrado'
             }"
-            >{{ t.ticket }}</span
-          >
-        </p>
+          >{{ t.ticket }}</span>
+        </div>
+        <p><strong>Servicio</strong> {{ t.servicio }}</p>
+        <p><strong>Solicitud</strong> {{ t.fecha_solicitud | date : "dd-MM-yy HH:mm" }}</p>
+        <p><strong>Atención</strong> {{ t.fecha_atencion | date : "shortDate" }}</p>
+        <p><strong>Área</strong> {{ t.atencion_en }}</p>
         <p>
-          <strong>Fecha Solicitud: </strong>
-          {{ t.fecha_solicitud | date : "shortDate" }}
-        </p>
-        <p>
-          <strong>Fecha Atención: </strong>
-          {{ t.fecha_atencion | date : "shortDate" }}
-        </p>
-        <p><strong>Servicio: </strong> {{ t.servicio }}</p>
-        <p>
-          <strong>Prioridad: </strong>
+          <strong>Prioridad</strong>
           <span
             class="badge prioridad {{ t.prioridad | lowercase }} estado-{{
               t.estado | lowercase
             }}"
-            >{{ t.prioridad || "N/A" }}</span
-          >
+          >{{ t.prioridad || "N/A" }}</span>
         </p>
-        <p><strong>Atención en: </strong> {{ t.atencion_en }}</p>
-        <p>
-          <strong>Estado: </strong>
-          <span>
-            {{ t.estado || "Sin estado" }}
-          </span>
-        </p>
+        <p><strong>Estado</strong> {{ t.estado || "Sin estado" }}</p>
 
-        <div class="acciones d-flex justify-content-center gap-2 mt-2">
-          <button class="btn" (click)="editar(t.id)" title="Editar">
-            <span class="svg-icon" [innerHTML]="icons['editorMini']"></span>
+        <div class="card-actions">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            *ngIf="puedeEscribir"
+            [attr.aria-label]="'Editar ticket ' + t.ticket"
+            (click)="editar(t.id)"
+          >
+            <span class="svg-icon" aria-hidden="true" [innerHTML]="icons['editor']"></span>
             Editar
           </button>
-          <button class="btn" (click)="detalle(t.id)" title="Detalles">
-            <span class="svg-icon" [innerHTML]="icons['detalleMini']"></span>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [attr.aria-label]="'Ver detalle del ticket ' + t.ticket"
+            (click)="detalle(t.id)"
+          >
+            <span class="svg-icon" aria-hidden="true" [innerHTML]="icons['detalle']"></span>
             Detalle
           </button>
         </div>
-      </div>
+      </article>
     </section>
 
-    <!-- 🔹 Paginador -->
-    <div class="paginador-container">
+    <p class="estado-vacio" *ngIf="!cargando && !error && !tikets.length">
+      No hay tickets que coincidan con los filtros seleccionados.
+    </p>
+
+    <nav class="paginador-container" aria-label="Paginación de tickets" *ngIf="!error && totalRegistros">
       <button
+        type="button"
         class="page-btn"
+        aria-label="Página anterior"
         [disabled]="paginaActual === 1"
         (click)="cambiarPagina('prev')"
-      >
-        ‹
-      </button>
+      >←</button>
 
-      <span class="page-info">
-        Página {{ paginaActual }} de {{ totalPaginas }}
+      <span class="page-info" aria-live="polite">
+        {{ totalRegistros }} registros · Página {{ paginaActual }} de {{ totalPaginas }}
       </span>
 
       <button
+        type="button"
         class="page-btn"
+        aria-label="Página siguiente"
         [disabled]="paginaActual === totalPaginas"
         (click)="cambiarPagina('next')"
-      >
-        ›
-      </button>
-    </div>
+      >→</button>
+    </nav>
   </main>
 </div>
-
-<ng-template #cargandoTemplate>
-  <div class="loading-alert">
-    <span class="spinner"></span>
-    Cargando tickets...
-  </div>
-</ng-template>

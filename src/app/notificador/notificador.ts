@@ -1,5 +1,5 @@
 // src/app/components/notificador/notificador.component.ts
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { NotificacionesService } from './../services/notificaciones.service';
@@ -13,28 +13,30 @@ import { campanaIcons } from '../shared/icons/icons';
   styleUrl: './notificador.css',
   standalone: true
 })
-
-export class NotificadorComponent {
+export class NotificadorComponent implements OnDestroy {
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
-  // iconos
   icons: { [key: string]: any } = {};
-
   notificaciones: any[] = [];
+
+  private suscripcion: Subscription;
 
   constructor(
     private notiSrv: NotificacionesService,
     private iconService: IconService
   ) {
-    this.notiSrv.notificaciones$
-      .subscribe(n => this.notificaciones = n);
+    this.suscripcion = this.notiSrv.notificaciones$
+      .subscribe((n) => (this.notificaciones = n));
 
     this.icons = {
-      notificador: this.iconService.getIcon("campanaIcons"),
+      notificador: this.iconService.getIcon('campanaIcons'),
     };
   }
 
-  cerrar(index: number) {
-    this.notificaciones.splice(index, 1);
+  ngOnDestroy(): void {
+    this.suscripcion.unsubscribe();
+  }
+
+  cerrar(index: number): void {
+    this.notiSrv.descartar(index);
   }
 }
-

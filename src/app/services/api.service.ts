@@ -1,9 +1,18 @@
 // src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Router } from '@angular/router';
-import { DashboardResumen, Equipo, ResumenResponse, Ticket, Usuarios } from '../interface/interfaces';
+import {
+  BajaCrear, BajaItem, CorrelativoPreview, DashboardResumen, Equipo, EstadisticasResponse,
+  FrecuenciaItem, ListaConTotal, MantenimientoCrear, MantenimientoItem,
+  MantenimientoRealizadoItem, MantenimientoResumen, ResumenResponse, Ticket, Usuarios
+} from '../interface/interfaces';
 import { NotificacionesService } from './notificaciones.service';
+import { paginar, RangoTickets, ticketEnRango } from './filtros-tickets';
+import { parametrosEstadisticas } from './reporte-datos';
+import { Deduplicador } from './deduplicador';
+import { perfilParaActualizar, solicitudCambiarPassword } from './usuario-datos';
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -12,6 +21,17 @@ export class ApiService {
   public token: string | null = null;
   public username: string | null = null;
   public role: string | null = null;
+
+  // Solo se usa con el backend antiguo; se invalida al crear/editar/borrar tickets.
+  private cacheTickets = new Map<string, { datos: Ticket[]; fecha: number }>();
+  private readonly ttlCacheTickets = 60_000;
+  private readonly deduplicador = new Deduplicador();
+
+  /** Las mutaciones descartan tanto la caché antigua como las lecturas en vuelo. */
+  private invalidarLecturas(): void {
+    this.cacheTickets.clear();
+    this.deduplicador.invalidarTodo();
+  }
 
   constructor(
     private router: Router,
@@ -22,6 +42,7 @@ export class ApiService {
 
     this.api = axios.create({
       baseURL: this.baseUrl,
+      timeout: 20_000,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -39,6 +60,27 @@ export class ApiService {
         return config;
       },
       error => Promise.reject(error)
+    );
+
+    // Un 401 significa sesión vencida o token inválido: se limpia y vuelve al inicio.
+    // El login fallido se excluye para no borrar una sesión activa ni redirigir.
+    this.api.interceptors.response.use(
+      response => response,
+      error => {
+        const url = error.config?.url ?? '';
+        if (error.response?.status === 401 && !url.includes('/auth/login')) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('username');
+          localStorage.removeItem('role');
+          localStorage.removeItem('user_id');
+          this.token = null;
+          this.username = null;
+          this.role = null;
+          this.invalidarLecturas();
+          void this.router.navigate(['/']);
+        }
+        return Promise.reject(error);
+      }
     );
   }
 
@@ -80,7 +122,7 @@ export class ApiService {
     }
 
     try {
-      const response = await this.api.get('/auth/me', {
+      const response = await this.getUnico<{ username: string; role: string }>('/auth/me', {
         headers: {
           usuario: username || '',
           rol: role || ''
@@ -111,7 +153,7 @@ export class ApiService {
     }
 
     try {
-      const response = await this.api.get<Usuarios>('/auth/allme');
+      const response = await this.getUnico<Usuarios>('/auth/allme');
       //console.log('👤 Usuario actual obtenido correctamente', response);
       return response.data;
     } catch (error) {
@@ -121,9 +163,11 @@ export class ApiService {
   }
 
   logOut() {
+    this.invalidarLecturas();
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
+    localStorage.removeItem('user_id');
     // window.location.reload();
     this.router.navigate(['/inicio']);
 
@@ -141,11 +185,53 @@ export class ApiService {
     return filtrosLimpiados;
   }
 
+  /**
+   * GET deduplicado mientras está en vuelo; nunca cachea la respuesta.
+   * Si el llamador aporta un AbortSignal se respeta y no se comparte.
+   */
+  private getUnico<T>(
+    url: string,
+    config: AxiosRequestConfig = {}
+  ): Promise<AxiosResponse<T>> {
+    if (config.signal) {
+      return this.api.get<T>(url, config);
+    }
+
+    const clave = JSON.stringify([
+      url,
+      config.params ?? null,
+      config.headers ?? null,
+      localStorage.getItem('access_token') ?? null
+    ]);
+    return this.deduplicador.obtener(clave, () => this.api.get<T>(url, config));
+  }
+
+  private async listarConTotal<T>(
+    ruta: string,
+    filtros: any,
+    etiqueta: string,
+  ): Promise<ListaConTotal<T>> {
+    try {
+      const response = await this.getUnico<T[]>(ruta, {
+        params: this.limpiarParametros(filtros)
+      });
+      const cabecera = response.headers?.['x-total-count'];
+      const total = Number(cabecera ?? response.data.length);
+      return {
+        items: response.data,
+        total: Number.isFinite(total) ? total : response.data.length
+      };
+    } catch (error) {
+      console.error(etiqueta, error);
+      throw error;
+    }
+  }
+
   // ======= USERS =======
 
   async usuarioActual(): Promise<any> {
     try {
-      const response = await this.api.get<Usuarios>('/auth/me');
+      const response = await this.getUnico<Usuarios>('/auth/me');
       //console.log('👤 Usuario actual obtenido correctamente', response);
       return response.data;
 
@@ -158,7 +244,7 @@ export class ApiService {
 
   async getUsers(filtros: any): Promise<any> {
     try {
-      const response = await this.api.get<Usuarios[]>('/user/', {
+      const response = await this.getUnico<Usuarios[]>('/user/', {
         params: filtros
       });
       console.log('👤 Usuarios obtenidos correctamente', response);
@@ -172,7 +258,9 @@ export class ApiService {
 
   async getUser(id: number): Promise<any> {
     try {
-      const response = await this.api.get<Usuarios[]>(`/user/?id=${id}&skip=0&limit=1`);
+      const response = await this.getUnico<Usuarios[]>('/user/', {
+        params: { id, skip: 0, limit: 1 }
+      });
       console.log('👤 Usuarios obtenidos correctamente', response);
       return response.data;
 
@@ -195,7 +283,7 @@ export class ApiService {
 
   async updateUser(userId: number, user: any): Promise<any> {
     try {
-      const response = await this.api.put(`/user/actualizar/${userId}`, user,
+      const response = await this.api.put(`/user/actualizar/${userId}`, perfilParaActualizar(user),
         {
           headers: {
             'Content-Type': 'application/json'
@@ -214,13 +302,13 @@ export class ApiService {
   async cambiarPassword(
     userId: number,
     passwordActual: string,
-    passwordNueva: string
+    passwordNueva: string,
+    confirmPassword: string = passwordNueva
   ): Promise<any> {
     try {
-      const body = {
-        password_actual: passwordActual,
-        password_nueva: passwordNueva
-      };
+      const body = solicitudCambiarPassword(
+        passwordActual, passwordNueva, confirmPassword
+      );
 
       const response = await this.api.patch(
         `/user/${userId}/password`,
@@ -254,15 +342,70 @@ export class ApiService {
 
   // ======= TICKETS =======
 
-  // ✅ Obtener todos los tickets con filtros
+  private hayFiltroFecha(filtros: any): boolean {
+    return Boolean(filtros.fecha_desde || filtros.fecha_hasta || filtros.mes);
+  }
+
+  /** El backend antiguo pagina antes de filtrar: hay que traer todas las páginas. */
+  private async todosLosTickets(filtros: any): Promise<Ticket[]> {
+    const filtrosServidor = this.limpiarParametros({
+      id: filtros.id,
+      ticket: filtros.ticket,
+      servicio: filtros.servicio,
+      numero_bien: filtros.numero_bien,
+      atencion_en: filtros.atencion_en,
+      prioridad: filtros.prioridad,
+      estado: filtros.estado,
+    });
+    const clave = JSON.stringify(filtrosServidor);
+    const guardado = this.cacheTickets.get(clave);
+    if (guardado && Date.now() - guardado.fecha < this.ttlCacheTickets) {
+      return guardado.datos;
+    }
+
+    const tamanio = 200;
+    const resultados: Ticket[] = [];
+    for (let pagina = 0; pagina < 50; pagina++) {
+      const respuesta = await this.getUnico<Ticket[]>('/tickets/', {
+        params: { ...filtrosServidor, skip: pagina * tamanio, limit: tamanio }
+      });
+      const filas = Array.isArray(respuesta.data) ? respuesta.data : [];
+      resultados.push(...filas);
+      if (filas.length < tamanio) {
+        break;
+      }
+    }
+    this.cacheTickets.set(clave, { datos: resultados, fecha: Date.now() });
+    return resultados;
+  }
+
+  // ✅ Obtener tickets con filtros; el total viaja en X-Total-Count.
+  // Si el backend es antiguo (sin esa cabecera), filtramos por fecha_solicitud aquí.
   async getTickets(filtros: any): Promise<any> {
     try {
       const filtrosLimpiados = this.limpiarParametros(filtros);
-      const response = await this.api.get<Ticket[]>('/tickets/', {
+      const response = await this.getUnico<Ticket[]>('/tickets/', {
         params: filtrosLimpiados
       });
-      // console.log('📝 Tickets obtenidos correctamente');
-      return response.data;
+      const cabecera = Number(response.headers['x-total-count']);
+      const totalServidor = Number.isFinite(cabecera) ? cabecera : null;
+      let filas = Array.isArray(response.data) ? response.data : [];
+      let total = totalServidor ?? filas.length;
+
+      if (totalServidor === null && this.hayFiltroFecha(filtrosLimpiados)) {
+        const todas = await this.todosLosTickets(filtrosLimpiados);
+        const filtradas = todas.filter(ticket =>
+          ticketEnRango(ticket, filtrosLimpiados as RangoTickets)
+        );
+        total = filtradas.length;
+        filas = paginar(
+          filtradas,
+          Number(filtrosLimpiados.skip) || 0,
+          Number(filtrosLimpiados.limit) || 10
+        );
+      }
+
+      return Object.assign(filas, { total });
     } catch (error) {
       console.error('❌ Error al obtener tickets:', error);
       throw error;
@@ -273,7 +416,9 @@ export class ApiService {
 
   async getTicket(id: number): Promise<any> {
     try {
-      const response = await this.api.get<Ticket[]>(`/tickets/?id=${id}&skip=0&limit=1`);
+      const response = await this.getUnico<Ticket[]>('/tickets/', {
+        params: { id, skip: 0, limit: 1 }
+      });
 
       console.log('📝 Ticket obtenido correctamente');
       // Si la respuesta es un array, devolver el primer elemento
@@ -287,7 +432,7 @@ export class ApiService {
   // ✅ Obtener notas de un ticket específico
   async getNotas(id: number): Promise<any> {
     try {
-      const response = await this.api.get(`/ticketdata/${id}`); // ← CORREGIDO
+      const response = await this.getUnico(`/ticketdata/${id}`);
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener notas:', error);
@@ -307,6 +452,7 @@ export class ApiService {
         }
       );
       console.log('📝 Ticket creado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear ticket:', error);
@@ -341,6 +487,7 @@ export class ApiService {
         }
       );
       // console.log('📝 Ticket actualizado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar ticket:', error);
@@ -353,6 +500,7 @@ export class ApiService {
     try {
       const response = await this.api.delete(`/ticket/eliminar/${ticketId}`);
       console.log('📝 Ticket eliminado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al eliminar ticket:', error);
@@ -377,11 +525,13 @@ export class ApiService {
   async getEquipos(filtros: any): Promise<any> {
     try {
       const filtrosLimpiados = this.limpiarParametros(filtros);
-      const response = await this.api.get<Equipo[]>('/equipos/', {
+      const response = await this.getUnico<Equipo[]>('/equipos/', {
         params: filtrosLimpiados
       });
-      // console.log('👤 Equipos obtenidos correctamente', response);
-      return response.data;
+      const total = Number(response.headers['x-total-count']);
+      return Array.isArray(response.data)
+        ? Object.assign(response.data, { total: Number.isFinite(total) ? total : response.data.length })
+        : response.data;
 
     } catch (error) {
       console.error('❌ Error al obtener equipos:', error);
@@ -391,7 +541,9 @@ export class ApiService {
 
   async equipo(id: number): Promise<any> {
     try {
-      const response = await this.api.get<Equipo[]>(`/equipos/?id=${id}&skip=0&limit=1`);
+      const response = await this.getUnico<Equipo[]>('/equipos/', {
+        params: { id, skip: 0, limit: 1 }
+      });
 
       // console.log('📝 Equipo obtenido correctamente');
       // Si la respuesta es un array, devolver el primer elemento
@@ -405,7 +557,7 @@ export class ApiService {
   async getEquipo(nobien: string): Promise<any> {
     try {
 
-      const response = await this.api.get<Equipo[]>('/equipoBien/' + nobien);
+      const response = await this.getUnico<Equipo[]>('/equipoBien/' + nobien);
       // console.log('👤 Equipos obtenidos correctamente', response);
       return response.data;
 
@@ -426,6 +578,7 @@ export class ApiService {
 
       );
       console.log('👤 Equipo creado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear equipo:', error);
@@ -444,6 +597,7 @@ export class ApiService {
 
       );
       console.log('👤 Equipo actualizado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar equipo:', error);
@@ -455,6 +609,7 @@ export class ApiService {
     try {
       const response = await this.api.delete(`/equipo/eliminar/${equipoId}`);
       console.log('👤 Equipo eliminado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al eliminar equipo:', error);
@@ -464,7 +619,7 @@ export class ApiService {
 
   async getDashboardSolicitudes(): Promise<any> {
     try {
-      const response = await this.api.get<DashboardResumen[]>('/dashboard/solicitudes');
+      const response = await this.getUnico<DashboardResumen>('/dashboard/solicitudes');
       // console.log(response.data);
       return response.data;
     } catch (error) {
@@ -473,16 +628,22 @@ export class ApiService {
     }
   }
 
-  async getResumen(fechaInicio: string, fechaFin: string, usuario: string): Promise<ResumenResponse> {
+  async getResumen(
+    fechaInicio: string,
+    fechaFin: string,
+    usuario: string,
+    mes?: string
+  ): Promise<ResumenResponse> {
     try {
-      const response = await this.api.get<ResumenResponse>(
-        '/tik/resumen/',
+      const response = await this.getUnico<ResumenResponse>(
+        '/resumen/',
         {
-          params: {
+          params: this.limpiarParametros({
             fecha_inicio: fechaInicio,
             fecha_fin: fechaFin,
-            usuario: usuario
-          }
+            usuario: usuario,
+            mes: mes
+          })
         }
       );
 
@@ -493,7 +654,127 @@ export class ApiService {
     }
   }
 
+  async getEstadisticas(filtros: any = {}): Promise<EstadisticasResponse> {
+    try {
+      const parametros = parametrosEstadisticas(filtros);
+      const response = await this.getUnico<EstadisticasResponse>(
+        '/reportes/estadisticas',
+        { params: this.limpiarParametros(parametros) }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener estadísticas:', error);
+      throw error;
+    }
+  }
 
+  async getMantenimientos(filtros: any = {}): Promise<MantenimientoItem[]> {
+    const respuesta = await this.getMantenimientosConTotal(filtros);
+    return respuesta.items;
+  }
+
+  async getMantenimientosConTotal(
+    filtros: any = {}
+  ): Promise<ListaConTotal<MantenimientoItem>> {
+    return this.listarConTotal<MantenimientoItem>(
+      '/mantenimientos/',
+      filtros,
+      '❌ Error al obtener mantenimientos:'
+    );
+  }
+
+  async getMantenimientosRealizados(
+    filtros: any = {}
+  ): Promise<ListaConTotal<MantenimientoRealizadoItem>> {
+    return this.listarConTotal<MantenimientoRealizadoItem>(
+      '/mantenimientos/realizados',
+      filtros,
+      '❌ Error al obtener el historial de mantenimientos:'
+    );
+  }
+
+  async getResumenMantenimientos(): Promise<MantenimientoResumen> {
+    try {
+      const response = await this.getUnico<MantenimientoResumen>('/mantenimientos/resumen');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener resumen de mantenimientos:', error);
+      throw error;
+    }
+  }
+
+  async getFrecuenciasMantenimiento(): Promise<FrecuenciaItem[]> {
+    try {
+      const response = await this.getUnico<FrecuenciaItem[]>('/mantenimientos/frecuencias');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener frecuencias:', error);
+      throw error;
+    }
+  }
+
+  async crearMantenimiento(datos: MantenimientoCrear): Promise<any> {
+    try {
+      const response = await this.api.post('/mantenimientos/', datos, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      this.invalidarLecturas();
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al crear mantenimiento:', error);
+      throw error;
+    }
+  }
+
+  // ======== Bajas de equipos ========
+
+  async getBajas(filtros: any = {}): Promise<BajaItem[]> {
+    const respuesta = await this.getBajasConTotal(filtros);
+    return respuesta.items;
+  }
+
+  async getBajasConTotal(filtros: any = {}): Promise<ListaConTotal<BajaItem>> {
+    return this.listarConTotal<BajaItem>(
+      '/bajas/',
+      filtros,
+      '❌ Error al obtener bajas:'
+    );
+  }
+
+  async getBaja(id: number): Promise<BajaItem> {
+    try {
+      const response = await this.getUnico<BajaItem>(`/bajas/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener el acta de baja:', error);
+      throw error;
+    }
+  }
+
+  async getSiguienteCorrelativo(anio: number): Promise<CorrelativoPreview> {
+    try {
+      const response = await this.getUnico<CorrelativoPreview>('/bajas/siguiente', {
+        params: { anio }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al obtener correlativo:', error);
+      throw error;
+    }
+  }
+
+  async crearBaja(datos: BajaCrear): Promise<BajaItem> {
+    try {
+      const response = await this.api.post<BajaItem>('/bajas/', datos, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+      this.invalidarLecturas();
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error al registrar la baja:', error);
+      throw error;
+    }
+  }
 
 }
 

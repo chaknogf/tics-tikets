@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ChartsComponent } from "../charts/charts.component";
 import { IconService } from '../../services/icon.service';
+import { rolActual, tienePermiso } from '../../services/permisos';
 
 @Component({
   selector: 'app-tikets',
@@ -24,8 +25,11 @@ export class TiketsComponent implements OnInit {
   buscarEstado: string | null = null; // null = no filtrar
   buscarPrioridad = '';
   buscarId = '';
+  mes = '';
   cargando = false;
+  error = '';
   origen = '';
+  private solicitudId = 0;
 
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
@@ -55,6 +59,10 @@ export class TiketsComponent implements OnInit {
 
   }
 
+  get puedeEscribir(): boolean {
+    return tienePermiso(rolActual(), 'escribir');
+  }
+
   ngOnInit() {
     this.route.queryParamMap.subscribe(params => {
       this.origen = params.get('origen') || '';
@@ -63,7 +71,10 @@ export class TiketsComponent implements OnInit {
   }
 
   async obtenerTikets(pagina: number = this.paginaActual) {
+    // Descarta respuestas de búsquedas anteriores que lleguen fuera de orden.
+    const idSolicitud = ++this.solicitudId;
     this.cargando = true;
+    this.error = '';
     const skip = (pagina - 1) * this.limite;
 
     const filtros = {
@@ -73,24 +84,40 @@ export class TiketsComponent implements OnInit {
       estado: this.buscarEstado,
       prioridad: this.buscarPrioridad,
       id: this.buscarId,
+      mes: this.mes,
       skip,
       limit: this.limite,
-
     };
 
     try {
-      // ⚙️ Si tu API devuelve total de registros, puedes usar algo como:
       const response = await this.api.getTickets(filtros);
+      if (idSolicitud !== this.solicitudId) return;
 
-      this.tikets = response;
-      this.totalRegistros = 100; // Cambia esto si tu backend devuelve el total real
-      this.totalPaginas = Math.ceil(this.totalRegistros / this.limite);
+      this.tikets = Array.isArray(response) ? response : [];
+      const total = (response as Ticket[] & { total?: number })?.total;
+      this.totalRegistros = typeof total === 'number' ? total : this.tikets.length;
+      this.totalPaginas = Math.max(1, Math.ceil(this.totalRegistros / this.limite));
       this.paginaActual = pagina;
     } catch (error) {
+      if (idSolicitud !== this.solicitudId) return;
       console.error('❌ Error al obtener tickets:', error);
+      this.error = 'No se pudieron cargar los tickets. Revisa tu conexión e inténtalo de nuevo.';
+      this.tikets = [];
+      this.totalRegistros = 0;
+      this.totalPaginas = 1;
     } finally {
-      this.cargando = false;
+      if (idSolicitud === this.solicitudId) {
+        this.cargando = false;
+      }
     }
+  }
+
+  reintentar() {
+    void this.obtenerTikets(this.paginaActual);
+  }
+
+  trackPorId(_indice: number, ticket: Ticket): number {
+    return ticket.id;
   }
 
   cambiarPagina(direccion: 'prev' | 'next') {
@@ -102,6 +129,7 @@ export class TiketsComponent implements OnInit {
   }
 
   editar(id: number) {
+    if (!this.puedeEscribir) return;
     this.router.navigate(['/ticket', id]);
   }
 
@@ -119,9 +147,11 @@ export class TiketsComponent implements OnInit {
     this.buscarTicket = '';
     this.buscarServicio = '';
     this.buscarAtencionEn = '';
-    this.buscarEstado = '';
+    this.buscarEstado = null;
     this.buscarPrioridad = '';
     this.buscarId = '';
-    this.obtenerTikets();
+    this.mes = '';
+    this.paginaActual = 1;
+    this.obtenerTikets(1);
   }
 }

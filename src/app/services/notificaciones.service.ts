@@ -7,55 +7,104 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class NotificacionesService {
-
   private ws?: WebSocket;
-  private audio = new Audio('/assets/sounds/lisa.mp3');
+  // Relativa al <base href>: con /tics/ NO debe apuntar a /assets absoluto.
+  private audio = new Audio('assets/sounds/lisa.mp3');
+  private reintento?: number;
+  private cerradoManualmente = false;
 
   private notificacionesSubject = new BehaviorSubject<any[]>([]);
   notificaciones$ = this.notificacionesSubject.asObservable();
 
   constructor(private api: ApiService) {
     this.audio.load();
+    this.conectarDesdeSesion();
   }
 
-  conectar(userId: number) {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) return;
+  /** Tras recargar la página no se pasa por login: retomamos la sesión guardada. */
+  conectarDesdeSesion(): void {
+    const id = Number(localStorage.getItem('user_id'));
+    if (localStorage.getItem('access_token') && Number.isInteger(id) && id > 0) {
+      this.conectar(id);
+    }
+  }
 
-    const wsUrl = this.api.baseUrl.replace('http', 'ws');
-    this.ws = new WebSocket(`${wsUrl}/ws/notificaciones/${userId}`);
+  conectar(userId: number): void {
+    this.cerradoManualmente = false;
+    if (
+      this.ws &&
+      (this.ws.readyState === WebSocket.OPEN ||
+        this.ws.readyState === WebSocket.CONNECTING)
+    ) {
+      return;
+    }
 
-    this.ws.onopen = () => {
-      console.log('🟢 WebSocket conectado');
-    };
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      return;
+    }
+
+    const url = new URL(
+      `${this.api.baseUrl.replace('http', 'ws')}/ws/notificaciones/${userId}`
+    );
+    url.searchParams.set('token', token);
+    this.ws = new WebSocket(url);
 
     this.ws.onmessage = (event) => {
-      const nueva = JSON.parse(event.data);
-
-      const actuales = this.notificacionesSubject.value;
-      this.notificacionesSubject.next([...actuales, nueva]);
-
-      this.reproducirSonidoDoble();
+      try {
+        const nueva = JSON.parse(event.data);
+        const actuales = this.notificacionesSubject.value;
+        this.notificacionesSubject.next([...actuales, nueva]);
+        void this.reproducirSonidoDoble();
+      } catch {
+        // Un mensaje malformado no debe tumbar el canal ni la app.
+      }
     };
 
     this.ws.onclose = () => {
-      console.log('🔴 WebSocket desconectado');
+      if (!this.cerradoManualmente && localStorage.getItem('access_token')) {
+        this.programarReintento(userId);
+      }
     };
   }
 
-  private async reproducirSonidoDoble() {
+  descartar(indice: number): void {
+    this.notificacionesSubject.next(
+      this.notificacionesSubject.value.filter((_, i) => i !== indice)
+    );
+  }
+
+  desconectar(): void {
+    this.cerradoManualmente = true;
+    if (this.reintento !== undefined) {
+      window.clearTimeout(this.reintento);
+      this.reintento = undefined;
+    }
+    this.ws?.close();
+    this.ws = undefined;
+  }
+
+  private programarReintento(userId: number): void {
+    if (this.reintento !== undefined) {
+      return;
+    }
+    this.reintento = window.setTimeout(() => {
+      this.reintento = undefined;
+      this.conectar(userId);
+    }, 5_000);
+  }
+
+  private async reproducirSonidoDoble(): Promise<void> {
     try {
-      // Primer sonido
       this.audio.currentTime = 0;
       await this.audio.play();
 
-      // Pequeña pausa (150 ms es elegante)
-      await new Promise(resolve => setTimeout(resolve, 150));
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
-      // Segundo sonido
       this.audio.currentTime = 0;
       await this.audio.play();
     } catch {
-      // El navegador puede bloquear audio si no hubo interacción previa
+      // El navegador puede bloquear audio si no hubo interacción previa.
     }
   }
 }

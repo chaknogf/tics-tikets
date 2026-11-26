@@ -1,20 +1,46 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
+import { accesoPermitido, Rol } from '../services/permisos';
+
+function verificarAcceso(
+  router: Router,
+  permitidos: Rol[] | null,
+  destino: string
+): boolean | UrlTree {
+  const token = localStorage.getItem('access_token');
+  const rol = localStorage.getItem('role');
+  if (!accesoPermitido(token, rol, permitidos)) {
+    return router.createUrlTree([destino]);
+  }
+  return true;
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
+  constructor(private router: Router) {}
 
-  constructor(private router: Router) { }
+  canActivate(): boolean | UrlTree {
+    return verificarAcceso(this.router, null, '/');
+  }
+}
 
-  canActivate(): boolean {
-    const username = localStorage.getItem('username');
-    if (username) {
-      return true;
-    } else {
-      this.router.navigate(['/inicio']);
-      return false;
-    }
+/** Guard para rutas de escritura (formularios de tickets, mantenimientos, bajas). */
+@Injectable({ providedIn: 'root' })
+export class EscritorGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(): boolean | UrlTree {
+    return verificarAcceso(this.router, ['admin', 'standar'], '/dash');
+  }
+}
+
+/** Guard para rutas exclusivas de administradores. */
+@Injectable({ providedIn: 'root' })
+export class AdminGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(): boolean | UrlTree {
+    return verificarAcceso(this.router, ['admin'], '/dash');
   }
 }

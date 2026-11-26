@@ -1,59 +1,109 @@
 <div class="chart-section">
-  <h4>Res.%</h4>
-  <label for="mes">Año</label>
-  <div class="donut-container">
-    <div
-      class="donut-chart"
-      style="--percentage: {{ porcentajeAnioActual }}; --color: #0dcaf0;"
-    >
-      <div class="donut-hole">
-        <span class="donut-label">{{ porcentajeAnioActual }}%</span>
+  <p class="eyebrow">Resolución</p>
+
+  <p class="chart-loading" *ngIf="cargando" role="status">Sincronizando métricas…</p>
+  <p class="alert alert-error" *ngIf="error" role="alert">{{ error }}</p>
+
+  <ng-container *ngIf="!cargando">
+    <span class="donut-title">Año</span>
+    <div class="donut-container">
+      <div
+        class="donut-chart"
+        role="img"
+        [attr.aria-label]="'Efectividad del año: ' + porcentajeAnioActual + '%'"
+        [style.--percentage]="porcentajeAnioActual"
+        style="--color: var(--app-accent)"
+      >
+        <div class="donut-hole"><span class="donut-label">{{ porcentajeAnioActual }}%</span></div>
       </div>
     </div>
-  </div>
-  <label for="mes">Mes</label>
-  <div class="donut-container">
-    <div
-      class="donut-chart"
-      style="--percentage: {{ porcentajeMesActual }}; --color: #0dcaf0;"
-    >
-      <div class="donut-hole">
-        <span class="donut-label">{{ porcentajeMesActual }}%</span>
+
+    <span class="donut-title">Mes</span>
+    <div class="donut-container">
+      <div
+        class="donut-chart"
+        role="img"
+        [attr.aria-label]="'Efectividad del mes: ' + porcentajeMesActual + '%'"
+        [style.--percentage]="porcentajeMesActual"
+        style="--color: var(--app-accent)"
+      >
+        <div class="donut-hole"><span class="donut-label">{{ porcentajeMesActual }}%</span></div>
       </div>
     </div>
-  </div>
-  <label for="mes" *ngIf="porcentajeHoy">Hoy</label>
-  <div class="donut-container" *ngIf="porcentajeHoy">
-    <div
-      class="donut-chart"
-      style="--percentage: {{ porcentajeHoy }}; --color: #0dcaf0;"
-    >
-      <div class="donut-hole">
-        <span class="donut-label">{{ porcentajeHoy }}%</span>
+
+    <ng-container *ngIf="porcentajeHoy">
+      <span class="donut-title">Hoy</span>
+      <div class="donut-container">
+        <div
+          class="donut-chart"
+          role="img"
+          [attr.aria-label]="'Efectividad de hoy: ' + porcentajeHoy + '%'"
+          [style.--percentage]="porcentajeHoy"
+          style="--color: var(--app-secondary-accent)"
+        >
+          <div class="donut-hole"><span class="donut-label">{{ porcentajeHoy }}%</span></div>
+        </div>
+      </div>
+    </ng-container>
+
+    <h5 class="chart-subtitle">Solicitudes del mes</h5>
+    <div class="estado-resumen-container" *ngIf="mesActual">
+      <div class="estado-card" *ngFor="let estado of estados">
+        <span class="estado-label">{{ etiquetasEstados[estado] }}</span>
+        <strong class="valor">{{ getCount(estado, mesActual) }}</strong>
+        <small>{{ getPercent(estado, mesActual) }}%</small>
+      </div>
+      <div class="estado-card">
+        <span class="estado-label">Total</span>
+        <strong class="valor">{{ mesActual.total }}</strong>
       </div>
     </div>
-  </div>
-  <legend>Estados</legend>
-  <legend>Mes</legend>
-  <div class="estado-resumen-container" *ngIf="mesActual">
-    <div class="estado-card">
-      <label>Abierto</label>
-      <h3 class="valor">{{ datosDashboard.mes_actual.estados.abierto }}</h3>
-    </div>
+  </ng-container>
 
-    <div class="estado-card">
-      <label>En Proceso</label>
-      <h3 class="valor">{{ datosDashboard.mes_actual.estados.en_proceso }}</h3>
-    </div>
+  <section class="reporte-interactivo" aria-label="Reporte interactivo">
+    <h5 class="chart-subtitle">Reporte por periodo</h5>
+    <form class="report-form" (ngSubmit)="cargarReporte()">
+      <div>
+        <label class="form-label" for="chart-desde">Desde</label>
+        <input id="chart-desde" type="date" class="form-control" [(ngModel)]="fechaDesde" name="chartDesde" />
+      </div>
+      <div>
+        <label class="form-label" for="chart-hasta">Hasta</label>
+        <input id="chart-hasta" type="date" class="form-control" [(ngModel)]="fechaHasta" name="chartHasta" />
+      </div>
+      <div>
+        <label class="form-label" for="chart-mes">Mes</label>
+        <input id="chart-mes" type="month" class="form-control" [(ngModel)]="mes" name="chartMes" />
+      </div>
+      <div class="report-actions">
+        <button type="submit" class="btn btn-primary btn-sm" [disabled]="cargandoReporte">Aplicar</button>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm"
+          (click)="fechaDesde=''; fechaHasta=''; mes=''; cargarReporte()"
+        >
+          Reset
+        </button>
+      </div>
+    </form>
 
-    <div class="estado-card">
-      <label>Cerrado</label>
-      <h3 class="valor">{{ datosDashboard.mes_actual.estados.cerrado }}</h3>
-    </div>
+    <p class="report-loading" *ngIf="cargandoReporte" role="status">Actualizando reporte…</p>
+    <p class="alert alert-error" *ngIf="errorReporte" role="alert">{{ errorReporte }}</p>
 
-    <div class="estado-card">
-      <label>Total</label>
-      <h3 class="valor">{{ datosDashboard.mes_actual.total }}</h3>
-    </div>
-  </div>
+    <ng-container *ngIf="estadisticas && !cargandoReporte">
+      <p class="report-summary" aria-live="polite">
+        <strong>{{ estadisticas.total }}</strong> solicitudes ·
+        <strong>{{ estadisticas.efectividad }}%</strong> efectividad
+      </p>
+      <div class="barras-periodo">
+        <div class="barra-periodo" *ngFor="let periodo of periodos">
+          <span class="barra-etiqueta">{{ periodo.etiqueta }}</span>
+          <div class="barra-track">
+            <div class="barra-fill" [style.width.%]="(periodo.total * 100) / maxPeriodo"></div>
+          </div>
+          <span class="barra-valor">{{ periodo.total }}</span>
+        </div>
+      </div>
+    </ng-container>
+  </section>
 </div>

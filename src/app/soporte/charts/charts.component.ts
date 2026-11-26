@@ -1,52 +1,67 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
-import { DashboardResumen, DashboardPeriodo, DashboardSolicitudes } from '../../interface/interfaces';
+import {
+  DashboardResumen, DashboardPeriodo, EstadoClave, EstadisticasResponse, ConteoItem
+} from '../../interface/interfaces';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-charts',
   templateUrl: './charts.component.html',
   styleUrls: ['./charts.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FormsModule]
 })
 export class ChartsComponent implements OnInit {
+  datosDashboard: DashboardResumen | null = null;
+  hoy: DashboardPeriodo | null = null;
+  mesActual: DashboardPeriodo | null = null;
+  anioActual: DashboardPeriodo | null = null;
 
-  datosDashboard!: DashboardResumen;
+  porcentajeHoy = 0;
+  porcentajeMesActual = 0;
+  porcentajeAnioActual = 0;
 
-  hoy!: DashboardPeriodo;
-  mesActual!: DashboardPeriodo;
-  anioActual!: DashboardPeriodo;
-
-  porcentajeHoy!: number;
-  porcentajeMesActual!: number;
-  porcentajeAnioActual!: number;
+  // Reporte interactivo con rango de fechas.
+  estadisticas: EstadisticasResponse | null = null;
+  fechaDesde = '';
+  fechaHasta = '';
+  mes = '';
+  periodos: ConteoItem[] = [];
+  cargandoReporte = false;
+  errorReporte = '';
 
   cargando = true;
   error = '';
 
-  constructor(private service: ApiService) { }
+  readonly estados: EstadoClave[] = ['abierto', 'en_proceso', 'cerrado'];
+  readonly etiquetasEstados: Record<EstadoClave, string> = {
+    abierto: 'Abierto',
+    en_proceso: 'En Proceso',
+    cerrado: 'Cerrado'
+  };
+
+  constructor(private service: ApiService) {}
 
   async ngOnInit() {
     await this.cargarDatos();
+    await this.cargarReporte();
   }
 
   async cargarDatos() {
     try {
       this.cargando = true;
-      this.datosDashboard = await this.service.getDashboardSolicitudes();
+      const datos = await this.service.getDashboardSolicitudes() as DashboardResumen;
+      this.datosDashboard = datos;
 
-      // Mapear periodos
-      this.hoy = this.datosDashboard.hoy as DashboardPeriodo;
-      this.mesActual = this.datosDashboard.mes_actual as DashboardPeriodo;
-      this.anioActual = this.datosDashboard.año_actual as DashboardPeriodo;
+      this.hoy = datos.hoy ?? null;
+      this.mesActual = datos.mes_actual ?? null;
+      this.anioActual = datos.año_actual ?? null;
 
-      // Calcular porcentajes totales para donuts
-      this.porcentajeHoy = this.calcularPorcentajeTotal(this.hoy);
-      this.porcentajeMesActual = this.calcularPorcentajeTotalMes(this.mesActual);
-      this.porcentajeAnioActual = this.calcularPorcentajeTotal(this.anioActual);
-
-      // console.log('Dashboard cargado:', this.datosDashboard);
+      this.porcentajeHoy = this.calcularPorcentajeCerrados(this.hoy);
+      this.porcentajeMesActual = this.calcularPorcentajeCerrados(this.mesActual);
+      this.porcentajeAnioActual = this.calcularPorcentajeCerrados(this.anioActual);
     } catch (err) {
       console.error('Error al cargar dashboard:', err);
       this.error = 'No se pudieron cargar los datos del dashboard.';
@@ -55,57 +70,53 @@ export class ChartsComponent implements OnInit {
     }
   }
 
-  // Porcentaje total de cerrados
-  calcularPorcentajeTotal(periodo: DashboardPeriodo): number {
-    const total = this.anioActual.total || 0;
-    const cerrados = this.anioActual.estados.cerrado;
-    return total ? Math.round((cerrados * 100) / total) : 0;
-  }
-
-  calcularPorcentajeTotalMes(periodo: DashboardPeriodo): number {
-    const total = this.mesActual.total || 0;
-    const cerrados = this.mesActual.estados.cerrado;
-    return total ? Math.round((cerrados * 100) / total) : 0;
-  }
-
-  calcularPorcentajeTotalDia(periodo: DashboardPeriodo): number {
-    const total = this.mesActual.total || 0;
-    const cerrados = this.mesActual.estados.cerrado;
-    return total ? Math.round((cerrados * 100) / total) : 0;
-  }
-
-  // Devuelve conteo seguro por estado
-  getCount(key: 'abiertos' | 'en_proceso' | 'cerrados', periodo: DashboardPeriodo): number {
-    if (Array.isArray(periodo.estados)) {
-      return (periodo.estados.find(e => e.estado === key) as any)?.total || 0;
+  async cargarReporte() {
+    try {
+      this.cargandoReporte = true;
+      this.errorReporte = '';
+      this.estadisticas = await this.service.getEstadisticas({
+        fecha_desde: this.fechaDesde,
+        fecha_hasta: this.fechaHasta,
+        mes: this.mes
+      });
+      this.periodos = this.estadisticas.por_mes;
+    } catch (err) {
+      console.error('Error al cargar reporte:', err);
+      this.errorReporte = 'No se pudo actualizar el reporte por periodo.';
+    } finally {
+      this.cargandoReporte = false;
     }
-    return periodo.estados?.estado === key ? periodo.estados.total : 0;
   }
 
-  // Porcentaje seguro por estado
-  getPercent(key: 'abiertos' | 'en_proceso' | 'cerrados', periodo: DashboardPeriodo): number {
-    const total = periodo.total || 0;
-    if (!total) return 0;
-    return Math.round((this.getCount(key, periodo) * 1000) / total) / 10; // 1 decimal
+  private calcularPorcentajeCerrados(periodo: DashboardPeriodo | null): number {
+    if (!periodo || !periodo.total) return 0;
+    return Math.round((this.getCount('cerrado', periodo) * 100) / periodo.total);
   }
 
-  // Devuelve el valor para CSS --deg
-  getDegFor(key: 'abiertos' | 'en_proceso' | 'cerrados', periodo: DashboardPeriodo): string {
-    const total = periodo.total || 0;
-    if (!total) return '0deg';
-    const pct = (this.getCount(key, periodo) * 360) / total;
-    return `${pct}deg`;
+  getCount(key: EstadoClave, periodo: DashboardPeriodo | null): number {
+    if (!periodo?.estados) return 0;
+    return periodo.estados[key] || 0;
   }
 
-  // Colores de cada estado
-  getColorFor(key: 'abiertos' | 'en_proceso' | 'cerrados'): string {
+  getPercent(key: EstadoClave, periodo: DashboardPeriodo | null): number {
+    if (!periodo || !periodo.total) return 0;
+    return Math.round((this.getCount(key, periodo) * 1000) / periodo.total) / 10;
+  }
+
+  getDegFor(key: EstadoClave, periodo: DashboardPeriodo | null): string {
+    if (!periodo || !periodo.total) return '0deg';
+    return `${(this.getCount(key, periodo) * 360) / periodo.total}deg`;
+  }
+
+  getColorFor(key: EstadoClave): string {
     switch (key) {
-      case 'abiertos': return '#dc3545';
+      case 'abierto': return '#dc3545';
       case 'en_proceso': return '#0dcaf0';
-      case 'cerrados': return '#343a40';
-      default: return '#6b7280';
+      case 'cerrado': return '#343a40';
     }
   }
 
-
+  get maxPeriodo(): number {
+    return Math.max(1, ...this.periodos.map(p => p.total));
+  }
 }

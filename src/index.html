@@ -1,13 +1,36 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-bs-theme="dark">
   <head>
     <meta charset="utf-8" />
-    <title>tickets</title>
+    <title>NEXUS · Centro de control</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="text-scale" content="scale" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#05070d" />
+    <meta name="description" content="Centro de control de soporte, tickets e infraestructura." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      /* Tema aplicado antes del primer pintado: sin destello claro. */
+      (function () {
+        try {
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+        } catch (e) {
+          document.body && document.body.setAttribute('data-bs-theme', 'dark');
+        }
+      })();
+    </script>
+
     <link rel="icon" type="image/x-icon" href="llama.png" />
   </head>
-  <body data-bs-theme="dark">
+  <body>
     <app-root></app-root>
   </body>
 </html>

@@ -29,8 +29,8 @@ export class AppComponent implements OnInit {
     this.detectarRuta();
 
     this.username = localStorage.getItem('username') || '';
-    this.role = 'Rol: ' + localStorage.getItem('role') || '';
-    if (this.username) {
+    this.role = localStorage.getItem('role') || '';
+    if (this.username && localStorage.getItem('access_token')) {
       this.estaAutenticado = true;
     }
   }

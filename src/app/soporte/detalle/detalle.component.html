@@ -27,7 +27,20 @@
       <div class="datos-grid">
         <div><strong>Número de Bien:</strong> {{ ticket.numero_bien }}</div>
         <div><strong>Descripción del Equipo:</strong> {{ ticket.descripcion_equipo }}</div>
+        <div><strong>Tipo de Equipo:</strong> {{ tipoEquipo }}</div>
+        <div><strong>Estado del Equipo:</strong> {{ equipo?.estado || 'N/A' }}</div>
       </div>
+    </section>
+
+    <section>
+      <h5 class="titulo-seccion">Seguimientos</h5>
+      <p *ngIf="cargandoDetalle">Cargando seguimientos…</p>
+      <ul *ngIf="!cargandoDetalle && seguimientos.length">
+        <li *ngFor="let nota of seguimientos">
+          <strong>{{ nota.usuario }}:</strong> {{ nota.nota }}
+        </li>
+      </ul>
+      <p class="detalle" *ngIf="!cargandoDetalle && !seguimientos.length">Sin seguimientos registrados.</p>
     </section>
 
     <section>

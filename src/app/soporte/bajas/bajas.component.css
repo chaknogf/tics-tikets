@@ -1,0 +1,405 @@
+/* Bajas: formulario oscuro y acta como documento claro intencional. */
+.bajas-container {
+  max-inline-size: 68.75rem;
+  margin-inline: auto;
+  padding: clamp(1rem, 2.5vw, 2rem);
+  color: var(--app-text, #e6f0ff);
+}
+
+.bajas-container h1,
+.bajas-container h2 {
+  margin-block: 0 1rem;
+}
+
+.mensaje {
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--app-radius-sm, 0.5rem);
+  font-family: var(--app-mono, monospace);
+  font-size: 0.78rem;
+}
+
+.mensaje.error {
+  color: #ffdbe1;
+  background: rgba(255, 107, 129, 0.12);
+  border: 1px solid rgba(255, 107, 129, 0.5);
+}
+
+.mensaje.exito {
+  color: #d6ffe9;
+  background: rgba(94, 242, 164, 0.1);
+  border: 1px solid rgba(94, 242, 164, 0.45);
+}
+
+.formulario {
+  display: grid;
+  gap: 1rem;
+}
+
+fieldset {
+  padding: 1rem;
+  background: var(--app-surface, #090e18);
+  border: 1px solid var(--app-border, #1a2940);
+  border-radius: var(--app-radius, 0.85rem);
+  min-inline-size: 0;
+}
+
+fieldset.destino {
+  margin-block-start: 0.75rem;
+  background: var(--app-surface-2, #0c1422);
+}
+
+legend {
+  padding-inline: 0.4rem;
+  font-family: var(--app-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--app-accent, #2de2f5);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  margin-block-end: 0.75rem;
+}
+
+.campo label,
+.opcion label {
+  padding-block: 0.2rem;
+}
+
+.campo input,
+.campo textarea,
+.campo select {
+  font: inherit;
+  font-size: max(1rem, 1em);
+  inline-size: 100%;
+  min-block-size: 48px;
+  padding: 0.5rem 0.65rem;
+  color: var(--app-text, #e6f0ff);
+  background: var(--app-surface-2, #0c1422);
+  border: 1px solid var(--app-control-border, #405f88);
+  border-radius: var(--app-radius-sm, 0.5rem);
+  box-sizing: border-box;
+  accent-color: var(--app-accent, #2de2f5);
+}
+
+.campo textarea {
+  min-block-size: 88px;
+  resize: vertical;
+}
+
+.campo input:focus-visible,
+.campo textarea:focus-visible,
+.campo select:focus-visible,
+button:focus-visible,
+.table-wrapper:focus-visible {
+  outline: 2px solid var(--app-focus, #8bf7ff);
+  outline-offset: 2px;
+}
+
+.campo input[readonly] {
+  font-family: var(--app-mono, monospace);
+  color: var(--app-accent, #2de2f5);
+  background: rgba(45, 226, 245, 0.05);
+  border-style: dashed;
+}
+
+.ayuda {
+  font-size: 0.8rem;
+  color: var(--app-muted, #a0b2cd);
+}
+
+.diagnostico {
+  border-block-end: 1px dashed var(--app-border, #1a2940);
+  margin-block-end: 0.75rem;
+  padding-block-end: 0.5rem;
+}
+
+.opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-block: 0.35rem;
+}
+
+.opcion input {
+  accent-color: var(--app-accent, #2de2f5);
+  min-inline-size: 20px;
+  min-block-size: 24px;
+  margin-block: 0.15rem;
+}
+
+/* Los navegadores sin accent-color (Safari < 26.2) reciben un control
+   nativo oculto de forma accesible y un indicador dibujado en la etiqueta. */
+@supports not (accent-color: var(--app-accent)) {
+  .opcion input {
+    position: absolute !important;
+    clip-path: inset(50%) !important;
+    overflow: hidden !important;
+    inline-size: 1px !important;
+    block-size: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .opcion label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding-inline-start: 1.8rem;
+    cursor: pointer;
+  }
+
+  .opcion label::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    inline-size: 1.1rem;
+    block-size: 1.1rem;
+    border: 2px solid var(--app-control-border, #405f88);
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
+  .opcion input:checked + label::before {
+    background: var(--app-accent, #2de2f5);
+    border-color: var(--app-accent, #2de2f5);
+    box-shadow: inset 0 0 0 3px var(--app-surface, #090e18);
+  }
+
+  .opcion input:focus-visible + label::before {
+    outline: 2px solid var(--app-focus, #8bf7ff);
+    outline-offset: 2px;
+  }
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block: 0.75rem;
+}
+
+button {
+  min-block-size: 44px;
+}
+
+.quitar {
+  min-block-size: 32px;
+}
+
+.table-wrapper {
+  overflow: auto;
+  max-inline-size: 100%;
+  max-block-size: min(500px, 80vh);
+  container-type: inline-size;
+  border: 1px solid var(--app-border, #1a2940);
+  border-radius: var(--app-radius, 0.85rem);
+  background: var(--app-surface, #090e18);
+}
+
+.table-wrapper table {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.82rem;
+}
+
+.table-wrapper caption {
+  caption-side: top;
+  text-align: start;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--app-mono, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--app-muted, #a0b2cd);
+}
+
+.table-wrapper th,
+.table-wrapper td {
+  padding: 0.5rem;
+  border-block-end: 1px solid var(--app-border, #1a2940);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.table-wrapper thead {
+  position: sticky;
+  inset-block-start: 0;
+  background: var(--app-surface-2, #0c1422);
+  z-index: 1;
+}
+
+.table-wrapper thead th {
+  font-family: var(--app-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--app-accent, #2de2f5);
+}
+
+.table-wrapper tbody th {
+  position: sticky;
+  inset-inline-start: 0;
+  background: var(--app-surface, #090e18);
+  font-family: var(--app-mono, monospace);
+  color: var(--app-accent, #2de2f5);
+}
+
+.table-wrapper tbody tr:hover td,
+.table-wrapper tbody tr:hover th {
+  background: rgba(45, 226, 245, 0.05);
+}
+
+@container (width < 600px) {
+  .table-wrapper table,
+  .table-wrapper tbody,
+  .table-wrapper tr,
+  .table-wrapper th,
+  .table-wrapper td {
+    display: block;
+  }
+
+  .table-wrapper thead {
+    display: none;
+  }
+
+  .table-wrapper tr {
+    margin-block-end: 1rem;
+    border: 1px solid var(--app-border, #1a2940);
+    border-radius: var(--app-radius-sm, 0.5rem);
+  }
+
+  .table-wrapper tbody th {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    background: var(--app-surface-2, #0c1422);
+  }
+
+  .table-wrapper td::before {
+    display: block;
+    font-family: var(--app-mono, monospace);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--app-muted, #a0b2cd);
+  }
+
+  .table-wrapper td:nth-child(2)::before { content: 'Fecha'; }
+  .table-wrapper td:nth-child(3)::before { content: 'Responsable'; }
+  .table-wrapper td:nth-child(4)::before { content: 'Bien'; }
+  .table-wrapper td:nth-child(5)::before { content: 'Acción'; }
+}
+
+.acta-seccion {
+  margin-block-start: 1.5rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--app-border, #1a2940);
+}
+
+/* Vista previa del acta: superficie clara fijada para impresión. */
+.acta {
+  color-scheme: light;
+  color: #111827;
+  accent-color: #0b6b78;
+  background: #ffffff;
+  inline-size: 100%;
+  max-inline-size: 210mm;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  font-family: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  box-sizing: border-box;
+  border: 1px solid #d9e2ec;
+  border-radius: var(--app-radius, 0.85rem);
+}
+
+.acta-encabezado {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-block-end: 2px solid #0b6b78;
+  padding-block-end: 0.5rem;
+  margin-block-end: 1rem;
+}
+
+.acta-logo {
+  inline-size: 60px;
+  block-size: auto;
+}
+
+.acta h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+  color: #0b6b78;
+}
+
+.acta h4 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-block: 1rem 0.4rem;
+  color: #0b6b78;
+}
+
+.acta p {
+  margin-block: 0.2rem;
+}
+
+.acta-sello {
+  margin-inline-start: 2rem;
+}
+
+.acta ol {
+  margin-block: 0.3rem;
+  padding-inline-start: 1.5rem;
+}
+
+.acta li {
+  margin-block-end: 0.4rem;
+}
+
+.acta li p {
+  margin-inline-start: 1rem;
+}
+
+.acta-seleccionado {
+  font-weight: 700;
+}
+
+@media print {
+  body.imprimiendo-baja .acta {
+    padding: 0;
+    max-inline-size: none;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .acta h4 {
+    break-after: avoid;
+  }
+
+  .acta li {
+    break-inside: avoid;
+  }
+}
+
+@media (pointer: coarse) {
+  .opcion input {
+    min-block-size: 32px;
+    min-inline-size: 32px;
+  }
+}

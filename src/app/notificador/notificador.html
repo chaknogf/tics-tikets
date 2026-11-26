@@ -1,10 +1,10 @@
-<div class="notificador">
+<div class="notificador" aria-live="polite" aria-label="Eventos del sistema">
   <div class="toast" *ngFor="let n of notificaciones; let i = index">
-    <strong>📢 Nuevo evento</strong> <br>
+    <strong>Nuevo evento</strong>
     <strong>{{ n.ticket }}</strong>
-    <p> <span [innerHTML]="icons['notificador']" ></span> {{ n.prioridad }}</p>
-    <p>Servicio: {{n.servicio}}</p>
+    <p><span aria-hidden="true" [innerHTML]="icons['notificador']"></span> {{ n.prioridad }}</p>
+    <p>Servicio: {{ n.servicio }}</p>
     <p>{{ n.atencion_en }}</p>
-    <button (click)="cerrar(i)">✖</button>
+    <button type="button" aria-label="Cerrar notificación" (click)="cerrar(i)">✖</button>
   </div>
 </div>
