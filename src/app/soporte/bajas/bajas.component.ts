@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import html2canvas from 'html2canvas';
@@ -12,13 +12,14 @@ import { BajaCrear, BajaItem, DiagnosticoItem, Equipo } from '../../interface/in
 
 type PestanaBajas = 'formulario' | 'listado';
 
+// Márgenes y tamaño del documento `formato baja.docx` (carta, 25 mm arriba/abajo
+// y 30 mm a los lados). Se imprime una copia del acta para no arrastrar el
+// formulario, la tabla ni los estilos de la interfaz a páginas en blanco.
 const ESTILO_IMPRESION = `
-@page { size: A4; margin: 15mm; }
-body.imprimiendo-baja * { visibility: hidden !important; }
-body.imprimiendo-baja #acta-baja,
-body.imprimiendo-baja #acta-baja * { visibility: visible !important; }
-body.imprimiendo-baja #acta-baja {
-  position: absolute; inset: 0 auto auto 0; width: 100%; margin: 0;
+@page { size: letter; margin: 25mm 30mm; }
+body.imprimiendo-baja > *:not(#impresion-baja) { display: none !important; }
+#impresion-baja .acta {
+  inline-size: 100%; max-inline-size: none; padding: 0; border: 0; margin: 0;
 }
 `;
 
@@ -29,7 +30,7 @@ body.imprimiendo-baja #acta-baja {
   templateUrl: './bajas.component.html',
   styleUrls: ['./bajas.component.css', '../tabs.css']
 })
-export class BajasComponent implements OnInit {
+export class BajasComponent implements OnInit, OnDestroy {
   pestana: PestanaBajas = 'formulario';
   formulario: BajaCrear = this.nuevoFormulario();
   equipos: Equipo[] = [];
@@ -45,11 +46,13 @@ export class BajasComponent implements OnInit {
   mensaje = '';
   error = '';
 
+  private limpiarImpresion: (() => void) | null = null;
+
   get puedeEscribir(): boolean {
     return tienePermiso(rolActual(), 'escribir');
   }
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     if (!this.puedeEscribir) {
@@ -59,6 +62,10 @@ export class BajasComponent implements OnInit {
     if (this.puedeEscribir) {
       void this.alCambiarFecha();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.limpiarImpresion?.();
   }
 
   private nuevoFormulario(): BajaCrear {
@@ -199,6 +206,22 @@ export class BajasComponent implements OnInit {
     }
   }
 
+  /** Abre el acta y lanza la impresión con el formato del documento de Word. */
+  async imprimirActa(baja: BajaItem): Promise<void> {
+    try {
+      this.acta = await this.api.getBaja(baja.id);
+      this.mensaje = '';
+      this.error = '';
+      // El botón está en el listado: el acta aún no está en el DOM hasta que
+      // Angular vuelve a detectar cambios.
+      this.cdr.detectChanges();
+      this.imprimir();
+    } catch (err) {
+      this.error = 'No se pudo preparar el acta para imprimir.';
+      console.error(err);
+    }
+  }
+
   get fechaLegible(): string {
     if (!this.acta) {
       return '';
@@ -219,9 +242,12 @@ export class BajasComponent implements OnInit {
   }
 
   imprimir(): void {
-    if (!this.acta) {
+    const original = document.getElementById('acta-baja');
+    if (!this.acta || !original) {
       return;
     }
+    this.limpiarImpresion?.();
+
     let estilo = document.getElementById('estilo-print-baja');
     if (!estilo) {
       estilo = document.createElement('style');
@@ -229,6 +255,13 @@ export class BajasComponent implements OnInit {
       estilo.textContent = ESTILO_IMPRESION;
       document.head.appendChild(estilo);
     }
+
+    const contenedor = document.createElement('div');
+    contenedor.id = 'impresion-baja';
+    const copia = original.cloneNode(true) as HTMLElement;
+    copia.id = 'acta-baja-impresion';
+    contenedor.appendChild(copia);
+    document.body.appendChild(contenedor);
     document.body.classList.add('imprimiendo-baja');
 
     let limpio = false;
@@ -237,10 +270,13 @@ export class BajasComponent implements OnInit {
         return;
       }
       limpio = true;
+      this.limpiarImpresion = null;
       document.body.classList.remove('imprimiendo-baja');
+      contenedor.remove();
       estilo?.remove();
       window.removeEventListener('afterprint', limpiar);
     };
+    this.limpiarImpresion = limpiar;
     window.addEventListener('afterprint', limpiar);
     window.print();
     window.setTimeout(limpiar, 5000);
@@ -257,16 +293,20 @@ export class BajasComponent implements OnInit {
         backgroundColor: '#ffffff', scale: 2, useCORS: true, logging: false
       });
       const imagen = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const ancho = pdf.internal.pageSize.getWidth() - 20;
+      // Misma hoja y márgenes que `formato baja.docx` (carta, 30 mm a los lados
+      // y 25 mm arriba/abajo).
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+      const margenX = 30;
+      const margenY = 25;
+      const ancho = pdf.internal.pageSize.getWidth() - margenX * 2;
       const alto = canvas.height * ancho / canvas.width;
-      const altoPagina = pdf.internal.pageSize.getHeight() - 20;
+      const altoPagina = pdf.internal.pageSize.getHeight() - margenY * 2;
 
-      pdf.addImage(imagen, 'PNG', 10, 10, ancho, alto);
+      pdf.addImage(imagen, 'PNG', margenX, margenY, ancho, alto);
       let consumido = altoPagina;
       while (consumido < alto) {
         pdf.addPage();
-        pdf.addImage(imagen, 'PNG', 10, 10 - consumido, ancho, alto);
+        pdf.addImage(imagen, 'PNG', margenX, margenY - consumido, ancho, alto);
         consumido += altoPagina;
       }
       pdf.save(`${this.acta.correlativo}.pdf`);

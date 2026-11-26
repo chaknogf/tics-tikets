@@ -193,8 +193,15 @@
             <td>{{ baja.fecha_solicitud | date:'dd-MM-yyyy' }}</td>
             <td>{{ baja.responsable_nombre }}</td>
             <td>{{ baja.no_bien }}</td>
-            <td><button type="button" class="btn btn-sm btn-outline-primary"
-              (click)="verActa(baja)">Ver acta</button></td>
+            <td>
+              <div class="acciones-tabla">
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                  (click)="verActa(baja)">Ver acta</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                  [attr.aria-label]="'Imprimir acta ' + baja.correlativo"
+                  (click)="imprimirActa(baja)">Imprimir</button>
+              </div>
+            </td>
           </tr>
           <tr *ngIf="!cargando && !bajas.length">
             <td colspan="5">No hay actas registradas.</td>
@@ -222,13 +229,22 @@
 
       <section class="acta-bloque">
         <h4>1. INFORMACIÓN GENERAL DEL SOLICITANTE</h4>
-        <p><strong>Fecha de Solicitud:</strong> {{ fechaLegible }}</p>
-        <p><strong>ID:</strong> {{ acta.correlativo }}</p>
-        <p><strong>Responsable del Equipo:</strong> {{ acta.responsable_nombre }}</p>
-        <p><strong>Ubicación:</strong> {{ acta.responsable_ubicacion || '—' }}</p>
-        <p><strong>Firma:</strong> {{ acta.responsable_firma || '__________________________' }}
-          <span class="acta-sello"><strong>Sello:</strong> {{ acta.responsable_sello || '__________________________' }}</span>
-        </p>
+        <table class="acta-tabla acta-tabla-datos" role="presentation">
+          <tbody>
+            <tr>
+              <td><strong>Fecha de Solicitud:</strong> {{ fechaLegible }}</td>
+              <td><strong>ID:</strong> {{ acta.correlativo }}</td>
+            </tr>
+            <tr>
+              <td><strong>Responsable del Equipo:</strong> {{ acta.responsable_nombre }}</td>
+              <td><strong>Ubicación:</strong> {{ acta.responsable_ubicacion || '—' }}</td>
+            </tr>
+            <tr>
+              <td><strong>Firma:</strong> {{ acta.responsable_firma || '__________________' }}</td>
+              <td><strong>Sello:</strong> {{ acta.responsable_sello || '__________________' }}</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
       <section class="acta-bloque">
@@ -237,8 +253,7 @@
         <p><strong>Marca:</strong> {{ acta.marca || '—' }}</p>
         <p><strong>Modelo:</strong> {{ acta.modelo || '—' }}</p>
         <p><strong>Número de Serie:</strong> {{ acta.numero_serie || '—' }}</p>
-        <p><strong>Código SICOIN:</strong> {{ acta.codigo_sicoin || '—' }}</p>
-        <p><strong>Número de Bien:</strong> {{ acta.no_bien }}</p>
+        <p><strong>Código SICOIN&nbsp;&nbsp;:</strong> {{ acta.codigo_sicoin || '—' }}</p>
       </section>
 
       <section class="acta-bloque">
@@ -254,24 +269,34 @@
 
       <section class="acta-bloque">
         <h4>4. DICTAMEN FINAL</h4>
-        <p>{{ acta.dictamen }}</p>
+        <p class="acta-justificado">{{ acta.dictamen }}</p>
       </section>
 
       <section class="acta-bloque">
         <h4>5. DESTINO FINAL SUGERIDO</h4>
         <p [class.acta-seleccionado]="acta.destino_final === 'reasignacion'">
-          [ <span [innerHTML]="acta.destino_final === 'reasignacion' ? 'X' : '&nbsp;'"></span> ] Reasignación del bien.
+          <strong>[{{ acta.destino_final === 'reasignacion' ? ' X ' : '   ' }}] Reasignación del bien.</strong>
         </p>
         <p [class.acta-seleccionado]="acta.destino_final === 'inventarios'">
-          [ <span [innerHTML]="acta.destino_final === 'inventarios' ? 'X' : '&nbsp;'"></span> ] Devolución a la sección Inventarios para proceso de baja.
+          <strong>[{{ acta.destino_final === 'inventarios' ? ' X ' : '   ' }}] Devolución a la sección Inventarios para proceso de baja.</strong>
         </p>
       </section>
 
       <section class="acta-bloque">
         <h4>6. REVISIÓN TÉCNICA</h4>
-        <p><strong>Nombre:</strong> {{ acta.revision_nombre || '—' }}</p>
-        <p>__________________________</p>
-        <p>Firma y Sello: {{ acta.revision_firma || '__________________________' }}</p>
+        <table class="acta-tabla acta-tabla-firma" role="presentation">
+          <tbody>
+            <tr>
+              <td><strong>Nombre:</strong> {{ acta.revision_nombre || '—' }}</td>
+            </tr>
+            <tr>
+              <td class="acta-firma-linea">{{ acta.revision_firma || '' }}&nbsp;__________________________</td>
+            </tr>
+            <tr>
+              <td><strong>Firma y Sello</strong></td>
+            </tr>
+          </tbody>
+        </table>
       </section>
     </article>
   </section>

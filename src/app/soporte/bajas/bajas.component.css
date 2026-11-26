@@ -188,6 +188,16 @@ button:focus-visible,
   margin-block: 0.75rem;
 }
 
+.acciones-tabla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.acciones-tabla .btn {
+  min-block-size: 36px;
+}
+
 button {
   min-block-size: 44px;
 }
@@ -308,72 +318,98 @@ button {
   border-block-start: 1px solid var(--app-border, #1a2940);
 }
 
-/* Vista previa del acta: superficie clara fijada para impresión. */
+/* Acta: reproducción del formato `formato baja.docx` (carta, Arial 12 pt,
+   texto negro y tablas sin bordes). La superficie clara es intencional. */
 .acta {
   color-scheme: light;
-  color: #111827;
-  accent-color: #0b6b78;
+  color: #000000;
   background: #ffffff;
   inline-size: 100%;
-  max-inline-size: 210mm;
+  max-inline-size: 216mm;
   margin: 0 auto;
-  padding: 1rem 1.25rem;
-  font-family: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  font-size: 0.72rem;
-  line-height: 1.5;
+  padding: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12pt;
+  line-height: 1.3;
   box-sizing: border-box;
   border: 1px solid #d9e2ec;
-  border-radius: var(--app-radius, 0.85rem);
 }
 
 .acta-encabezado {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  border-block-end: 2px solid #0b6b78;
-  padding-block-end: 0.5rem;
-  margin-block-end: 1rem;
+  position: relative;
+  min-block-size: 24mm;
+  margin-block-end: 0.5rem;
 }
 
 .acta-logo {
-  inline-size: 60px;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: 23mm;
   block-size: auto;
 }
 
 .acta h3 {
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-align: center;
   margin: 0;
-  color: #0b6b78;
+  padding-inline: 25mm;
+  font-size: 12pt;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  color: #000000;
 }
 
 .acta h4 {
-  font-size: 0.75rem;
+  margin-block: 0.9rem 0.35rem;
+  font-size: 12pt;
   font-weight: 700;
-  margin-block: 1rem 0.4rem;
-  color: #0b6b78;
+  color: #000000;
+  break-after: avoid;
 }
 
 .acta p {
   margin-block: 0.2rem;
+  white-space: pre-wrap;
 }
 
-.acta-sello {
-  margin-inline-start: 2rem;
+.acta-tabla {
+  inline-size: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.acta-tabla td {
+  padding: 0;
+  border: 0;
+  text-align: start;
+  vertical-align: top;
+}
+
+.acta-tabla-datos td:first-child {
+  inline-size: 58%;
+}
+
+.acta-firma-linea {
+  white-space: pre-wrap;
+}
+
+.acta-justificado {
+  text-align: justify;
 }
 
 .acta ol {
   margin-block: 0.3rem;
-  padding-inline-start: 1.5rem;
+  padding-inline-start: 1.25rem;
 }
 
 .acta li {
-  margin-block-end: 0.4rem;
+  margin-block-end: 0.35rem;
+  break-inside: avoid;
 }
 
 .acta li p {
-  margin-inline-start: 1rem;
+  margin-inline-start: 0;
+  white-space: normal;
 }
 
 .acta-seleccionado {
@@ -385,7 +421,6 @@ button {
     padding: 0;
     max-inline-size: none;
     border: 0;
-    border-radius: 0;
   }
 
   .acta h4 {
