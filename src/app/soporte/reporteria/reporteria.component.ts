@@ -8,7 +8,7 @@ import jsPDF from 'jspdf';
 import { ApiService } from '../../services/api.service';
 import {
   datosGrafico, fechaEnRango, formatearCorte, hojasReporte,
-  normalizarFiltrosReporte, parametrosReporte
+  normalizarFiltrosReporte, opcionesGrafica, parametrosReporte
 } from '../../services/reporte-datos';
 import { descargarExcel as guardarExcel } from '../../services/reporte-exportar';
 import {
@@ -53,10 +53,12 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
 
   private graficas: Chart[] = [];
   private destruido = false;
+  private readonly alRedimensionar = (): void => this.redimensionarGraficas();
 
   constructor(private api: ApiService) {}
 
   async ngOnInit(): Promise<void> {
+    window.addEventListener('resize', this.alRedimensionar);
     const hoy = new Date();
     const primerDia = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
     this.filtros.fechaInicio = this.formatDate(primerDia);
@@ -68,6 +70,7 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destruido = true;
+    window.removeEventListener('resize', this.alRedimensionar);
     this.destruirGraficas();
   }
 
@@ -328,38 +331,7 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
     ChartCtor.defaults.font.family = familia;
     ChartCtor.defaults.font.size = 11;
 
-    const opciones: any = {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: reduceMovimiento ? false : { duration: 450 },
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: {
-          grid: { display: false },
-          border: { display: false },
-          ticks: { color: '#a0b2cd', maxRotation: 0 }
-        },
-        y: {
-          beginAtZero: true,
-          grid: { color: 'rgba(26, 41, 64, 0.75)' },
-          border: { display: false },
-          ticks: { color: '#a0b2cd', precision: 0 }
-        }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#090e18',
-          borderColor: '#34507a',
-          borderWidth: 1,
-          titleColor: '#e6f0ff',
-          bodyColor: '#a0b2cd',
-          padding: 10,
-          displayColors: false,
-          callbacks: { label: (contexto: any) => `${contexto.label}: ${contexto.parsed}` }
-        }
-      }
-    };
+    const opciones = opcionesGrafica(reduceMovimiento);
 
     const senales = ['#2de2f5', '#ff5ec9', '#5ef2a4', '#ffc857', '#ff6b81', '#78a8ff'];
     const estado = datosGrafico(this.estadisticas.por_estado ?? []);
@@ -380,7 +352,7 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
           cutout: '72%',
           scales: undefined,
           plugins: {
-            ...opciones.plugins,
+            ...(opciones['plugins'] as Record<string, unknown>),
             legend: {
               display: true,
               position: 'bottom',
@@ -439,6 +411,21 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
         },
         options: { ...opciones, indexAxis: 'y' }
       }));
+    }
+    this.redimensionarGraficas();
+  }
+
+  private redimensionarGraficas(): void {
+    for (const grafica of this.graficas) {
+      const contenedor = grafica.canvas.parentElement;
+      if (!contenedor) {
+        continue;
+      }
+      const ancho = contenedor.clientWidth;
+      const alto = contenedor.clientHeight;
+      if (ancho > 0 && alto > 0) {
+        grafica.resize(ancho, alto);
+      }
     }
   }
 

@@ -415,7 +415,8 @@ summary:focus-visible,
 
 .grafica-canvas {
   position: relative;
-  min-block-size: 13rem;
+  block-size: 13rem;
+  overflow: hidden;
   margin-inline: 1rem;
 }
 

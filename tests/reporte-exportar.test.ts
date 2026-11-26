@@ -16,6 +16,7 @@ import {
   formatearCorte,
   mantenimientosARows,
   normalizarFiltrosReporte,
+  opcionesGrafica,
   parametrosEstadisticas,
   parametrosReporte,
 } from '../src/app/services/reporte-datos';
@@ -170,4 +171,26 @@ test('la marca de corte no se recalcula en cada detección de cambios', () => {
 
   assert.doesNotMatch(fuente, /get\s+generadoEn\s*\(/);
   assert.match(fuente, /this\.generadoEn\s*=\s*formatearCorte\(/);
+});
+
+test('las gráficas no usan el ResizeObserver de Chart.js', () => {
+  const opciones = opcionesGrafica(false);
+  assert.equal(opciones['responsive'], false);
+  assert.equal(opciones['maintainAspectRatio'], false);
+  assert.deepEqual(opciones['animation'], { duration: 450 });
+  assert.equal(opcionesGrafica(true)['animation'], false);
+
+  const fuente = readFileSync(
+    resolve(process.cwd(), 'src/app/soporte/reporteria/reporteria.component.ts'),
+    'utf8'
+  );
+  assert.match(fuente, /window\.addEventListener\('resize', this\.alRedimensionar\)/);
+  assert.match(fuente, /window\.removeEventListener\('resize', this\.alRedimensionar\)/);
+  assert.match(fuente, /grafica\.resize\(ancho, alto\)/);
+
+  const estilos = readFileSync(
+    resolve(process.cwd(), 'src/app/soporte/reporteria/reporteria.component.css'),
+    'utf8'
+  );
+  assert.match(estilos, /\.grafica-canvas\s*\{[^}]*block-size:\s*13rem/s);
 });

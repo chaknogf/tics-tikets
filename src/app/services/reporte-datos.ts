@@ -52,6 +52,49 @@ export function formatearCorte(fecha: Date): string {
   }).format(fecha);
 }
 
+/**
+ * Opciones base de las gráficas del informe.
+ *
+ * `responsive: false` es deliberado: el `ResizeObserver` de Chart.js entra en
+ * un bucle de layout con los paneles de reportería y llega a bloquear el
+ * renderer. El componente redimensiona las gráficas con un único listener de
+ * `resize`, fuera del ciclo de detección de cambios.
+ */
+export function opcionesGrafica(reduceMovimiento: boolean): Record<string, unknown> {
+  return {
+    responsive: false,
+    maintainAspectRatio: false,
+    animation: reduceMovimiento ? false : { duration: 450 },
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: { color: '#a0b2cd', maxRotation: 0 }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(26, 41, 64, 0.75)' },
+        border: { display: false },
+        ticks: { color: '#a0b2cd', precision: 0 }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#090e18',
+        borderColor: '#34507a',
+        borderWidth: 1,
+        titleColor: '#e6f0ff',
+        bodyColor: '#a0b2cd',
+        padding: 10,
+        displayColors: false,
+        callbacks: { label: (contexto: any) => `${contexto.label}: ${contexto.parsed}` }
+      }
+    }
+  };
+}
+
 /** Compatibilidad con el formulario antiguo que enviaba `fecha_desde`/`fecha_hasta`. */
 export function parametrosEstadisticas(filtros: Record<string, unknown>): Record<string, unknown> {
   const parametros = { ...filtros };
