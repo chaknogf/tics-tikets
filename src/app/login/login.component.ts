@@ -18,6 +18,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
   loading = false;
+  mostrarPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -34,6 +35,10 @@ export class LoginComponent {
   campoInvalido(campo: 'username' | 'password'): boolean {
     const control = this.loginForm.get(campo);
     return !!control && control.invalid && control.touched;
+  }
+
+  togglePassword(): void {
+    this.mostrarPassword = !this.mostrarPassword;
   }
 
   onSubmit() {

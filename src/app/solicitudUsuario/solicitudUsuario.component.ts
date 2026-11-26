@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, effect, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
@@ -23,11 +23,12 @@ import { IconService } from './../services/icon.service';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, LoginComponent]
 })
-export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
+export class SolicitudUsuarioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   form: FormGroup;
   mensaje = '';
-  visible = signal(false);
+  @ViewChild('loginDialog') private loginDialog?: ElementRef<HTMLDialogElement>;
+  private limpiarCierreLigero?: () => void;
   private sub: Subscription;
   buscarTicket: string = '';
   loading = false;
@@ -153,6 +154,12 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.mensaje = 'Revisa los campos obligatorios antes de guardar.';
+      const primeroInvalido = Object.keys(this.form.controls).find(
+        campo => this.form.get(campo)?.invalid
+      );
+      if (primeroInvalido) {
+        document.querySelector<HTMLElement>(`[formControlName="${primeroInvalido}"]`)?.focus();
+      }
       return;
     }
 
@@ -186,20 +193,18 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
     }
   }
 
-  open() {
-    this.visible.set(true);
+  open(): void {
+    const dialog = this.loginDialog?.nativeElement;
+    if (dialog && !dialog.open) {
+      dialog.showModal();
+    }
   }
 
-  close() {
-    this.visible.set(false);
-  }
-
-  visibleFn() {
-    return this.visible();
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
+  close(): void {
+    const dialog = this.loginDialog?.nativeElement;
+    if (dialog?.open) {
+      dialog.close();
+    }
   }
 
   async generarPDF() {
@@ -292,28 +297,37 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const canvas = document.querySelector('.matrix-bg') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d')!;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const dialog = this.loginDialog?.nativeElement;
+    if (!dialog || 'closedBy' in HTMLDialogElement.prototype) return;
 
-    // Letras/íconos estáticos
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    ctx.fillStyle = 'rgba(0,255,0,0.3)';
-    ctx.font = '18px monospace';
+    // Safari aún no entiende closedby="any": cerramos solo si pulsó y soltó fuera.
+    let presionFuera = false;
+    const fueraDelDialogo = (evento: PointerEvent): boolean => {
+      const rect = dialog.getBoundingClientRect();
+      return evento.clientX < rect.left || evento.clientX > rect.right ||
+        evento.clientY < rect.top || evento.clientY > rect.bottom;
+    };
+    const alPresionar = (evento: PointerEvent): void => {
+      presionFuera = fueraDelDialogo(evento);
+    };
+    const alSoltar = (evento: PointerEvent): void => {
+      if (presionFuera && fueraDelDialogo(evento)) dialog.close();
+      presionFuera = false;
+    };
 
-    for (let i = 0; i < 100; i++) {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
-      const text = letters[Math.floor(Math.random() * letters.length)];
-      ctx.fillText(text, x, y);
-    }
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
+    dialog.addEventListener('pointerdown', alPresionar);
+    dialog.addEventListener('pointerup', alSoltar);
+    this.limpiarCierreLigero = () => {
+      dialog.removeEventListener('pointerdown', alPresionar);
+      dialog.removeEventListener('pointerup', alSoltar);
+    };
   }
 
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+    this.limpiarCierreLigero?.();
+    const dialog = this.loginDialog?.nativeElement;
+    if (dialog?.open) dialog.close();
+  }
 
 }

@@ -1,209 +1,261 @@
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg mb-4 shadow-sm" aria-label="Acceso al sistema">
-  <div class="container-fluid">
-    <button class="btn btn-outline-info ms-auto d-flex align-items-center gap-2" (click)="open()">
-      <span class="svg-shadow" [innerHTML]="icons['pirata']"></span>
-      Specter
-    </button>
-  </div>
-</nav>
-
-<!-- Contenedor principal -->
-<div class="app-container">
-
-  <!-- Fondo con partículas tipo Matrix -->
-  <canvas class="background-canvas"></canvas>
-
-  <!-- Card central del formulario -->
-  <div class="form-card panel-corners">
-
-    <!-- Título -->
-    <p class="eyebrow">Nexus / Solicitud pública</p>
-    <h2 class="form-title">Formulario de Solicitud</h2>
-
-    <!-- Buscador Ticket -->
-    <div class="search-card mb-4">
-      <form class="d-flex flex-wrap align-items-center gap-2" (ngSubmit)="obtenerTicket()">
-        <input
-          type="text"
-          class="form-control search-input flex-grow-1"
-          placeholder="Buscar ticket"
-          aria-label="Buscar ticket"
-          [(ngModel)]="buscarTicket"
-          name="buscarTicket"
-          autocomplete="off"
-        />
-        <button type="submit" class="btn btn-primary search-btn flex-shrink-0">
-          Buscar
-        </button>
-      </form>
+<div class="solicitud-light" data-bs-theme="light">
+  <header class="solicitud-header">
+    <div class="header-inner">
+      <div>
+        <p class="page-kicker">Soporte técnico</p>
+        <h1>Solicitar ayuda</h1>
+      </div>
+      <button type="button" class="access-button" (click)="open()">
+        <span class="access-icon" [innerHTML]="icons['pirata']"></span>
+        Acceso del personal
+      </button>
     </div>
+    <p class="header-help">
+      Completa los datos y envía tu solicitud. Verás el número de ticket al terminar.
+    </p>
+  </header>
 
-    <!-- Formulario principal -->
-    <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="onSubmit()" class="ticket-form">
+  <main class="app-container">
+    <div class="form-card">
+      <section class="form-section" aria-labelledby="buscar-title">
+        <h2 id="buscar-title">¿Ya enviaste una solicitud?</h2>
+        <p class="section-help">Escribe el número de ticket para consultar su estado.</p>
 
-      <div class="row g-3">
+        <form class="search-card" (ngSubmit)="obtenerTicket()">
+          <label class="visually-hidden" for="buscar-ticket">Número de ticket</label>
+          <input
+            id="buscar-ticket"
+            class="text-input search-input"
+            type="search"
+            placeholder="Ejemplo: TKT2612ABCD"
+            aria-label="Buscar ticket"
+            [(ngModel)]="buscarTicket"
+            name="buscarTicket"
+            autocomplete="off"
+          />
+          <button type="submit" class="search-button">Buscar ticket</button>
+        </form>
+      </section>
 
-       <!-- Ticket y Fecha -->
-<div class="col-12 col-md-6">
-  <label for="ticket">Ticket:</label>
-  <input id="ticket" type="text" class="form-control input-readonly" formControlName="ticket" readonly />
-</div>
+      <form id="formulario-ticket" [formGroup]="form" (ngSubmit)="onSubmit()" class="ticket-form">
+        <section class="form-section" aria-labelledby="datos-title">
+          <h2 id="datos-title">1. Tus datos</h2>
+          <p class="section-help">
+            Los campos marcados como <strong>Obligatorio</strong> son necesarios para poder ayudarte.
+          </p>
 
-<div class="col-12 col-md-6">
-  <label for="fecha_solicitud">Fecha de Solicitud:</label>
-  <input id="fecha_solicitud" type="date" class="form-control input-readonly" formControlName="fecha_solicitud" readonly />
-  <div *ngIf="form.get('fecha_solicitud')?.invalid && form.get('fecha_solicitud')?.touched">
-    <small class="text-danger">Campo requerido.</small>
-  </div>
-</div>
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label for="ticket">Número de ticket</label>
+              <input
+                id="ticket"
+                class="text-input input-readonly"
+                type="text"
+                formControlName="ticket"
+                readonly
+              />
+            </div>
 
-      <!-- Nombre del solicitante -->
-<div class="col-12 required-field">
-  <label class="label-principal" for="nombre_solicitante">Nombre del Solicitante:</label>
-  <input id="nombre_solicitante" type="text" class="form-control" formControlName="nombre_solicitante" autocomplete="name" />
-  <div *ngIf="form.get('nombre_solicitante')?.invalid && form.get('nombre_solicitante')?.touched">
-    <small class="text-danger">Campo requerido.</small>
-  </div>
-</div>
+            <div class="col-12 col-md-6">
+              <label for="fecha_solicitud">Fecha de la solicitud</label>
+              <input
+                id="fecha_solicitud"
+                class="text-input input-readonly"
+                type="date"
+                formControlName="fecha_solicitud"
+                readonly
+              />
+            </div>
 
-<!-- Servicio -->
-<div class="col-12  required-field">
-  <label class="label-principal" for="servicio">Servicio/Sección:</label>
-  <input id="servicio" type="text" class="form-control" formControlName="servicio" autocomplete="off" />
-  <div *ngIf="form.get('servicio')?.invalid && form.get('servicio')?.touched">
-    <small class="text-danger">Campo requerido.</small>
-  </div>
-</div>
+            <div class="col-12">
+              <label for="nombre_solicitante">
+                Nombre del solicitante
+                <span class="field-note">Obligatorio</span>
+              </label>
+              <input
+                id="nombre_solicitante"
+                class="text-input"
+                type="text"
+                formControlName="nombre_solicitante"
+                autocomplete="name"
+                placeholder="Escribe tu nombre completo"
+              />
+              <small class="field-error" *ngIf="form.get('nombre_solicitante')?.invalid && form.get('nombre_solicitante')?.touched">
+                Escribe tu nombre para continuar.
+              </small>
+            </div>
 
-<!-- Detalle -->
-<div  class="col-12  required-field">
-  <label  class="label-principal" for="detalle">Detalle:</label>
-  <textarea id="detalle" class="form-control" formControlName="detalle"></textarea>
-  <div *ngIf="form.get('detalle')?.invalid && form.get('detalle')?.touched">
-    <small class="text-danger">Campo requerido.</small>
-  </div>
-</div>
-        <!-- Prioridad -->
-        <div class="col-12">
-          <label class="form-label mb-2 d-block">Prioridad:</label>
-          <div class="btn-group w-100 flex-wrap gap-2">
-            <button type="button" class="btn mb-2 flex-fill text-center"
-                    [ngClass]="{'btn-success': form.get('prioridad')?.value==='Baja','btn-outline-success': form.get('prioridad')?.value!=='Baja', 'active-priority': form.get('prioridad')?.value==='Baja'}"
-                    [attr.aria-pressed]="form.get('prioridad')?.value === 'Baja'" (click)="form.get('prioridad')?.setValue('Baja')">
-              <span [innerHTML]="icons['clock']"></span>
-              <p class="info-priority">Baja</p>
-              <p class="info-priority">Soporte no urgente, Puedo seguir trabajando.</p>
-            </button>
-            <button type="button" class="btn mb-2 flex-fill"
-                    [ngClass]="{'btn-warning': form.get('prioridad')?.value==='Media','btn-outline-warning': form.get('prioridad')?.value!=='Media', 'active-priority': form.get('prioridad')?.value==='Media'}"
-                    [attr.aria-pressed]="form.get('prioridad')?.value === 'Media'" (click)="form.get('prioridad')?.setValue('Media')">
-              <span [innerHTML]="icons['ok']"></span>
-              <p class="info-priority">Media</p>
-              <p class="info-priority">Importante! Una demora podría bloquear mi trabajo.</p>
-            </button>
-            <button type="button" class="btn mb-2 flex-fill"
-                    [ngClass]="{'btn-danger': form.get('prioridad')?.value==='Alta','btn-outline-danger': form.get('prioridad')?.value!=='Alta', 'active-priority': form.get('prioridad')?.value==='Alta'}"
-                    [attr.aria-pressed]="form.get('prioridad')?.value === 'Alta'" (click)="form.get('prioridad')?.setValue('Alta')">
-              <span [innerHTML]="icons['critic']"></span>
-              <p class="info-priority">Alta</p>
-              <p class="info-priority">¡Bloqueo Total! No puedo continuar mi trabajo.</p>
-            </button>
+            <div class="col-12">
+              <label for="servicio">
+                Servicio o sección
+                <span class="field-note">Obligatorio</span>
+              </label>
+              <input
+                id="servicio"
+                class="text-input"
+                type="text"
+                formControlName="servicio"
+                autocomplete="off"
+                placeholder="Ejemplo: Enfermería, Laboratorio, Administración"
+              />
+              <small class="field-error" *ngIf="form.get('servicio')?.invalid && form.get('servicio')?.touched">
+                Escribe tu servicio o sección.
+              </small>
+            </div>
+
+            <div class="col-12">
+              <label for="detalle">
+                ¿Qué necesitas?
+                <span class="field-note">Obligatorio</span>
+              </label>
+              <p class="field-hint" id="detalle-ayuda">Cuenta qué pasó con tus propias palabras.</p>
+              <textarea
+                id="detalle"
+                class="text-input text-area"
+                formControlName="detalle"
+                rows="4"
+                placeholder="Ejemplo: El computador no enciende desde esta mañana."
+                aria-describedby="detalle-ayuda"
+              ></textarea>
+              <small class="field-error" *ngIf="form.get('detalle')?.invalid && form.get('detalle')?.touched">
+                Explica brevemente qué necesitas.
+              </small>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <!-- Atención en -->
-        <div class="col-12">
-          <label class="form-label mb-2 d-block">Atención en:</label>
-          <div class="btn-group w-100 flex-wrap gap-1">
-            <button type="button" class="btn mb-2 flex-fill"
-                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Menores','btn-outline-primary': form.get('atencion_en')?.value!=='Menores'}"
-                    [attr.aria-pressed]="form.get('atencion_en')?.value === 'Menores'" (click)="form.get('atencion_en')?.setValue('Menores')">
-              <span [innerHTML]="icons['work']"></span>
-              <p class="small">Trabajos Menores</p>
-            </button>
-            <button type="button" class="btn mb-2 flex-fill"
-                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Computo','btn-outline-primary': form.get('atencion_en')?.value!=='Computo'}"
-                    [attr.aria-pressed]="form.get('atencion_en')?.value === 'Computo'" (click)="form.get('atencion_en')?.setValue('Computo')">
-              <span [innerHTML]="icons['computer']"></span>
-              <p class="small">Equipo de Computo</p>
-            </button>
-            <button type="button" class="btn mb-2 flex-fill"
-                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Red','btn-outline-primary': form.get('atencion_en')?.value!=='Red'}"
-                    [attr.aria-pressed]="form.get('atencion_en')?.value === 'Red'" (click)="form.get('atencion_en')?.setValue('Red')">
-              <span [innerHTML]="icons['net']"></span>
-              <p class="small">Redes y Telecomunicaciones</p>
-            </button>
-            <button type="button" class="btn mb-2 flex-fill"
-                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Software','btn-outline-primary': form.get('atencion_en')?.value!=='Software'}"
-                    [attr.aria-pressed]="form.get('atencion_en')?.value === 'Software'" (click)="form.get('atencion_en')?.setValue('Software')">
-              <span [innerHTML]="icons['software']"></span>
-              <p class="small">Software</p>
-            </button>
-            <button type="button" class="btn mb-2 flex-fill"
-                    [ngClass]="{'btn-primary': form.get('atencion_en')?.value==='Diseño','btn-outline-primary': form.get('atencion_en')?.value!=='Diseño'}"
-                    [attr.aria-pressed]="form.get('atencion_en')?.value === 'Diseño'" (click)="form.get('atencion_en')?.setValue('Diseño')">
-              <span [innerHTML]="icons['diseño']"></span>
-              <p class="small">Diseños Audiovisuales</p>
-            </button>
-          </div>
-        </div>
+        <section class="form-section" aria-labelledby="prioridad-title">
+          <h2 id="prioridad-title">2. ¿Qué tan urgente es?</h2>
+          <p class="section-help">Elige la opción que mejor describa tu situación.</p>
 
-        <!-- Opcional Equipo Inventariado -->
-        <fieldset class="metadatos" *ngIf="form.get('atencion_en')?.value==='Computo'">
-          <legend>Opcional solo si es un Equipo inventariado</legend>
-          <div class="col-12 col-md-6">
-            <label for="numero_bien">Número de Bien:</label>
-            <input id="numero_bien" type="text" class="form-control text-uppercase" formControlName="numero_bien" />
-          </div>
-          <div class="col-12 col-md-6">
-            <label for="descripcion_equipo">Descripción del Equipo:</label>
-            <input id="descripcion_equipo" type="text" class="form-control" formControlName="descripcion_equipo" />
+          <fieldset class="choice-group">
+            <legend class="visually-hidden">Prioridad de la solicitud</legend>
+
+            <label class="choice-card">
+              <input type="radio" class="visually-hidden" formControlName="prioridad" value="Baja" />
+              <span class="choice-icon" [innerHTML]="icons['clock']"></span>
+              <span class="choice-text">
+                <strong>Baja</strong>
+                <small>Puedo seguir trabajando. No es urgente.</small>
+              </span>
+            </label>
+
+            <label class="choice-card">
+              <input type="radio" class="visually-hidden" formControlName="prioridad" value="Media" />
+              <span class="choice-icon" [innerHTML]="icons['ok']"></span>
+              <span class="choice-text">
+                <strong>Media</strong>
+                <small>Una demora podría dificultar mi trabajo.</small>
+              </span>
+            </label>
+
+            <label class="choice-card">
+              <input type="radio" class="visually-hidden" formControlName="prioridad" value="Alta" />
+              <span class="choice-icon" [innerHTML]="icons['critic']"></span>
+              <span class="choice-text">
+                <strong>Alta</strong>
+                <small>No puedo continuar mi trabajo.</small>
+              </span>
+            </label>
+          </fieldset>
+        </section>
+
+        <section class="form-section" aria-labelledby="area-title">
+          <h2 id="area-title">3. ¿Dónde necesitas ayuda?</h2>
+          <p class="section-help">Elige un área. Esto ayuda a enviar tu solicitud a la persona correcta.</p>
+
+          <fieldset class="choice-group">
+            <legend class="visually-hidden">Área de atención</legend>
+
+            <label class="choice-card">
+              <input type="radio" class="visually-hidden" formControlName="atencion_en" value="Menores" />
+              <span class="choice-icon" [innerHTML]="icons['work']"></span>
+              <span class="choice-text"><strong>Trabajos menores</strong></span>
+            </label>
+
+            <label class="choice-card">
+              <input type="radio" class="visually-hidden" formControlName="atencion_en" value="Computo" />
+              <span class="choice-icon" [innerHTML]="icons['computer']"></span>
+              <span class="choice-text"><strong>Equipo de cómputo</strong></span>
+            </label>
+
+            <label class="choice-card">
+              <input type="radio" class="visually-hidden" formControlName="atencion_en" value="Red" />
+              <span class="choice-icon" [innerHTML]="icons['net']"></span>
+              <span class="choice-text"><strong>Redes y telecomunicaciones</strong></span>
+            </label>
+
+            <label class="choice-card">
+              <input type="radio" class="visually-hidden" formControlName="atencion_en" value="Software" />
+              <span class="choice-icon" [innerHTML]="icons['software']"></span>
+              <span class="choice-text"><strong>Software</strong></span>
+            </label>
+
+            <label class="choice-card">
+              <input type="radio" class="visually-hidden" formControlName="atencion_en" value="Diseño" />
+              <span class="choice-icon" [innerHTML]="icons['diseño']"></span>
+              <span class="choice-text"><strong>Diseños audiovisuales</strong></span>
+            </label>
+          </fieldset>
+
+          <small class="field-error" *ngIf="form.get('atencion_en')?.invalid && form.get('atencion_en')?.touched">
+            Elige un área para continuar.
+          </small>
+        </section>
+
+        <fieldset class="metadatos" *ngIf="form.get('atencion_en')?.value === 'Computo'">
+          <legend>Datos del equipo (opcional)</legend>
+          <p class="section-help">Llena estos datos solo si el equipo está inventariado.</p>
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label for="numero_bien">Número de bien</label>
+              <input
+                id="numero_bien"
+                class="text-input text-uppercase"
+                type="text"
+                formControlName="numero_bien"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <label for="descripcion_equipo">Descripción del equipo</label>
+              <input
+                id="descripcion_equipo"
+                class="text-input"
+                type="text"
+                formControlName="descripcion_equipo"
+              />
+            </div>
           </div>
         </fieldset>
 
-        <!-- Mensaje -->
-        <div class="col-12" *ngIf="mensaje">
-          <div class="alert alert-info" role="status" aria-live="polite">{{ mensaje }}</div>
-        </div>
+        <div class="notice" *ngIf="mensaje" role="status" aria-live="polite">{{ mensaje }}</div>
 
-        <!-- Botón Guardar -->
-        <div class="col-12 d-flex justify-content-center">
-          <button
-            type="submit"
-            class="btn btn-primary w-75 d-flex justify-content-center align-items-center gap-2"
-            [disabled]="loading"
-          >
-            <span *ngIf="!loading">Guardar</span>
-            <div
-              *ngIf="loading"
-              class="spinner-border spinner-border-sm text-light"
-              role="status"
-            >
-              <span class="visually-hidden">Cargando...</span>
-            </div>
+        <div class="submit-row">
+          <button type="submit" class="primary-action" [disabled]="loading">
+            <span>{{ loading ? 'Enviando…' : 'Enviar solicitud' }}</span>
+            <span aria-hidden="true">→</span>
           </button>
         </div>
+      </form>
+    </div>
+  </main>
 
+  <dialog
+    #loginDialog
+    class="login-dialog"
+    closedby="any"
+    aria-labelledby="login-dialog-title"
+  >
+    <div class="dialog-inner">
+      <div class="dialog-header">
+        <div>
+          <p class="dialog-kicker">Solo personal autorizado</p>
+          <h2 id="login-dialog-title">Acceso al sistema</h2>
+        </div>
+        <button type="button" class="dialog-close" (click)="close()">Cerrar</button>
       </div>
-    </form>
-  </div>
-</div>
 
-
-
-<!-- Modal fullscreen con fondo animado -->
-<div class="modal-fullscreen" *ngIf="visibleFn()">
-  <!-- Fondo animado estilo Matrix -->
-  <canvas class="matrix-bg"></canvas>
-
-  <!-- Contenedor del login -->
-  <div class="modal-content-wrapper panel-corners">
-
-    <div class="modal-body">
-       <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="close()"></button>
       <app-login class="login-modal-wrapper"></app-login>
     </div>
-
-  </div>
+  </dialog>
 </div>

@@ -1,86 +1,87 @@
-<main class="auth-screen">
-  <section class="auth-visual" aria-hidden="true">
-    <div class="auth-grid"></div>
+<main class="login-page">
+  <section class="login-card" aria-labelledby="login-title">
+    <p class="login-brand">NEXUS <span aria-hidden="true">·</span> SOPORTE</p>
 
-    <div class="auth-visual-content">
-      <p class="eyebrow">NEXUS / CONTROL CENTER · V2.0</p>
-      <h1 class="auth-headline">La infraestructura,<br /><span>bajo señal.</span></h1>
-      <p class="auth-copy">
-        Una sola superficie para tickets, equipos y respuesta operativa.
-      </p>
+    <h1 id="login-title">Iniciar sesión</h1>
+    <p class="login-intro">Escribe tu usuario y tu contraseña para entrar al sistema.</p>
 
-      <div class="auth-readout">
-        <div>
-          <span class="readout-label">ESTADO</span>
-          <span class="readout-value">OPERATIVO</span>
-        </div>
-        <div>
-          <span class="readout-label">CANAL</span>
-          <span class="readout-value">SEGURO</span>
-        </div>
-        <div>
-          <span class="readout-label">NODO</span>
-          <span class="readout-value">01 / ACTIVO</span>
-        </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" [attr.aria-busy]="loading" novalidate>
+      <div class="field">
+        <label for="login-usuario">
+          Usuario
+          <span class="field-note">Obligatorio</span>
+        </label>
+        <p class="field-hint" id="usuario-ayuda">Es el nombre que te dieron para usar el sistema.</p>
+        <input
+          id="login-usuario"
+          class="login-input"
+          type="text"
+          formControlName="username"
+          placeholder="Ejemplo: jperez"
+          autocomplete="username"
+          autocorrect="off"
+          autocapitalize="none"
+          spellcheck="false"
+          enterkeyhint="next"
+          autofocus
+          [attr.aria-invalid]="campoInvalido('username')"
+          [attr.aria-describedby]="campoInvalido('username') ? 'usuario-ayuda error-usuario' : 'usuario-ayuda'"
+        />
+        <small class="field-error" id="error-usuario" *ngIf="campoInvalido('username')">
+          Escribe tu usuario para continuar.
+        </small>
       </div>
-    </div>
-  </section>
 
-  <section class="auth-panel">
-    <div class="auth-card panel-corners">
-      <p class="eyebrow">// ACCESO SEGURO</p>
-      <h2 class="auth-title">Iniciar sesión</h2>
-      <p class="auth-hint">Ingresa tus credenciales para continuar.</p>
+      <div class="field">
+        <label for="login-clave">
+          Contraseña
+          <span class="field-note">Obligatorio</span>
+        </label>
+        <p class="field-hint" id="clave-ayuda">Es tu clave secreta. No la compartas con nadie.</p>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" [attr.aria-busy]="loading" novalidate>
-        <div class="field">
-          <label class="form-label" for="login-usuario">Usuario</label>
-          <input
-            id="login-usuario"
-            type="text"
-            class="form-control neon-input"
-            formControlName="username"
-            placeholder="usuario"
-            autocomplete="username"
-            autocorrect="off"
-            autocapitalize="none"
-            spellcheck="false"
-            [class.is-invalid]="campoInvalido('username')"
-            [attr.aria-invalid]="campoInvalido('username')"
-            aria-describedby="error-usuario"
-          />
-          <small class="field-error" id="error-usuario" *ngIf="campoInvalido('username')">
-            Ingresa tu usuario.
-          </small>
-        </div>
-
-        <div class="field">
-          <label class="form-label" for="login-clave">Contraseña</label>
+        <div class="password-field">
           <input
             id="login-clave"
-            type="password"
-            class="form-control neon-input"
+            class="login-input login-input--password"
+            [type]="mostrarPassword ? 'text' : 'password'"
             formControlName="password"
-            placeholder="••••••••"
+            placeholder="Escribe tu contraseña"
             autocomplete="current-password"
-            [class.is-invalid]="campoInvalido('password')"
+            enterkeyhint="done"
             [attr.aria-invalid]="campoInvalido('password')"
-            aria-describedby="error-clave"
+            [attr.aria-describedby]="campoInvalido('password') ? 'clave-ayuda error-clave' : 'clave-ayuda'"
           />
-          <small class="field-error" id="error-clave" *ngIf="campoInvalido('password')">
-            Ingresa tu contraseña.
-          </small>
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()"
+            [attr.aria-pressed]="mostrarPassword"
+            aria-describedby="toggle-aviso"
+          >
+            {{ mostrarPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
         </div>
 
-        <p class="alert alert-error" role="alert" *ngIf="errorMessage">{{ errorMessage }}</p>
+        <span id="toggle-aviso" class="visually-hidden">
+          Al mostrar la contraseña, quedará visible en pantalla.
+        </span>
 
-        <button class="neon-btn" type="submit" [disabled]="loading">
-          <span>{{ loading ? 'Verificando…' : 'Entrar al sistema' }}</span>
-          <span aria-hidden="true">→</span>
-        </button>
-      </form>
+        <small class="field-error" id="error-clave" *ngIf="campoInvalido('password')">
+          Escribe tu contraseña para continuar.
+        </small>
+      </div>
 
-      <p class="auth-footer eyebrow">Acceso restringido · Uso interno</p>
-    </div>
+      <p class="error-message" role="alert" *ngIf="errorMessage">
+        <span class="error-icon" aria-hidden="true">!</span>
+        <span>{{ errorMessage }}</span>
+      </p>
+
+      <button class="login-submit" type="submit" [disabled]="loading">
+        <span>{{ loading ? 'Entrando…' : 'Entrar' }}</span>
+        <span class="submit-arrow" aria-hidden="true">→</span>
+      </button>
+
+      <p class="login-tip">¿No recuerdas tus datos? Pide ayuda al personal de soporte.</p>
+    </form>
   </section>
 </main>
