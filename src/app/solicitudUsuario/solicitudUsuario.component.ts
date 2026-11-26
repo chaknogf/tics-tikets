@@ -149,7 +149,12 @@ export class SolicitudUsuarioComponent implements OnInit, OnDestroy {
 
 
   async onSubmit() {
-    if (this.form.invalid || this.loading) return;
+    if (this.loading) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.mensaje = 'Revisa los campos obligatorios antes de guardar.';
+      return;
+    }
 
     this.loading = true;
     this.mensaje = '';

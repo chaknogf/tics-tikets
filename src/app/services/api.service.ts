@@ -1,6 +1,6 @@
 // src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Router } from '@angular/router';
 import {
   BajaCrear, BajaItem, CorrelativoPreview, DashboardResumen, Equipo, EstadisticasResponse,
@@ -10,6 +10,9 @@ import {
 import { NotificacionesService } from './notificaciones.service';
 import { paginar, RangoTickets, ticketEnRango } from './filtros-tickets';
 import { parametrosEstadisticas } from './reporte-datos';
+import { Deduplicador } from './deduplicador';
+import { perfilParaActualizar, solicitudCambiarPassword } from './usuario-datos';
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private api: AxiosInstance;
@@ -22,9 +25,12 @@ export class ApiService {
   // Solo se usa con el backend antiguo; se invalida al crear/editar/borrar tickets.
   private cacheTickets = new Map<string, { datos: Ticket[]; fecha: number }>();
   private readonly ttlCacheTickets = 60_000;
+  private readonly deduplicador = new Deduplicador();
 
-  private invalidarCacheTickets(): void {
+  /** Las mutaciones descartan tanto la caché antigua como las lecturas en vuelo. */
+  private invalidarLecturas(): void {
     this.cacheTickets.clear();
+    this.deduplicador.invalidarTodo();
   }
 
   constructor(
@@ -36,6 +42,7 @@ export class ApiService {
 
     this.api = axios.create({
       baseURL: this.baseUrl,
+      timeout: 20_000,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -65,9 +72,11 @@ export class ApiService {
           localStorage.removeItem('access_token');
           localStorage.removeItem('username');
           localStorage.removeItem('role');
+          localStorage.removeItem('user_id');
           this.token = null;
           this.username = null;
           this.role = null;
+          this.invalidarLecturas();
           void this.router.navigate(['/']);
         }
         return Promise.reject(error);
@@ -113,7 +122,7 @@ export class ApiService {
     }
 
     try {
-      const response = await this.api.get('/auth/me', {
+      const response = await this.getUnico<{ username: string; role: string }>('/auth/me', {
         headers: {
           usuario: username || '',
           rol: role || ''
@@ -144,7 +153,7 @@ export class ApiService {
     }
 
     try {
-      const response = await this.api.get<Usuarios>('/auth/allme');
+      const response = await this.getUnico<Usuarios>('/auth/allme');
       //console.log('👤 Usuario actual obtenido correctamente', response);
       return response.data;
     } catch (error) {
@@ -154,9 +163,11 @@ export class ApiService {
   }
 
   logOut() {
+    this.invalidarLecturas();
     localStorage.removeItem('access_token');
     localStorage.removeItem('username');
     localStorage.removeItem('role');
+    localStorage.removeItem('user_id');
     // window.location.reload();
     this.router.navigate(['/inicio']);
 
@@ -174,13 +185,34 @@ export class ApiService {
     return filtrosLimpiados;
   }
 
+  /**
+   * GET deduplicado mientras está en vuelo; nunca cachea la respuesta.
+   * Si el llamador aporta un AbortSignal se respeta y no se comparte.
+   */
+  private getUnico<T>(
+    url: string,
+    config: AxiosRequestConfig = {}
+  ): Promise<AxiosResponse<T>> {
+    if (config.signal) {
+      return this.api.get<T>(url, config);
+    }
+
+    const clave = JSON.stringify([
+      url,
+      config.params ?? null,
+      config.headers ?? null,
+      localStorage.getItem('access_token') ?? null
+    ]);
+    return this.deduplicador.obtener(clave, () => this.api.get<T>(url, config));
+  }
+
   private async listarConTotal<T>(
     ruta: string,
     filtros: any,
     etiqueta: string,
   ): Promise<ListaConTotal<T>> {
     try {
-      const response = await this.api.get<T[]>(ruta, {
+      const response = await this.getUnico<T[]>(ruta, {
         params: this.limpiarParametros(filtros)
       });
       const cabecera = response.headers?.['x-total-count'];
@@ -199,7 +231,7 @@ export class ApiService {
 
   async usuarioActual(): Promise<any> {
     try {
-      const response = await this.api.get<Usuarios>('/auth/me');
+      const response = await this.getUnico<Usuarios>('/auth/me');
       //console.log('👤 Usuario actual obtenido correctamente', response);
       return response.data;
 
@@ -212,7 +244,7 @@ export class ApiService {
 
   async getUsers(filtros: any): Promise<any> {
     try {
-      const response = await this.api.get<Usuarios[]>('/user/', {
+      const response = await this.getUnico<Usuarios[]>('/user/', {
         params: filtros
       });
       console.log('👤 Usuarios obtenidos correctamente', response);
@@ -226,7 +258,9 @@ export class ApiService {
 
   async getUser(id: number): Promise<any> {
     try {
-      const response = await this.api.get<Usuarios[]>(`/user/?id=${id}&skip=0&limit=1`);
+      const response = await this.getUnico<Usuarios[]>('/user/', {
+        params: { id, skip: 0, limit: 1 }
+      });
       console.log('👤 Usuarios obtenidos correctamente', response);
       return response.data;
 
@@ -249,7 +283,7 @@ export class ApiService {
 
   async updateUser(userId: number, user: any): Promise<any> {
     try {
-      const response = await this.api.put(`/user/actualizar/${userId}`, user,
+      const response = await this.api.put(`/user/actualizar/${userId}`, perfilParaActualizar(user),
         {
           headers: {
             'Content-Type': 'application/json'
@@ -268,13 +302,13 @@ export class ApiService {
   async cambiarPassword(
     userId: number,
     passwordActual: string,
-    passwordNueva: string
+    passwordNueva: string,
+    confirmPassword: string = passwordNueva
   ): Promise<any> {
     try {
-      const body = {
-        password_actual: passwordActual,
-        password_nueva: passwordNueva
-      };
+      const body = solicitudCambiarPassword(
+        passwordActual, passwordNueva, confirmPassword
+      );
 
       const response = await this.api.patch(
         `/user/${userId}/password`,
@@ -332,7 +366,7 @@ export class ApiService {
     const tamanio = 200;
     const resultados: Ticket[] = [];
     for (let pagina = 0; pagina < 50; pagina++) {
-      const respuesta = await this.api.get<Ticket[]>('/tickets/', {
+      const respuesta = await this.getUnico<Ticket[]>('/tickets/', {
         params: { ...filtrosServidor, skip: pagina * tamanio, limit: tamanio }
       });
       const filas = Array.isArray(respuesta.data) ? respuesta.data : [];
@@ -350,7 +384,7 @@ export class ApiService {
   async getTickets(filtros: any): Promise<any> {
     try {
       const filtrosLimpiados = this.limpiarParametros(filtros);
-      const response = await this.api.get<Ticket[]>('/tickets/', {
+      const response = await this.getUnico<Ticket[]>('/tickets/', {
         params: filtrosLimpiados
       });
       const cabecera = Number(response.headers['x-total-count']);
@@ -382,7 +416,9 @@ export class ApiService {
 
   async getTicket(id: number): Promise<any> {
     try {
-      const response = await this.api.get<Ticket[]>(`/tickets/?id=${id}&skip=0&limit=1`);
+      const response = await this.getUnico<Ticket[]>('/tickets/', {
+        params: { id, skip: 0, limit: 1 }
+      });
 
       console.log('📝 Ticket obtenido correctamente');
       // Si la respuesta es un array, devolver el primer elemento
@@ -396,7 +432,7 @@ export class ApiService {
   // ✅ Obtener notas de un ticket específico
   async getNotas(id: number): Promise<any> {
     try {
-      const response = await this.api.get(`/ticketdata/${id}`); // ← CORREGIDO
+      const response = await this.getUnico(`/ticketdata/${id}`);
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener notas:', error);
@@ -416,7 +452,7 @@ export class ApiService {
         }
       );
       console.log('📝 Ticket creado correctamente');
-      this.invalidarCacheTickets();
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear ticket:', error);
@@ -451,7 +487,7 @@ export class ApiService {
         }
       );
       // console.log('📝 Ticket actualizado correctamente');
-      this.invalidarCacheTickets();
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar ticket:', error);
@@ -464,7 +500,7 @@ export class ApiService {
     try {
       const response = await this.api.delete(`/ticket/eliminar/${ticketId}`);
       console.log('📝 Ticket eliminado correctamente');
-      this.invalidarCacheTickets();
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al eliminar ticket:', error);
@@ -489,7 +525,7 @@ export class ApiService {
   async getEquipos(filtros: any): Promise<any> {
     try {
       const filtrosLimpiados = this.limpiarParametros(filtros);
-      const response = await this.api.get<Equipo[]>('/equipos/', {
+      const response = await this.getUnico<Equipo[]>('/equipos/', {
         params: filtrosLimpiados
       });
       const total = Number(response.headers['x-total-count']);
@@ -505,7 +541,9 @@ export class ApiService {
 
   async equipo(id: number): Promise<any> {
     try {
-      const response = await this.api.get<Equipo[]>(`/equipos/?id=${id}&skip=0&limit=1`);
+      const response = await this.getUnico<Equipo[]>('/equipos/', {
+        params: { id, skip: 0, limit: 1 }
+      });
 
       // console.log('📝 Equipo obtenido correctamente');
       // Si la respuesta es un array, devolver el primer elemento
@@ -519,7 +557,7 @@ export class ApiService {
   async getEquipo(nobien: string): Promise<any> {
     try {
 
-      const response = await this.api.get<Equipo[]>('/equipoBien/' + nobien);
+      const response = await this.getUnico<Equipo[]>('/equipoBien/' + nobien);
       // console.log('👤 Equipos obtenidos correctamente', response);
       return response.data;
 
@@ -540,6 +578,7 @@ export class ApiService {
 
       );
       console.log('👤 Equipo creado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear equipo:', error);
@@ -558,6 +597,7 @@ export class ApiService {
 
       );
       console.log('👤 Equipo actualizado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al actualizar equipo:', error);
@@ -569,6 +609,7 @@ export class ApiService {
     try {
       const response = await this.api.delete(`/equipo/eliminar/${equipoId}`);
       console.log('👤 Equipo eliminado correctamente');
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al eliminar equipo:', error);
@@ -578,7 +619,7 @@ export class ApiService {
 
   async getDashboardSolicitudes(): Promise<any> {
     try {
-      const response = await this.api.get<DashboardResumen[]>('/dashboard/solicitudes');
+      const response = await this.getUnico<DashboardResumen>('/dashboard/solicitudes');
       // console.log(response.data);
       return response.data;
     } catch (error) {
@@ -587,16 +628,22 @@ export class ApiService {
     }
   }
 
-  async getResumen(fechaInicio: string, fechaFin: string, usuario: string): Promise<ResumenResponse> {
+  async getResumen(
+    fechaInicio: string,
+    fechaFin: string,
+    usuario: string,
+    mes?: string
+  ): Promise<ResumenResponse> {
     try {
-      const response = await this.api.get<ResumenResponse>(
+      const response = await this.getUnico<ResumenResponse>(
         '/resumen/',
         {
-          params: {
+          params: this.limpiarParametros({
             fecha_inicio: fechaInicio,
             fecha_fin: fechaFin,
-            usuario: usuario
-          }
+            usuario: usuario,
+            mes: mes
+          })
         }
       );
 
@@ -610,7 +657,7 @@ export class ApiService {
   async getEstadisticas(filtros: any = {}): Promise<EstadisticasResponse> {
     try {
       const parametros = parametrosEstadisticas(filtros);
-      const response = await this.api.get<EstadisticasResponse>(
+      const response = await this.getUnico<EstadisticasResponse>(
         '/reportes/estadisticas',
         { params: this.limpiarParametros(parametros) }
       );
@@ -648,7 +695,7 @@ export class ApiService {
 
   async getResumenMantenimientos(): Promise<MantenimientoResumen> {
     try {
-      const response = await this.api.get<MantenimientoResumen>('/mantenimientos/resumen');
+      const response = await this.getUnico<MantenimientoResumen>('/mantenimientos/resumen');
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener resumen de mantenimientos:', error);
@@ -658,7 +705,7 @@ export class ApiService {
 
   async getFrecuenciasMantenimiento(): Promise<FrecuenciaItem[]> {
     try {
-      const response = await this.api.get<FrecuenciaItem[]>('/mantenimientos/frecuencias');
+      const response = await this.getUnico<FrecuenciaItem[]>('/mantenimientos/frecuencias');
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener frecuencias:', error);
@@ -671,6 +718,7 @@ export class ApiService {
       const response = await this.api.post('/mantenimientos/', datos, {
         headers: { 'Content-Type': 'application/json' }
       });
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al crear mantenimiento:', error);
@@ -695,7 +743,7 @@ export class ApiService {
 
   async getBaja(id: number): Promise<BajaItem> {
     try {
-      const response = await this.api.get<BajaItem>(`/bajas/${id}`);
+      const response = await this.getUnico<BajaItem>(`/bajas/${id}`);
       return response.data;
     } catch (error) {
       console.error('❌ Error al obtener el acta de baja:', error);
@@ -705,7 +753,7 @@ export class ApiService {
 
   async getSiguienteCorrelativo(anio: number): Promise<CorrelativoPreview> {
     try {
-      const response = await this.api.get<CorrelativoPreview>('/bajas/siguiente', {
+      const response = await this.getUnico<CorrelativoPreview>('/bajas/siguiente', {
         params: { anio }
       });
       return response.data;
@@ -720,6 +768,7 @@ export class ApiService {
       const response = await this.api.post<BajaItem>('/bajas/', datos, {
         headers: { 'Content-Type': 'application/json' }
       });
+      this.invalidarLecturas();
       return response.data;
     } catch (error) {
       console.error('❌ Error al registrar la baja:', error);

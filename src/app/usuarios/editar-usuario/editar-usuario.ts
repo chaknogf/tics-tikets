@@ -9,7 +9,7 @@ import { CambiarPasswordComponent } from "../cambiarPassword/cambiarPassword.com
 
 @Component({
   selector: 'app-editar-usuario',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CambiarPasswordComponent],
   templateUrl: './editar-usuario.html',
   styleUrl: './editar-usuario.css',
   standalone: true

@@ -1,42 +1,122 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="nav-left">
-    <a href="#" class="brand" (click)="menu()">Soporte App</a>
-  </div>
-
-  <div class="nav-right" [class.active]="menuAbierto">
-    <button class="nav-btn w-30" (click)="equipos()">
-      <span [innerHTML]="icons['equipos']"></span>
-      <span>Equipos</span>
-    </button>
-    <button class="nav-btn w-30" (click)="tickets()">
-      <span [innerHTML]="icons['tickets']"></span>
-      <span>Tickets</span>
-    </button>
-    <button class="nav-btn w-30" (click)="reportes()">
-      <span [innerHTML]="icons['reportes']"></span>
-      <span>Reportes</span>
-    </button>
-    <button class="nav-btn w-30" (click)="mantenimientos()">
-      <span>Mantenimientos</span>
-    </button>
-    <button class="nav-btn w-30" (click)="bajas()">
-      <span>Bajas</span>
-    </button>
-    <button class="nav-btn w-30" *ngIf="puedeEscribir" (click)="ticket()">
-      <span [innerHTML]="icons['ticket']"></span>
-      <span class="text-wrap">Generar Ticket</span>
+<header class="topbar">
+  <div class="topbar-inner">
+    <button type="button" class="brand" (click)="menu()" aria-label="Ir al panel principal">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-word">NEXUS</span>
+      <span class="brand-tag">/ SOPORTE</span>
     </button>
 
-    <div class="user-info" *ngIf="estaAutenticado">
-      <span class="badge">{{ usuario }}</span>
-      <span class="badge">{{ rol }}</span>
-      <button type="button" class="badge" *ngIf="esAdmin"
-        (click)="editarUsuario()">Actualizar Perfil</button>
-      <button class="logout-btn" (click)="logout()">Salir</button>
+    <nav
+      class="nav-rail"
+      id="nav-menu"
+      aria-label="Módulos del sistema"
+      [class.active]="menuAbierto"
+    >
+      <button
+        type="button"
+        class="nav-item"
+        [class.is-active]="estaEn('/equipos')"
+        [attr.aria-current]="estaEn('/equipos') ? 'page' : null"
+        (click)="equipos()"
+      >
+        <span class="nav-index" aria-hidden="true">01</span>
+        <span class="nav-icon" aria-hidden="true" [innerHTML]="icons['equipos']"></span>
+        <span class="nav-label">Equipos</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        [class.is-active]="estaEn('/dash')"
+        [attr.aria-current]="estaEn('/dash') ? 'page' : null"
+        (click)="tickets()"
+      >
+        <span class="nav-index" aria-hidden="true">02</span>
+        <span class="nav-icon" aria-hidden="true" [innerHTML]="icons['tickets']"></span>
+        <span class="nav-label">Tickets</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        [class.is-active]="estaEn('/reporteria')"
+        [attr.aria-current]="estaEn('/reporteria') ? 'page' : null"
+        (click)="reportes()"
+      >
+        <span class="nav-index" aria-hidden="true">03</span>
+        <span class="nav-icon" aria-hidden="true" [innerHTML]="icons['reportes']"></span>
+        <span class="nav-label">Reportes</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        [class.is-active]="estaEn('/mantenimientos')"
+        [attr.aria-current]="estaEn('/mantenimientos') ? 'page' : null"
+        (click)="mantenimientos()"
+      >
+        <span class="nav-index" aria-hidden="true">04</span>
+        <span class="nav-label">Mantenimientos</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item"
+        [class.is-active]="estaEn('/bajas')"
+        [attr.aria-current]="estaEn('/bajas') ? 'page' : null"
+        (click)="bajas()"
+      >
+        <span class="nav-index" aria-hidden="true">05</span>
+        <span class="nav-label">Bajas</span>
+      </button>
+
+      <button
+        type="button"
+        class="nav-item nav-create"
+        *ngIf="puedeEscribir"
+        (click)="ticket()"
+      >
+        <span class="nav-index" aria-hidden="true">+</span>
+        <span class="nav-icon" aria-hidden="true" [innerHTML]="icons['ticket']"></span>
+        <span class="nav-label">Nuevo ticket</span>
+      </button>
+    </nav>
+
+    <div class="topbar-actions">
+      <span class="status-pill" *ngIf="estaAutenticado">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="eyebrow">En línea</span>
+      </span>
+
+      <div class="user-chip" *ngIf="estaAutenticado">
+        <span class="user-avatar" aria-hidden="true">{{ usuario ? usuario.charAt(0) : '?' }}</span>
+        <span class="user-meta">
+          <span class="user-name">{{ usuario }}</span>
+          <span class="user-role">{{ rol }}</span>
+        </span>
+        <button
+          type="button"
+          class="profile-btn"
+          *ngIf="esAdmin"
+          aria-label="Actualizar perfil"
+          (click)="editarUsuario()"
+        >
+          Perfil
+        </button>
+      </div>
+
+      <button type="button" class="logout-btn" (click)="logout()">Salir</button>
     </div>
-  </div>
 
-  <button class="menu-toggle" (click)="menuAbierto = !menuAbierto">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+    <button
+      type="button"
+      class="menu-toggle"
+      aria-controls="nav-menu"
+      [attr.aria-expanded]="menuAbierto"
+      [attr.aria-label]="menuAbierto ? 'Cerrar menú' : 'Abrir menú'"
+      (click)="toggleMenu()"
+    >
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+  </div>
+</header>

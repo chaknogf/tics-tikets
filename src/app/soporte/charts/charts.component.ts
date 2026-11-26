@@ -30,6 +30,7 @@ export class ChartsComponent implements OnInit {
   mes = '';
   periodos: ConteoItem[] = [];
   cargandoReporte = false;
+  errorReporte = '';
 
   cargando = true;
   error = '';
@@ -72,6 +73,7 @@ export class ChartsComponent implements OnInit {
   async cargarReporte() {
     try {
       this.cargandoReporte = true;
+      this.errorReporte = '';
       this.estadisticas = await this.service.getEstadisticas({
         fecha_desde: this.fechaDesde,
         fecha_hasta: this.fechaHasta,
@@ -80,6 +82,7 @@ export class ChartsComponent implements OnInit {
       this.periodos = this.estadisticas.por_mes;
     } catch (err) {
       console.error('Error al cargar reporte:', err);
+      this.errorReporte = 'No se pudo actualizar el reporte por periodo.';
     } finally {
       this.cargandoReporte = false;
     }

@@ -1,15 +1,12 @@
-<div class="dvh-100  min-vh-100 text-light">
+<div class="app-shell">
   <app-navbar
     [usuario]="username"
     [rol]="role"
     (cerrarSesion)="desconectarUsuario()"
     *ngIf="estaAutenticado"
     [class.hidden]="modalActivo"
-    class="navbar navbar-expand-lg navbar-dark  "
   ></app-navbar>
 
-
-   <app-notificador></app-notificador>
-    <router-outlet></router-outlet>
-  </div>
-
+  <app-notificador></app-notificador>
+  <router-outlet></router-outlet>
+</div>

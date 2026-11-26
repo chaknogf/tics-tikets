@@ -11,7 +11,6 @@
  * Copyright 2011-2025 The Bootstrap Authors
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap");
 :root,
 [data-bs-theme=light] {
   --bs-blue: #2c3e50;
@@ -12152,5 +12151,377 @@ textarea.form-control-lg {
   .titulo-seccion {
     color: #000;
     border-color: #000;
+  }
+}
+
+/* ==========================================================================
+   NEXUS / SIGNAL — nueva identidad visual v2.
+   Minimalista cyberpunk: tinta casi negra, líneas de circuito y dos neones.
+   Fuente de verdad: src/styles.full.css (styles.css se regenera con purge).
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+
+  /* Niveles de tinta */
+  --ink-950: #05070d;
+  --ink-900: #090e18;
+  --ink-850: #0c1422;
+  --ink-800: #121d2f;
+  --ink-700: #1a2940;
+
+  /* Señales */
+  --neon-cyan: #2de2f5;
+  --neon-magenta: #ff5ec9;
+  --neon-lime: #5ef2a4;
+  --neon-amber: #ffc857;
+  --neon-red: #ff6b81;
+
+  --app-bg: var(--ink-950);
+  --app-surface: var(--ink-900);
+  --app-surface-2: var(--ink-850);
+  --app-surface-3: var(--ink-800);
+  --app-border: var(--ink-700);
+  --app-border-strong: #34507a;
+  --app-control-border: #405f88;
+  --app-text: #e6f0ff;
+  --app-muted: #a0b2cd;
+  --app-accent: var(--neon-cyan);
+  --app-accent-strong: #0ba9c9;
+  --app-secondary-accent: var(--neon-magenta);
+  --app-ok: var(--neon-lime);
+  --app-warn: var(--neon-amber);
+  --app-danger: var(--neon-red);
+  --app-focus: #8bf7ff;
+  --app-glow: 0 0 18px rgba(45, 226, 245, 0.24);
+  --app-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+
+  --app-font: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --app-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --app-radius: 0.85rem;
+  --app-radius-sm: 0.5rem;
+
+  --bs-font-sans-serif: var(--app-font);
+  --bs-font-monospace: var(--app-mono);
+  --bs-body-font-family: var(--app-font);
+  --bs-body-bg: var(--app-bg);
+  --bs-body-bg-rgb: 5, 7, 13;
+  --bs-body-color: var(--app-text);
+  --bs-body-color-rgb: 230, 240, 255;
+  accent-color: var(--app-accent);
+  scrollbar-color: var(--app-border-strong) var(--app-bg);
+}
+
+[data-bs-theme='dark'] {
+  color-scheme: dark;
+  --bs-body-bg: var(--app-bg);
+  --bs-body-bg-rgb: 5, 7, 13;
+  --bs-body-color: var(--app-text);
+  --bs-body-color-rgb: 230, 240, 255;
+  --bs-emphasis-color: #ffffff;
+  --bs-secondary-color: var(--app-muted);
+  --bs-tertiary-bg: var(--app-surface-2);
+  --bs-border-color: var(--app-border);
+  --bs-border-color-translucent: var(--app-border);
+  --bs-primary: var(--app-accent);
+  --bs-primary-rgb: 45, 226, 245;
+  --bs-info: var(--app-accent);
+  --bs-success: var(--app-ok);
+  --bs-warning: var(--app-warn);
+  --bs-danger: var(--app-danger);
+  --bs-link-color: var(--app-accent);
+  --bs-link-color-rgb: 45, 226, 245;
+  --bs-link-hover-color: var(--app-focus);
+  --bs-link-hover-color-rgb: 139, 247, 255;
+  --bs-focus-ring-color: rgba(45, 226, 245, 0.35);
+  --bs-box-shadow: var(--app-shadow);
+}
+
+body {
+  font-family: var(--app-font);
+  font-size-adjust: from-font;
+  line-height: 1.5;
+  background-color: var(--app-bg);
+  color: var(--app-text);
+}
+
+/* font-size-adjust es Newly available: sin soporte, las dos monospaces
+   pueden cambiar de altura al cargar. Ajustamos línea y tamaño manualmente. */
+@supports not (font-size-adjust: from-font) {
+  body {
+    font-size: 1.02rem;
+    line-height: 1.6;
+  }
+}
+
+::selection {
+  background: rgba(45, 226, 245, 0.28);
+  color: #ffffff;
+}
+
+/* Microetiquetas de la interfaz: tecnología, sin ruido. */
+.eyebrow {
+  font-family: var(--app-mono);
+  font-size-adjust: from-font;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--app-muted);
+}
+
+/* Superficies con esquinas recortadas y marco de circuito. */
+.panel-corners {
+  position: relative;
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow);
+}
+
+.panel-corners::before,
+.panel-corners::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+
+.panel-corners::before {
+  inset-block-start: -1px;
+  inset-inline-start: -1px;
+  border-inline-start: 2px solid var(--app-accent);
+  border-block-start: 2px solid var(--app-accent);
+  border-start-start-radius: var(--app-radius);
+}
+
+.panel-corners::after {
+  inset-block-end: -1px;
+  inset-inline-end: -1px;
+  border-inline-end: 2px solid var(--app-secondary-accent);
+  border-block-end: 2px solid var(--app-secondary-accent);
+  border-end-end-radius: var(--app-radius);
+}
+
+/* Normalización de componentes heredados: gana sobre estilos antiguos
+   de un sola clase porque todos viven dentro del shell de la app. */
+.app-shell h1,
+.app-shell h2,
+.app-shell h3,
+.app-shell h4,
+.app-shell h5,
+.app-shell h6,
+.app-shell .h1,
+.app-shell .h2,
+.app-shell .h3,
+.app-shell .h4 {
+  font-family: var(--app-font);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--app-text);
+}
+
+.app-shell h1 {
+  font-size: clamp(1.65rem, 1.2rem + 1.6vw, 2.4rem);
+}
+
+.app-shell h2 {
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem);
+}
+
+.app-shell a {
+  color: var(--app-accent);
+}
+
+.app-shell label,
+.app-shell legend,
+.app-shell .form-label {
+  font-family: var(--app-mono);
+  font-size-adjust: from-font;
+  letter-spacing: 0.04em;
+  color: var(--app-muted);
+}
+
+.app-shell .form-label,
+.app-shell legend {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.app-shell .form-control,
+.app-shell .form-select {
+  min-height: 44px;
+  padding: 0.55rem 0.75rem;
+  font-size: max(1rem, 1em);
+  color: var(--app-text);
+  background-color: var(--app-surface-2);
+  border: 1px solid var(--app-control-border);
+  border-radius: var(--app-radius-sm);
+}
+
+.app-shell .form-control::placeholder {
+  color: var(--app-muted);
+}
+
+.app-shell .form-control:focus-visible,
+.app-shell .form-select:focus-visible {
+  outline: 2px solid var(--app-focus);
+  outline-offset: 1px;
+  border-color: var(--app-accent);
+  box-shadow: var(--app-glow);
+}
+
+.app-shell .btn {
+  min-block-size: 44px;
+  border-radius: var(--app-radius-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.app-shell .btn-primary {
+  color: var(--ink-950);
+  background-color: var(--app-accent);
+  border: 1px solid var(--app-accent);
+}
+
+.app-shell .btn-primary:hover:not(:disabled) {
+  background-color: var(--app-focus);
+  border-color: var(--app-focus);
+  box-shadow: var(--app-glow);
+}
+
+.app-shell .btn-outline-primary {
+  color: var(--app-accent);
+  border-color: var(--app-border-strong);
+  background-color: transparent;
+}
+
+.app-shell .btn-outline-primary:hover:not(:disabled) {
+  color: var(--ink-950);
+  background-color: var(--app-accent);
+  border-color: var(--app-accent);
+}
+
+.app-shell .btn-info {
+  color: var(--ink-950);
+  background-color: var(--app-accent);
+  border: 1px solid var(--app-accent);
+}
+
+.app-shell .btn-outline-info {
+  color: var(--app-accent);
+  background-color: transparent;
+  border-color: var(--app-border-strong);
+}
+
+.app-shell .btn-outline-info.text-light {
+  color: var(--app-muted);
+}
+
+.app-shell .btn-success,
+.app-shell .btn-outline-success {
+  --btn-signal: var(--app-ok);
+}
+
+.app-shell .btn-warning,
+.app-shell .btn-outline-warning {
+  --btn-signal: var(--app-warn);
+}
+
+.app-shell .btn-danger,
+.app-shell .btn-outline-danger {
+  --btn-signal: var(--app-danger);
+}
+
+.app-shell .btn-success:not(.btn-outline-success),
+.app-shell .btn-warning:not(.btn-outline-warning),
+.app-shell .btn-danger:not(.btn-outline-danger) {
+  color: var(--ink-950);
+  background-color: var(--btn-signal);
+  border-color: var(--btn-signal);
+}
+
+.app-shell .btn-outline-success,
+.app-shell .btn-outline-warning,
+.app-shell .btn-outline-danger {
+  color: var(--btn-signal);
+  border-color: var(--btn-signal);
+  background-color: transparent;
+}
+
+.app-shell .card,
+.app-shell .form-card,
+.app-shell .search-card,
+.app-shell .modal-content,
+.app-shell .modal-content-wrapper,
+.app-shell fieldset,
+.app-shell fieldset.metadatos {
+  color: var(--app-text);
+  background-color: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow);
+}
+
+.app-shell .badge {
+  font-family: var(--app-mono);
+  letter-spacing: 0.04em;
+}
+
+.app-shell table,
+.app-shell .table {
+  color: var(--app-text);
+  border-color: var(--app-border);
+}
+
+.app-shell .alert {
+  color: var(--app-text);
+  background-color: var(--app-surface-2);
+  border: 1px solid var(--app-border);
+}
+
+.app-shell .alert.alert-error {
+  color: #ffdbe1;
+  background-color: rgba(255, 107, 129, 0.12);
+  border-color: rgba(255, 107, 129, 0.55);
+}
+
+.app-shell .alert.alert-danger,
+.app-shell .alert.alert-info {
+  color: var(--app-text);
+  background-color: var(--app-surface-2);
+  border-inline-start: 3px solid var(--app-danger);
+}
+
+.app-shell .alert.alert-info {
+  border-inline-start-color: var(--app-accent);
+}
+
+.estado-vacio {
+  color: var(--app-muted);
+  text-align: center;
+  padding: 2rem 1rem;
+  border: 1px dashed var(--app-border-strong);
+  border-radius: var(--app-radius);
+  font-family: var(--app-mono);
+  font-size: 0.85rem;
+}
+
+@media (forced-colors: active) {
+  .app-shell .btn,
+  .app-shell .form-control,
+  .app-shell .form-select,
+  .app-shell .panel-corners {
+    border: 1px solid ButtonText;
+  }
+
+  .eyebrow,
+  .estado-vacio {
+    color: CanvasText;
+    border-color: CanvasText;
   }
 }

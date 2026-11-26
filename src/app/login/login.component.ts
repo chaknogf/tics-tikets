@@ -12,7 +12,7 @@ import { NotificacionesService } from '../services/notificaciones.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  // styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -31,32 +31,43 @@ export class LoginComponent {
     });
   }
 
- onSubmit() {
-  if (this.loginForm.invalid) {
-    this.errorMessage = 'Por favor complete todos los campos.';
-    return;
+  campoInvalido(campo: 'username' | 'password'): boolean {
+    const control = this.loginForm.get(campo);
+    return !!control && control.invalid && control.touched;
   }
 
-  this.loading = true;
-  const { username, password } = this.loginForm.value;
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      this.errorMessage = 'Por favor complete todos los campos.';
+      const primero = (['username', 'password'] as const).find(
+        campo => this.loginForm.get(campo)?.invalid
+      );
+      if (primero) {
+        document.querySelector<HTMLElement>(`[formControlName="${primero}"]`)?.focus();
+      }
+      return;
+    }
 
-  this.apiService.login(username, password)
-    .then((user) => {
-      // console.log('✅ Usuario autenticado:', user);
+    this.errorMessage = '';
+    this.loading = true;
+    const { username, password } = this.loginForm.value;
 
-      // 🔌 Conectar WebSocket UNA VEZ
-      this.notificacionesService.conectar(user.id);
-
-      this.router.navigate(['/dash']);
-    })
-    .catch((error) => {
-      this.errorMessage = this.getErrorMessage(error);
-    })
-    .finally(() => {
-      this.loading = false;
-    });
-}
-
+    this.apiService.login(username, password)
+      .then((user) => {
+        // Conecta el WebSocket una sola vez por sesión y guarda la identidad
+        // para poder reconectar tras recargar la página.
+        localStorage.setItem('user_id', String(user.id));
+        this.notificacionesService.conectar(user.id);
+        this.router.navigate(['/dash']);
+      })
+      .catch((error) => {
+        this.errorMessage = this.getErrorMessage(error);
+      })
+      .finally(() => {
+        this.loading = false;
+      });
+  }
 
   getErrorMessage(error: any): string {
     if (!error || !error.response) {
@@ -86,13 +97,4 @@ export class LoginComponent {
         return `Error inesperado (código ${status}).`;
     }
   }
-
-  verLoader() {
-    this.loading = true
-  }
-
-
-
-
-
 }

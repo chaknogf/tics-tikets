@@ -44,7 +44,8 @@ export class CambiarPasswordComponent {
       await this.apiService.cambiarPassword(
         this.idUsuario,
         this.passwordActual,
-        this.passwordNueva
+        this.passwordNueva,
+        this.passwordConfirmacion
       );
 
       this.exito = 'Contraseña actualizada correctamente.';

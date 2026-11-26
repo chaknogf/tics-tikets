@@ -1,79 +1,80 @@
-@media print {
-  .no-print {
-    display: none !important;
-  }
-
-  body {
-    background-color: #fff !important;
-  }
-
-  .container {
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-}
+/* Vista PDF: mismo documento claro, sin estilos de la app oscura. */
 .comprobante-container {
-  max-width: 800px;
-  margin: auto;
-  background-color: #fdfdfd;
-  padding: 20px;
+  color-scheme: light;
+  color: #101828;
+  accent-color: #0b6b78;
+  display: flex;
+  justify-content: center;
+  min-block-size: 100dvh;
+  padding: clamp(1rem, 3vw, 2rem);
+  background: #eef2f6;
+  font-family: var(--app-font, "JetBrains Mono", monospace);
 }
 
 .comprobante {
-  background: white;
-  border: 1px solid #ddd;
-  padding: 40px 50px;
-  border-radius: 8px;
-  font-family: 'Times New Roman', serif;
-  color: #222;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  inline-size: min(100%, 50rem);
+  color: #101828;
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: var(--app-radius, 0.85rem);
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
 }
 
+.logo,
 .comprobante .logo {
-  width: 80px;
-  height: auto;
+  inline-size: 5rem;
+  block-size: auto;
+  display: block;
+  margin: 0 auto 0.625rem;
+  object-fit: contain;
 }
 
 .titulo-seccion {
-  font-size: 1.1rem;
-  margin-top: 1.8rem;
-  border-left: 4px solid #0056b3;
-  padding-left: 8px;
-  color: #0056b3;
+  margin-block-start: 1.5rem;
+  padding-inline-start: 0.5rem;
+  border-inline-start: 3px solid #0b6b78;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  color: #0b6b78;
 }
 
 .datos-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px 20px;
-  font-size: 0.95rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.375rem 1.25rem;
+  margin-block-start: 0.5rem;
+  font-size: 0.85rem;
 }
 
 .detalle {
-  background-color: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  white-space: pre-wrap;
+  background-color: #f4f8fb;
+  padding: 0.75rem;
+  border: 1px solid #d9e2ec;
+  border-radius: var(--app-radius-sm, 0.5rem);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }
 
 .firma {
+  margin-block-start: 1.875rem;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .linea-firma {
-  flex: 1;
-  border-bottom: 1px solid #000;
-  height: 1px;
+  border-block-end: 1px solid #101828;
+  inline-size: 15.625rem;
+  block-size: 1px;
 }
 
-/* --- Estilos de impresión --- */
 @media print {
   body {
+    background-color: #ffffff !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -82,91 +83,19 @@
     display: none !important;
   }
 
-  .comprobante {
-    box-shadow: none;
-    border: none;
+  .comprobante-container {
     padding: 0;
+    background: #ffffff;
+  }
+
+  .comprobante {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .titulo-seccion {
-    color: #000;
-    border-color: #000;
-  }
-}
-
-.logo {
-  width: 90px;
-  height: auto;
-  display: block;
-  margin: 0 auto 10px auto;
-  object-fit: contain;
-}
-
-.comprobante-container {
-  display: flex;
-  justify-content: center;
-  background: #f9f9f9;
-  padding: 30px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.comprobante {
-  width: 800px;
-  background: white;
-  color: #222;
-  border: 1px solid #ddd;
-}
-
-.logo {
-  width: 80px;
-  height: auto;
-  margin-bottom: 10px;
-}
-
-.titulo-seccion {
-  border-left: 4px solid #007bff;
-  padding-left: 8px;
-  margin-top: 20px;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.datos-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px 20px;
-  margin-top: 8px;
-}
-
-.detalle {
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  white-space: pre-line;
-}
-
-.firma {
-  margin-top: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.linea-firma {
-  border-bottom: 1px solid #000;
-  width: 250px;
-  height: 1px;
-}
-
-@media print {
-  .comprobante-container {
-    background: white;
-    padding: 0;
-  }
-  .comprobante {
-    border: none;
-    box-shadow: none;
+    color: #101828;
+    border-color: #101828;
   }
 }

@@ -27,7 +27,9 @@ export class TiketsComponent implements OnInit {
   buscarId = '';
   mes = '';
   cargando = false;
+  error = '';
   origen = '';
+  private solicitudId = 0;
 
   options: { nombre: string; descripcion: string; ruta: string; icon: string }[] = [];
 
@@ -69,7 +71,10 @@ export class TiketsComponent implements OnInit {
   }
 
   async obtenerTikets(pagina: number = this.paginaActual) {
+    // Descarta respuestas de búsquedas anteriores que lleguen fuera de orden.
+    const idSolicitud = ++this.solicitudId;
     this.cargando = true;
+    this.error = '';
     const skip = (pagina - 1) * this.limite;
 
     const filtros = {
@@ -86,6 +91,7 @@ export class TiketsComponent implements OnInit {
 
     try {
       const response = await this.api.getTickets(filtros);
+      if (idSolicitud !== this.solicitudId) return;
 
       this.tikets = Array.isArray(response) ? response : [];
       const total = (response as Ticket[] & { total?: number })?.total;
@@ -93,10 +99,25 @@ export class TiketsComponent implements OnInit {
       this.totalPaginas = Math.max(1, Math.ceil(this.totalRegistros / this.limite));
       this.paginaActual = pagina;
     } catch (error) {
+      if (idSolicitud !== this.solicitudId) return;
       console.error('❌ Error al obtener tickets:', error);
+      this.error = 'No se pudieron cargar los tickets. Revisa tu conexión e inténtalo de nuevo.';
+      this.tikets = [];
+      this.totalRegistros = 0;
+      this.totalPaginas = 1;
     } finally {
-      this.cargando = false;
+      if (idSolicitud === this.solicitudId) {
+        this.cargando = false;
+      }
     }
+  }
+
+  reintentar() {
+    void this.obtenerTikets(this.paginaActual);
+  }
+
+  trackPorId(_indice: number, ticket: Ticket): number {
+    return ticket.id;
   }
 
   cambiarPagina(direccion: 'prev' | 'next') {
@@ -126,10 +147,11 @@ export class TiketsComponent implements OnInit {
     this.buscarTicket = '';
     this.buscarServicio = '';
     this.buscarAtencionEn = '';
-    this.buscarEstado = '';
+    this.buscarEstado = null;
     this.buscarPrioridad = '';
     this.buscarId = '';
     this.mes = '';
-    this.obtenerTikets();
+    this.paginaActual = 1;
+    this.obtenerTikets(1);
   }
 }

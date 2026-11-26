@@ -23,8 +23,8 @@ export const routes: Routes = [
   { path: 'ticket', component: FormularioComponent, canActivate: [EscritorGuard] }, // Formulario para crear un nuevo ticket
   { path: 'tiket/:origen', component: FormularioComponent, canActivate: [EscritorGuard] },
   { path: 'ticket/:id', component: FormularioComponent, canActivate: [EscritorGuard] }, // Formulario para editar un ticket existente
-  { path: 'detail/:id', component: DetalleComponent }, // Detalle del ticket
-  { path: 'ticketPdf/:id', component: PdfTicketComponent },
+  { path: 'detail/:id', component: DetalleComponent, canActivate: [AuthGuard] }, // Detalle del ticket
+  { path: 'ticketPdf/:id', component: PdfTicketComponent, canActivate: [AuthGuard] },
   { path: 'equipo/:id', component: FormEquipoComponent, canActivate: [AdminGuard] },
   { path: 'equipo', component: FormEquipoComponent, canActivate: [AdminGuard] },
   { path: 'ver-equipo/:id', component: VerEquipoComponent, canActivate: [AuthGuard] },

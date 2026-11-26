@@ -4,6 +4,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalService } from '../services/modal.service';
 import { ApiService } from '../services/api.service';
+import { NotificacionesService } from '../services/notificaciones.service';
 import { ticketIcon } from '../shared/icons/icons';
 import { tienePermiso } from '../services/permisos';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
@@ -34,6 +35,7 @@ export class NavbarComponent {
     private router: Router,
     private modalService: ModalService,
     private api: ApiService,
+    private notificaciones: NotificacionesService,
     private sanitizer: DomSanitizer,
     private iconService: IconService
   ) {
@@ -57,11 +59,13 @@ export class NavbarComponent {
   }
 
   logout() {
+    this.notificaciones.desconectar();
     this.cerrarSesion.emit();
     this.api.logOut();
   }
 
   menu() {
+    this.menuAbierto = false;
     this.router.navigate(['/dash']);
   }
   get estaAutenticado(): boolean {
@@ -77,32 +81,43 @@ export class NavbarComponent {
   }
 
   equipos() {
+    this.menuAbierto = false;
     this.router.navigate(['/equipos']);
   }
 
   tickets() {
+    this.menuAbierto = false;
     this.router.navigate(['/dash']);
   }
 
   ticket() {
+    this.menuAbierto = false;
     this.router.navigate(['/tiket', 'dash']);
   }
 
   reportes() {
+    this.menuAbierto = false;
     this.router.navigate(['/reporteria']);
   }
 
   mantenimientos() {
+    this.menuAbierto = false;
     this.router.navigate(['/mantenimientos']);
   }
 
   bajas() {
+    this.menuAbierto = false;
     this.router.navigate(['/bajas']);
   }
 
   /** Alterna la visibilidad del menú hamburguesa */
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
+  }
+
+  /** Marca la ruta activa en la navegación (y cierra el menú móvil). */
+  estaEn(ruta: string): boolean {
+    return this.router.url.startsWith(ruta);
   }
 
   editarUsuario() {
