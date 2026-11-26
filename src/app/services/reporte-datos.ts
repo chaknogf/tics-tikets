@@ -55,6 +55,60 @@ export function parametrosEstadisticas(filtros: Record<string, unknown>): Record
   return parametros;
 }
 
+/**
+ * Deja un único criterio de fecha para todo el informe.
+ *
+ * El backend da precedencia a `mes` sobre `fecha_inicio`/`fecha_fin`; si el
+ * formulario envía ambos, el rango escrito se ignora y el encabezado del
+ * informe no coincide con los datos. Por eso el rango explícito gana y el mes
+ * residual se descarta. Cuando solo hay mes, se deriva su rango inclusive para
+ * que bajas y mantenimientos (filtrados en el cliente) usen el mismo periodo.
+ */
+export function normalizarFiltrosReporte<T extends FiltrosReporte>(filtros: T): T {
+  const fechaInicio = (filtros.fechaInicio ?? '').trim();
+  const fechaFin = (filtros.fechaFin ?? '').trim();
+  const mes = (filtros.mes ?? '').trim();
+  const normalizados: T = {
+    ...filtros,
+    fechaInicio,
+    fechaFin,
+    mes: '',
+  };
+
+  if (mes && !fechaInicio && !fechaFin) {
+    const rango = rangoDelMes(mes);
+    if (rango) {
+      normalizados.fechaInicio = rango.desde;
+      normalizados.fechaFin = rango.hasta;
+      normalizados.mes = mes;
+    }
+  }
+
+  return normalizados;
+}
+
+function rangoDelMes(mes: string): { desde: string; hasta: string } | null {
+  const coincidencia = /^(\d{4})-(\d{2})$/.exec(mes);
+  if (!coincidencia) {
+    return null;
+  }
+  const anio = Number(coincidencia[1]);
+  const numero = Number(coincidencia[2]);
+  if (numero < 1 || numero > 12) {
+    return null;
+  }
+  const diasPorMes = [31, esBisiesto(anio) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const prefijo = `${coincidencia[1]}-${coincidencia[2]}-`;
+  return {
+    desde: `${prefijo}01`,
+    hasta: `${prefijo}${String(diasPorMes[numero - 1]).padStart(2, '0')}`,
+  };
+}
+
+function esBisiesto(anio: number): boolean {
+  return anio % 4 === 0 && (anio % 100 !== 0 || anio % 400 === 0);
+}
+
 /** Comparación léxica de ISO: evita desplazamientos de zona horaria. */
 export function fechaEnRango(
   fecha: string | null | undefined,

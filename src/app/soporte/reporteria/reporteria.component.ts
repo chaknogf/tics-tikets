@@ -6,7 +6,9 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 import { ApiService } from '../../services/api.service';
-import { datosGrafico, fechaEnRango, hojasReporte, parametrosReporte } from '../../services/reporte-datos';
+import {
+  datosGrafico, fechaEnRango, hojasReporte, normalizarFiltrosReporte, parametrosReporte
+} from '../../services/reporte-datos';
 import { descargarExcel as guardarExcel } from '../../services/reporte-exportar';
 import {
   BajaItem, Currentuser, EstadisticasResponse, ListaConTotal,
@@ -175,6 +177,9 @@ export class ReporteriaComponent implements OnInit, OnDestroy {
   async cargarDatos(): Promise<void> {
     this.cargando = true;
     this.aviso = '';
+    // Un mes residual hacía que el backend ignorara Desde/Hasta y que el
+    // encabezado del informe mostrara un periodo distinto al de los datos.
+    this.filtros = normalizarFiltrosReporte(this.filtros);
     const parametros = parametrosReporte(this.filtros);
     const anio = this.filtros.mes ? this.filtros.mes.slice(0, 4) : undefined;
 

@@ -12,6 +12,7 @@ import {
   datosGrafico,
   fechaEnRango,
   mantenimientosARows,
+  normalizarFiltrosReporte,
   parametrosEstadisticas,
   parametrosReporte,
 } from '../src/app/services/reporte-datos';
@@ -97,6 +98,49 @@ test('los alias de fechas del formulario antiguo se traducen al backend', () => 
     parametrosEstadisticas({ fecha_desde: '2026-11-01', fecha_hasta: '2026-11-25', mes: '' }),
     { fecha_inicio: '2026-11-01', fecha_fin: '2026-11-25', mes: '' },
   );
+});
+
+test('el rango de fechas prevalece sobre un mes residual', () => {
+  const filtros = normalizarFiltrosReporte({
+    fechaInicio: '2026-11-01',
+    fechaFin: '2026-11-30',
+    mes: '2026-10',
+    usuario: 'admin',
+  });
+
+  assert.deepEqual(filtros, {
+    fechaInicio: '2026-11-01',
+    fechaFin: '2026-11-30',
+    mes: '',
+    usuario: 'admin',
+  });
+  assert.deepEqual(parametrosReporte(filtros), {
+    fecha_inicio: '2026-11-01',
+    fecha_fin: '2026-11-30',
+    usuario: 'admin',
+  });
+});
+
+test('un mes suelto se convierte en rango inclusive para todas las secciones', () => {
+  const filtros = normalizarFiltrosReporte({ mes: '2026-02' });
+
+  assert.equal(filtros.fechaInicio, '2026-02-01');
+  assert.equal(filtros.fechaFin, '2026-02-28');
+  assert.equal(filtros.mes, '2026-02');
+  assert.equal(fechaEnRango('2026-02-28T23:59:00', filtros.fechaInicio!, filtros.fechaFin!), true);
+  assert.equal(fechaEnRango('2026-03-01', filtros.fechaInicio!, filtros.fechaFin!), false);
+});
+
+test('el rango de un mes bisiesto termina el día 29', () => {
+  assert.equal(normalizarFiltrosReporte({ mes: '2024-02' }).fechaFin, '2024-02-29');
+});
+
+test('un mes inválido no contamina el rango escrito por el usuario', () => {
+  assert.deepEqual(normalizarFiltrosReporte({ mes: '2026-13' }), {
+    mes: '',
+    fechaInicio: '',
+    fechaFin: '',
+  });
 });
 
 test('las tablas de bajas y mantenimientos llevan encabezado', () => {
